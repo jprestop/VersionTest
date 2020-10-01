@@ -17,7 +17,7 @@ RUN if [ "x${SOURCE_BRANCH}" = "x" ]; then \
     fi
 
 ENV MET_GIT_NAME    ${SOURCE_BRANCH}
-ENV MET_GIT_URL     https://github.com/dtcenter/MET
+ENV MET_GIT_URL     https://github.com/NCAR/MET
 ENV MET_DEVELOPMENT true
 
 #
@@ -32,13 +32,13 @@ ENV F77 /usr/bin/gfortran
 # Define package URL's.
 #
 ENV HDF4_URL       http://www.hdfgroup.org/ftp/HDF/releases/HDF4.2r3/src/HDF4.2r3.tar.gz
-ENV HDFEOS_URL     https://dtcenter.ucar.edu/dfiles/code/METplus/MET/docker_data/HDF-EOS2.16v1.00.tar.Z
+ENV HDFEOS_URL     http://www.dtcenter.org/met/users/support/online_tutorial/docker_data/HDF-EOS2.16v1.00.tar.Z
 
 ENV NETCDF4C_URL   https://github.com/Unidata/netcdf-c/archive/v4.4.1.1.zip
 ENV NETCDF4CXX_URL https://github.com/Unidata/netcdf-cxx4/archive/v4.3.0.tar.gz
 
-ENV BUFRLIB_URL    https://dtcenter.ucar.edu/dfiles/code/METplus/MET/docker_data/BUFRLIB_v10-2-3.tar
-ENV GSFONT_URL     https://dtcenter.ucar.edu/dfiles/code/METplus/MET/docker_data/ghostscript-fonts-std-8.11.tar.gz
+ENV BUFRLIB_URL    http://www.dtcenter.org/met/users/support/online_tutorial/docker_data/BUFRLIB_v10-2-3.tar
+ENV GSFONT_URL     http://www.dtcenter.org/met/users/support/online_tutorial/docker_data/ghostscript-fonts-std-8.11.tar.gz
 
 #
 # Install the required packages.
@@ -51,9 +51,9 @@ RUN yum -y update \
                    flex flex-devel bison bison-devel unzip \
  && yum -y install git g2clib-devel hdf5-devel.x86_64 gsl-devel \
  && yum -y install gv ncview wgrib wgrib2 ImageMagick ps2pdf \
- && yum -y install python3 python3-devel python3-pip \
- && pip3 install --upgrade pip \
- && python3 -m pip install numpy xarray
+ && yum -y install python2 python2-pip python2-devel \
+ && pip install --upgrade pip \
+ && pip install xarray numpy
 
 #
 # Set the working directory.
@@ -165,7 +165,7 @@ RUN echo "Checking out MET ${MET_GIT_NAME} from ${MET_GIT_URL}" \
  && ./configure --enable-grib2 --enable-mode_graphics --enable-modis --enable-lidar2nc --enable-python \
     MET_FREETYPEINC=/usr/include/freetype2 MET_FREETYPELIB=/usr/lib \
     MET_CAIROINC=/usr/include/cairo MET_CAIROLIB=/usr/lib \
-    MET_PYTHON_CC='-I/usr/include/python3.6m' MET_PYTHON_LD='-lpython3.6m' > ${LOG_FILE} \
+    MET_PYTHON_CC='-I/usr/include/python2.7' MET_PYTHON_LD='-lpython2.7' > ${LOG_FILE} \
  && LOG_FILE=/met/MET-${MET_GIT_NAME}/make_install.log \
  && echo "Compiling MET ${MET_GIT_NAME} and writing log file ${LOG_FILE}" \
  && make install > ${LOG_FILE} \
@@ -175,3 +175,4 @@ RUN echo "Checking out MET ${MET_GIT_NAME} from ${MET_GIT_URL}" \
  && if [[ $MET_GIT_NAME == "met-"* ]]; then cd /met; rm -rf MET-*; fi \
  && echo "Downloading GhostScript fonts from ${GSFONT_URL}" \
  && curl -SL ${GSFONT_URL} | tar zxC /usr/local/share/met
+

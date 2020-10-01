@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -93,14 +93,13 @@ void VarInfoGrib::assign(const VarInfoGrib &v) {
    VarInfo::assign(v);
 
    // Copy
-   PTV       = v.ptv();
-   Code      = v.code();
-   LvlType   = v.lvl_type();
-   PCode     = v.p_code();
-   Center    = v.center ();
-   Subcenter = v.subcenter ();
-   FieldRec  = v.field_rec ();
-   TRI       = v.tri();
+   PTV     = v.ptv();
+   Code    = v.code();
+   LvlType = v.lvl_type();
+   PCode   = v.p_code();
+   Center   = v.center ();
+   Subcenter   = v.subcenter ();
+   FieldRec   = v.field_rec ();
 
    return;
 }
@@ -181,18 +180,10 @@ void VarInfoGrib::set_p_code(int v) {
    PCode = v;
    return;
 }
-
 ///////////////////////////////////////////////////////////////////////////////
 
 void VarInfoGrib::set_field_rec(int v) {
    FieldRec = v;
-   return;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-void VarInfoGrib::set_tri(int v) {
-   TRI = v;
    return;
 }
 
@@ -246,7 +237,9 @@ void VarInfoGrib::add_grib_code (Dictionary &dict)
                  << "\n\n";
             exit(1);
          }
+
       }
+
    }
 
       //  if the field name is not specified, look for and use indexes
@@ -310,14 +303,20 @@ void VarInfoGrib::set_dict(Dictionary & dict) {
    set_subcenter   (field_subcenter);
    set_ptv         (field_ptv);
    set_ens         (ens_str.c_str());
-   set_tri         (dict.lookup_int(conf_key_GRIB1_tri, false));
 
    //  call the parent to set the level information
    set_level_info_grib(dict);
 
+   //  check for a probability boolean setting
+   if( dict.lookup_bool(conf_key_prob, false) ){
+      set_p_flag( true );
+      return;
+   }
+
    //  check for a probability dictionary setting
    Dictionary* dict_prob;
-   if(NULL == (dict_prob = dict.lookup_dictionary(conf_key_prob, false))) return;
+   if( NULL == (dict_prob = dict.lookup_dictionary(conf_key_prob, false)) )
+      return;
 
    //  gather information from the prob dictionary
    ConcatString prob_name = dict_prob->lookup_string(conf_key_name);
@@ -325,7 +324,8 @@ void VarInfoGrib::set_dict(Dictionary & dict) {
    field_code             = dict_prob->lookup_int   (conf_key_GRIB1_code, false);
 
    //  if field_code is not found - look for the deprecated name (GRIB1_rec)
-   if(field_code == bad_data_int) {
+   if(field_code == bad_data_int)
+   {
       field_code          = dict_prob->lookup_int   (conf_key_GRIB1_rec, false);
    }
    double thresh_lo       = dict_prob->lookup_double(conf_key_thresh_lo, false);
@@ -354,13 +354,6 @@ bool VarInfoGrib::is_precipitation() const {
    bool status = false;
 
    //
-   // Check set_attrs entry
-   //
-   if(!is_bad_data(SetAttrIsPrecipitation)) {
-      return(SetAttrIsPrecipitation != 0);
-   }
-
-   //
    // The ReqName member contains the requested GRIB code abbreviation.
    // Check to see if it matches the GRIB precipitation abbreviations.
    //
@@ -381,13 +374,6 @@ bool VarInfoGrib::is_specific_humidity() const {
    bool status = false;
 
    //
-   // Check set_attrs entry
-   //
-   if(!is_bad_data(SetAttrIsSpecificHumidity)) {
-      return(SetAttrIsSpecificHumidity != 0);
-   }
-
-   //
    // The ReqName meber contains the requested GRIB code abbreviation.
    // Check to see if it matches the GRIB specific humidity abbreviations.
    //
@@ -404,56 +390,24 @@ bool VarInfoGrib::is_specific_humidity() const {
 ///////////////////////////////////////////////////////////////////////////////
 
 bool VarInfoGrib::is_u_wind() const {
-
-   //
-   // Check set_attrs entry
-   //
-   if(!is_bad_data(SetAttrIsUWind)) {
-      return(SetAttrIsUWind != 0);
-   }
-
    return(Code == ugrd_grib_code || ReqName == ugrd_abbr_str);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 bool VarInfoGrib::is_v_wind() const {
-
-   //
-   // Check set_attrs entry
-   //
-   if(!is_bad_data(SetAttrIsVWind)) {
-      return(SetAttrIsVWind != 0);
-   }
-
    return(Code == vgrd_grib_code || ReqName == vgrd_abbr_str);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 bool VarInfoGrib::is_wind_speed() const {
-
-   //
-   // Check set_attrs entry
-   //
-   if(!is_bad_data(SetAttrIsWindSpeed)) {
-      return(SetAttrIsWindSpeed != 0);
-   }
-
    return(Code == wind_grib_code || ReqName == wind_abbr_str);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 bool VarInfoGrib::is_wind_direction() const {
-
-   //
-   // Check set_attrs entry
-   //
-   if(!is_bad_data(SetAttrIsWindDirection)) {
-      return(SetAttrIsWindDirection != 0);
-   }
-
    return(Code == wdir_grib_code || ReqName == wdir_abbr_str);
 }
 

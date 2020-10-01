@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -21,7 +21,6 @@
 #include "config_constants.h"
 #include "config_file.h"
 #include "data_file_type.h"
-#include "config_gaussian.h"
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -34,19 +33,16 @@ extern map<STATLineType,StringArray>
                        parse_conf_output_stats(Dictionary *dict);
 extern int             parse_conf_n_vx(Dictionary *dict);
 extern Dictionary      parse_conf_i_vx_dict(Dictionary *dict, int index);
-extern StringArray     parse_conf_tc_model(Dictionary *dict, bool error_out = default_dictionary_error_out);
 extern StringArray     parse_conf_message_type(Dictionary *dict, bool error_out = default_dictionary_error_out);
-extern StringArray     parse_conf_sid_list(Dictionary *dict, const char *);
+extern StringArray     parse_conf_sid_exc(Dictionary *dict);
 extern void            parse_sid_mask(const ConcatString &, StringArray &, ConcatString &);
 extern vector<MaskLatLon>
                        parse_conf_llpnt_mask(Dictionary *dict);
 extern StringArray     parse_conf_obs_qty(Dictionary *dict);
 extern NumArray        parse_conf_ci_alpha(Dictionary *dict);
 extern NumArray        parse_conf_eclv_points(Dictionary *dict);
-extern ClimoCDFInfo    parse_conf_climo_cdf(Dictionary *dict);
+extern ThreshArray     parse_conf_climo_cdf_bins(Dictionary *dict);
 extern TimeSummaryInfo parse_conf_time_summary(Dictionary *dict);
-extern map<ConcatString,ConcatString> parse_conf_key_value_map(
-                            Dictionary *dict, const char *conf_key_map_name);
 extern map<ConcatString,ConcatString>
                        parse_conf_message_type_map(Dictionary *dict);
 extern map<ConcatString,StringArray>
@@ -55,8 +51,8 @@ extern map<ConcatString,ConcatString>
                        parse_conf_obs_bufr_map(Dictionary *dict);
 extern BootInfo        parse_conf_boot(Dictionary *dict);
 extern RegridInfo      parse_conf_regrid(Dictionary *dict, bool error_out = default_dictionary_error_out);
-extern InterpInfo      parse_conf_interp(Dictionary *dict, const char *);
-extern NbrhdInfo       parse_conf_nbrhd(Dictionary *dict, const char *);
+extern InterpInfo      parse_conf_interp(Dictionary *dict);
+extern NbrhdInfo       parse_conf_nbrhd(Dictionary *dict);
 extern HiRAInfo        parse_conf_hira(Dictionary *dict);
 extern GridWeightType  parse_conf_grid_weight_flag(Dictionary *dict);
 extern DuplicateType   parse_conf_duplicate_flag(Dictionary *dict);
@@ -75,8 +71,8 @@ extern void         check_climo_n_vx(Dictionary *dict, const int);
 extern InterpMthd   int_to_interpmthd(int);
 extern void         check_mctc_thresh(const ThreshArray &);
 
-extern bool         check_fo_thresh(const double, const double, const double, const double,
-                                    const SingleThresh &, const SingleThresh &,
+extern bool         check_fo_thresh(const double, const SingleThresh &,
+                                    const double, const SingleThresh &,
                                     const SetLogic);
 
 extern const char * statlinetype_to_string(const STATLineType);

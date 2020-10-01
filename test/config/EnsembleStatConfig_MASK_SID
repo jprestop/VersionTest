@@ -56,38 +56,10 @@ ens = {
 ////////////////////////////////////////////////////////////////////////////////
 
 //
-// Neighborhood ensemble probabilities
-//
-nbrhd_prob = {
-   width      = [ 5 ];
-   shape      = CIRCLE;
-   vld_thresh = 0.0;
-}
-
-//
-// NMEP smoothing methods
-//
-nmep_smooth = {
-   vld_thresh      = 0.0;
-   shape           = CIRCLE;
-   gaussian_dx     = 81.27;
-   gaussian_radius = 120;
-   type = [
-      {
-         method = GAUSSIAN;
-         width  = 1;
-      }
-   ];
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-//
 // Forecast and observation fields to be verified
 //
 fcst = {
    message_type = [ "ADPSFC" ];
-   sid_inc      = [];
    sid_exc      = [];
 
    field = [
@@ -135,12 +107,6 @@ obs_error = {
 //
 ens_ssvar_bin_size = 1.0;
 ens_phist_bin_size = 0.05;
-
-//
-// Categorical thresholds to define ensemble probabilities
-// May be set separately in each "fcst.field" entry
-//
-prob_cat_thresh = [];
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -190,7 +156,6 @@ interp = {
 //
 output_flag = {
    ecnt  = STAT;
-   rps   = NONE;
    rhist = STAT;
    phist = STAT;
    orank = BOTH;
@@ -213,8 +178,6 @@ ensemble_flag = {
    range     = TRUE;
    vld_count = FALSE;
    frequency = TRUE;
-   nep       = FALSE;
-   nmep      = FALSE;
    rank      = FALSE;
    weight    = FALSE;
 }
@@ -233,6 +196,6 @@ rng = {
 
 grid_weight_flag = NONE;
 output_prefix    = "${OUTPUT_PREFIX}";
-version          = "V9.1";
+version          = "V8.1";
 
 ////////////////////////////////////////////////////////////////////////////////

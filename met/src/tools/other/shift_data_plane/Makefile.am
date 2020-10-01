@@ -27,10 +27,9 @@ shift_data_plane_LDADD = -lvx_statistics \
 	-lvx_regrid \
 	-lvx_grid \
 	-lvx_config \
-	-lvx_gsl_prob \
 	-lvx_cal \
 	-lvx_util \
 	-lvx_math \
 	-lvx_color \
 	-lvx_log \
-	-lm -lnetcdf_c++4 -lnetcdf -lgsl -lgslcblas
+	-lm -lnetcdf_c++4 -lnetcdf

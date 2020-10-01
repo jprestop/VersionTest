@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -421,7 +421,6 @@ void TrackPoint::clear() {
    Direction = bad_data_double;
    Speed     = bad_data_double;
    Depth     = NoSystemsDepth;
-   WarmCore  = false;
    WatchWarn = NoWatchWarnType;
 
    // Call clear for each Wind object and then set intensity value
@@ -454,7 +453,6 @@ void TrackPoint::dump(ostream &out, int indent_depth) const {
    out << prefix << "Direction = " << Direction << "\n";
    out << prefix << "Speed     = " << Speed << "\n";
    out << prefix << "Depth     = " << systemsdepth_to_string(Depth) << "\n";
-   out << prefix << "WarmCore  = " << bool_to_string(WarmCore) << "\n";
 
    for(i=0; i<NWinds; i++) {
       out << prefix << "Wind[" << i+1 << "]:" << "\n";
@@ -487,7 +485,6 @@ ConcatString TrackPoint::serialize() const {
      << ", Direction = " << Direction
      << ", Speed = " << Speed
      << ", Depth = " << systemsdepth_to_string(Depth)
-     << ", WarmCore = " << bool_to_string(WarmCore)
      << ", WatchWarn = " << watchwarntype_to_string(WatchWarn);
 
    return(s);
@@ -503,7 +500,7 @@ ConcatString TrackPoint::serialize_r(int n, int indent_depth) const {
    s << prefix << "[" << n << "] " << serialize() << ", Winds:\n";
 
    for(i=0; i<NWinds; i++)
-      s << Wind[i].serialize_r(i+1, indent_depth+1) << "\n";
+      s << Wind[i].serialize_r(i+1, indent_depth+1);
 
    return(s);
 }
@@ -532,7 +529,6 @@ void TrackPoint::assign(const TrackPoint &t) {
    Direction = t.Direction;
    Speed     = t.Speed;
    Depth     = t.Depth;
-   WarmCore  = t.WarmCore;
    WatchWarn = t.WatchWarn;
 
    for(i=0; i<NWinds; i++) Wind[i] = t.Wind[i];
@@ -561,7 +557,6 @@ void TrackPoint::initialize(const ATCFTrackLine &l) {
    Direction = l.storm_direction();
    Speed     = l.storm_speed();
    Depth     = l.depth();
-   WarmCore  = l.warm_core();
 
    return;
 }

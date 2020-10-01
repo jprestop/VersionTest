@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -95,15 +95,15 @@ void rescale_probability(DataPlane &dp) {
 void smooth_field(const DataPlane &dp, DataPlane &smooth_dp,
                   InterpMthd mthd, int width,
                   const GridTemplateFactory::GridTemplates shape,
-                  double t, const GaussianInfo &gaussian) {
-   double v = 0.0;
+                  double t, const double gaussian_radius, const double gaussian_dx) {
+   double v;
    int x, y;
 
    // Initialize the smoothed field to the raw field
    smooth_dp = dp;
 
-   // For nearest neighbor, no work to do.
-   if(width == 1 && mthd == InterpMthd_Nearest) return;
+   // Check that grid template is at least 1 point
+   if(width == 1 || mthd == InterpMthd_Nearest) return;
 
    // build the grid template
    GridTemplateFactory gtf;
@@ -137,17 +137,13 @@ void smooth_field(const DataPlane &dp, DataPlane &smooth_dp,
                v = interp_uw_mean(dp, *gt, x, y, t);
                break;
 
-            case(InterpMthd_Gaussian): // For Gaussian, pass the data through
-               v = dp.get(x, y);
-               break;
-
-            case(InterpMthd_MaxGauss): // For Max Gaussian, compute the max
+            case(InterpMthd_Gaussian): // Unweighted Mean
                v = interp_max(dp, *gt, x, y, 0);
                break;
 
             // Distance-weighted mean, area-weighted mean, least-squares
-            // fit, and bilinear are omitted here since they are not
-            // options for gridded data.
+            // fit, bilinear, and gaussian interpolation are omitted
+            // here since they are not options for gridded data.
 
             default:
                mlog << Error << "\nsmooth_field() -> "
@@ -163,16 +159,11 @@ void smooth_field(const DataPlane &dp, DataPlane &smooth_dp,
 
       } // end for y
    } // end for x
-
-   // Apply the Gaussian smoother 
-   if(mthd == InterpMthd_Gaussian ||
-      mthd == InterpMthd_MaxGauss) {
-      interp_gaussian_dp(smooth_dp, gaussian, t);
+   
+   if (mthd == InterpMthd_Gaussian) {
+     interp_gaussian_dp(smooth_dp, gaussian_radius, gaussian_dx);
    }
-
-   // Cleanup
    delete gt;
-
    return;
 }
 
@@ -186,10 +177,10 @@ void smooth_field(const DataPlane &dp, DataPlane &smooth_dp,
 DataPlane smooth_field(const DataPlane &dp,
                        InterpMthd mthd, int width,
                        const GridTemplateFactory::GridTemplates shape,
-                       double t, const GaussianInfo &gaussian) {
+                       double t, const double gaussian_radius, const double gaussian_dx) {
    DataPlane smooth_dp;
 
-   smooth_field(dp, smooth_dp, mthd, width, shape, t, gaussian);
+   smooth_field(dp, smooth_dp, mthd, width, shape, t, gaussian_radius, gaussian_dx);
 
    return(smooth_dp);
 }
@@ -205,9 +196,7 @@ void fractional_coverage(const DataPlane &dp, DataPlane &frac_dp,
         int width, const GridTemplateFactory::GridTemplates shape,
         SingleThresh t, double vld_t) {
    GridPoint *gp = NULL;
-   int x, y;
-   int n_vld = 0;
-   int n_thr = 0;
+   int x, y, n_vld, n_thr;
    double v;
 
    // Check that width is set to 1 or greater
@@ -300,21 +289,20 @@ void fractional_coverage(const DataPlane &dp, DataPlane &frac_dp,
 ////////////////////////////////////////////////////////////////////////
 
 void fractional_coverage_square(const DataPlane &dp, DataPlane &frac_dp,
-        int width, SingleThresh t, double vld_t) {
+        int wdth, SingleThresh t, double vld_t) {
    int i, j, k, n, x, y, x_ll, y_ll, y_ur, xx, yy, half_width;
    double v;
-   int count_vld = 0;
-   int count_thr = 0;
+   int count_vld, count_thr;
    NumArray box_na;
 
    mlog << Debug(3)
         << "Computing fractional coverage field using the "
         << t.get_str() << " threshold and the "
         << interpmthd_to_string(InterpMthd_Nbrhd)
-        << "(" << width*width << ") interpolation method.\n";
+        << "(" << wdth*wdth << ") interpolation method.\n";
 
    // Check that width is set to 1 or greater
-   if(width < 1) {
+   if(wdth < 1) {
       mlog << Error << "\nfractional_coverage_square() -> "
            << "width must be set to a value of 1 or greater.\n\n";
       exit(1);
@@ -325,10 +313,10 @@ void fractional_coverage_square(const DataPlane &dp, DataPlane &frac_dp,
    frac_dp.set_constant(bad_data_double);
 
    // Compute the box half-width
-   half_width = (width - 1)/2;
+   half_width = (wdth - 1)/2;
 
    // Initialize the box
-   for(i=0; i<width*width; i++) box_na.add(bad_data_int);
+   for(i=0; i<wdth*wdth; i++) box_na.add(bad_data_int);
 
    // Compute the fractional coverage meeting the threshold criteria
    for(x=0; x<dp.nx(); x++) {
@@ -348,15 +336,15 @@ void fractional_coverage_square(const DataPlane &dp, DataPlane &frac_dp,
             // Initialize counts
             count_vld = count_thr = 0;
 
-            for(i=0; i<width; i++) {
+            for(i=0; i<wdth; i++) {
 
                xx = x_ll + i;
 
-               for(j=0; j<width; j++) {
+               for(j=0; j<wdth; j++) {
 
                   yy = y_ll + j;
 
-                  n = DefaultTO.two_to_one(width, width, i, j);
+                  n = DefaultTO.two_to_one(wdth, wdth, i, j);
 
                   // Check for being off the grid
                   if(xx < 0 || xx >= dp.nx() ||
@@ -386,12 +374,12 @@ void fractional_coverage_square(const DataPlane &dp, DataPlane &frac_dp,
          else {
 
             // Compute the row of the neighborhood box to be updated
-            j = (y - 1) % width;
+            j = (y - 1) % wdth;
 
-            for(i=0; i<width; i++) {
+            for(i=0; i<wdth; i++) {
 
                // Index into the box
-               n = DefaultTO.two_to_one(width, width, i, j);
+               n = DefaultTO.two_to_one(wdth, wdth, i, j);
 
                // Get x and y values to be checked
                xx = x_ll + i;
@@ -428,7 +416,7 @@ void fractional_coverage_square(const DataPlane &dp, DataPlane &frac_dp,
          } // end else
 
          // Check whether enough valid grid points were found
-         if((double) count_vld/(width*width) < vld_t ||
+         if((double) count_vld/(wdth*wdth) < vld_t ||
             count_vld == 0) {
             v = bad_data_double;
          }
@@ -705,135 +693,3 @@ DataPlane gradient(const DataPlane &dp, int dim, int delta) {
 }
 
 ////////////////////////////////////////////////////////////////////////
-
-int meijster_sep(int u_index, int i_index, double u_distance, double i_distance) {
-   return ((u_index*u_index - i_index*i_index + u_distance*u_distance - i_distance*i_distance)
-         / (2 * (u_index-i_index)));
-}
-
-double euclide_distance(int x, int y) {
-   return sqrt(x*x + y*y);
-}
-
-////////////////////////////////////////////////////////////////////////
-
-DataPlane distance_map(const DataPlane &dp) {
-   DataPlane g_distance, dm;
-   bool debug_g_distance = false;
-   double distance_value;
-   int ix, iy;
-   int nx = dp.nx();
-   int ny = dp.ny();
-   int max_distance = nx + ny;
-
-   // Initialize to the maximum distance   
-   g_distance = dp;
-   g_distance.set_constant(max_distance);
-   dm = dp;
-   dm.set_constant(max_distance);
-   
-   int event_count = 0;
-   // Meijster first phase
-   for (ix=0; ix<nx; ix++) {
-      // Meijster scan 1
-      iy = 0;
-      if (0 < dp.get(ix, iy)) {
-         g_distance.set(0.0, ix, iy);
-         event_count++;
-      }
-      
-      for (iy = 1; iy<ny; iy++) {
-         if (0 < dp.get(ix, iy)) {
-            distance_value = 0.0;
-            event_count++;
-         }
-         else {
-            distance_value = (1.0 + g_distance.get(ix, (iy-1)));
-         }
-         g_distance.set(distance_value, ix, iy);
-      }
-      
-      // Meijster scan 2
-      for (iy = ny-2; iy>=0; iy--) {
-         distance_value = g_distance.get(ix, (iy+1));
-         if (distance_value < g_distance.get(ix, iy)) {
-            g_distance.set((1.0 + distance_value), ix, iy);
-         }
-      }
-   }
-   
-   // Meijster second phase
-   if (0 < event_count) {
-      int iq, iw;
-      int s[nx], t[nx];
-      
-      // Initialize s and t array
-      for (ix=0; ix<nx; ix++) {
-         s[ix] = t[ix] = 0;
-      }
-      
-      for (iy = 0; iy<ny; iy++) {
-         iq = 0;
-         s[iq] = t[iq] = 0;
-      
-         // Meijster Scan 3
-         for (ix=1; ix<nx; ix++) {
-            while ((0 <= iq)
-                 && euclide_distance((t[iq]-s[iq]), g_distance.get(s[iq], iy))
-                    > euclide_distance((t[iq]-ix), g_distance.get(ix, iy)))
-               iq--;
-                
-            if (0 > iq) {
-               iq = 0;
-               s[0] = ix;
-            }
-            else {
-               iw = 1 + meijster_sep(ix, s[iq],
-                     g_distance.get(ix, iy), g_distance.get(s[iq], iy));
-               if (iw < nx) {
-                  iq++;
-                  s[iq] = ix;
-                  t[iq] = iw;
-               }
-            }
-         }
-         
-         // Meijster Scan 4
-         for (ix=nx-1; ix>=0; ix--) {
-            distance_value = euclide_distance((ix-s[iq]), g_distance.get(s[iq],iy));
-            dm.set(distance_value,ix,iy);
-            if (ix == t[iq]) iq--;
-         }
-      }
-   }
-   
-   int debug_level = 7;
-   if(mlog.verbosity_level() >= debug_level) {
-      if (debug_g_distance) {
-         for (ix=0; ix<nx; ix++) {
-            ConcatString message;
-            message << " g_distance: " ;
-            for (iy = 0; iy<ny; iy++) {
-               message << "  " << g_distance.get(ix, iy);
-            }
-            mlog << Debug(debug_level) << message << "\n";
-         }
-      }
-      for (ix=0; ix<nx; ix++) {
-         ConcatString message;
-         message << " distance: " ;
-         for (iy = 0; iy<ny; iy++) {
-            message << "  " << dm.get(ix, iy);
-         }
-         mlog << Debug(debug_level) << message << "\n";
-      }
-   }
-
-   // Mask the distance map with bad data values of the input field
-   mask_bad_data(dm, dp);
-
-   return(dm);
-}
-
-////////////////////////////////////////////////////////////////////////
-

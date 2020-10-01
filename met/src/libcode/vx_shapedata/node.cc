@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -163,9 +163,9 @@ void Node::add_child(const Polyline * poly) {
       if(!n_ptr->sibling) {
 
          mlog << Error << "\nNode::add_child() -> "
-              << "memory allocation error\n\n";
+	      << "memory allocation error\n\n";
 
-         delete n_ptr;
+         delete n_ptr;  n_ptr = 0;   //  shouldn't be needed
 
          exit(1);
       }

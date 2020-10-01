@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -35,13 +35,6 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////
 
 
-static const char python_str    [] = "python";
-static const char file_list_str [] = "file_list";
-
-
-////////////////////////////////////////////////////////////////////////
-
-
 StringArray get_filenames(const StringArray & search_dir_list,
                           const char * prefix, const char * suffix,
                           bool check_regular)
@@ -51,39 +44,13 @@ StringArray get_filenames(const StringArray & search_dir_list,
 int j;
 const int N = search_dir_list.n_elements();
 StringArray a;
-ConcatString cs, py_str(python_str);
 
 for (j=0; j<N; ++j)  {
 
-   // Check for python embedding commands
-   if ( py_str.comparecase(search_dir_list[j].c_str()) == 0 ) {
-
-      cs << cs_erase << python_str;
-      j++;
-
-      // Append the python script and any arguments
-      while ( j < N )  {
-
-         // Look for the next python command
-         if ( py_str.comparecase(search_dir_list[j].c_str()) == 0 )  {
-            j--;
-            break;
-         }
-         cs << " " << search_dir_list[j];
-         j++;
-      }
-
-      // Add full python command to the list
-      a.add(cs);
-
-   }
-   else {
-
-      a.add(get_filenames(string(search_dir_list[j]), prefix, suffix, check_regular));
-
-   }
+  a.add(get_filenames(string(search_dir_list[j]), prefix, suffix, check_regular));
 
 }
+
 
 return ( a );
 
@@ -116,7 +83,7 @@ if ( S_ISDIR(sbuf.st_mode) )  {
    //  process directory
    //
 
-   b = get_filenames_from_dir(search_dir.c_str(), prefix, suffix);
+  b = get_filenames_from_dir(search_dir.c_str(), prefix, suffix);
 
    a.add(b);
 
@@ -149,6 +116,7 @@ if ( S_ISDIR(sbuf.st_mode) )  {
 
    }
 }
+
 
 return ( a );
 
@@ -233,37 +201,74 @@ return ( a );
 
 bool check_prefix_suffix(const char * path,
                          const char * prefix, const char * suffix)
-
 {
-
-ConcatString regex;
-bool keep = true;
+   ConcatString regex;
+   bool keep = true;
 
    //
    //  check the prefix
    //
 
-if ( keep && prefix ) {
+   if ( keep && prefix ) {
 
-   regex << cs_erase << "^" << prefix;
+      regex << cs_erase << "^" << prefix;
 
-   keep = check_reg_exp(regex.c_str(), path);
+      keep = check_reg_exp(regex.c_str(), path);
 
-}
+   }
 
    //
    //  check the suffix
    //
 
-if ( keep && suffix ) {
+   if ( keep && suffix ) {
 
-   regex << cs_erase << suffix << "$";
+      regex << cs_erase << suffix << "$";
 
-   keep = check_reg_exp(regex.c_str(), path);
+      keep = check_reg_exp(regex.c_str(), path);
 
+   }
+
+   return(keep);
 }
 
-return(keep);
+
+////////////////////////////////////////////////////////////////////////
+
+
+StringArray parse_ascii_file_list(const char * path)
+
+{
+
+ifstream f_in;
+StringArray a;
+std::string file_name;
+
+   //
+   //  Open the input ascii file
+   //
+
+met_open(f_in, path);
+if(!f_in) {
+   mlog << Error << "\nparse_ascii_file_list() -> "
+        << "can't open the ASCII file list \"" << path
+        << "\" for reading\n\n";
+   exit(1);
+}
+
+   //
+   //  Read and store the file names
+   //
+
+while(f_in >> file_name) a.add(file_name.c_str());
+
+   //
+   //  done
+   //
+
+f_in.close();
+
+return(a);
 
 }
 

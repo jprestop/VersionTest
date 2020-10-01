@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -359,7 +359,6 @@ int MetNcCFDataFile::data_plane_array(VarInfo &vinfo,
    return(n_rec);
 }
 
-////////////////////////////////////////////////////////////////////////
 
 LongArray MetNcCFDataFile::collect_time_offsets(VarInfo &vinfo) {
    int n_rec = 0;
@@ -370,15 +369,6 @@ LongArray MetNcCFDataFile::collect_time_offsets(VarInfo &vinfo) {
 
    LongArray time_offsets;
    NcVarInfo *info = _file->find_var_name(vinfo_nc->req_name().c_str());
-
-   // Check for variable not found
-   if(!info) {
-      mlog << Warning << "\n" << method_name
-           << "can't find NetCDF variable \"" << vinfo_nc->req_name()
-           << "\" in file \"" << Filename << "\".\n\n";
-      return(time_offsets);
-   }
-
    double time_lower = bad_data_double;
    double time_upper = bad_data_double;
    int error_code = error_code_no_error;
@@ -390,6 +380,7 @@ LongArray MetNcCFDataFile::collect_time_offsets(VarInfo &vinfo) {
    bool time_as_value = !level.is_time_as_offset();
    
    long dim_offset = (time_dim_slot >= 0) ? dimension[time_dim_slot] : -1;
+   long time_value = (time_as_value ? dim_offset : -1);
    bool include_all_times = (dim_offset == vx_data2d_star);
 
    int idx;
@@ -538,7 +529,6 @@ LongArray MetNcCFDataFile::collect_time_offsets(VarInfo &vinfo) {
                  << " (0 <= offset < " << time_dim_size << ")";
       }
       else if (error_code == error_code_missing_time_value) {
-         long time_value = (time_as_value ? dim_offset : -1);
          log_msg << "does not have the matching time "
                  << unix_to_yyyymmdd_hhmmss(time_value) << " ["
                  << unix_to_yyyymmdd_hhmmss(_file->ValidTime.min()) << " and "

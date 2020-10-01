@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -108,7 +108,7 @@ class NCRR_Array {
       void qsort_increasing(ncrr_cmp_func);
       void qsort_decreasing(ncrr_cmp_func);
 
-      void extend(int, bool exact = true);
+      void extend(int);
 
       void reverse();   //  reverse the order of the elements
 
@@ -204,24 +204,20 @@ return;
 
 template <typename T>
 
-void NCRR_Array<T>::extend(int N, bool exact)
+void NCRR_Array<T>::extend(int N)
 
 {
 
 if ( N <= Nalloc )  return;
 
-if ( ! exact )  {
-
-   N = AllocInc*( (N + AllocInc - 1)/AllocInc );
-
-}
+N = AllocInc*( (N + AllocInc - 1)/AllocInc );
 
 int j;
 T ** u = new T * [N];
 
 if ( !u )  {
 
-   mlog << Error << "\nNCRR_Array<T>::extend(int, bool) -> "
+   mlog << Error << "\nNCRR_Array<T>::extend(int) -> "
         << "memory allocation error\n\n";
 
    exit ( 1 );
@@ -316,7 +312,7 @@ void NCRR_Array<T>::add(const T & a)
 
 {
 
-extend(Nelements + 1, false);
+extend(Nelements + 1);
 
 e[Nelements] = new T;
 

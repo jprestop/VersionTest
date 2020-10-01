@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -71,8 +71,6 @@ void EnsembleStatConfInfo::clear() {
    obtype.clear();
    vld_ens_thresh = bad_data_double;
    vld_data_thresh = bad_data_double;
-   nbrhd_prob.clear();
-   nmep_smooth.clear();
    msg_typ_group_map.clear();
    msg_typ_sfc.clear();
    mask_area_map.clear();
@@ -102,7 +100,6 @@ void EnsembleStatConfInfo::clear() {
    // Reset counts
    n_ens_var    = 0;
    max_n_thresh = 0;
-   n_nbrhd      = 0;
    n_vx         = 0;
 
    return;
@@ -138,7 +135,7 @@ void EnsembleStatConfInfo::process_config(GrdFileType etype,
    Dictionary *fdict = (Dictionary *) 0;
    Dictionary *odict  = (Dictionary *) 0;
    Dictionary i_edict, i_fdict, i_odict;
-   InterpMthd mthd;
+   InterpInfo interp_info;
 
    // Dump the contents of the config file
    if(mlog.verbosity_level() >= 5) conf.dump(cout);
@@ -225,8 +222,8 @@ void EnsembleStatConfInfo::process_config(GrdFileType etype,
       ens_var_str.add(parse_conf_string(&i_edict, conf_key_nc_var_str, false));
 
       // Conf: ens_nc_pairs
-      // Only parse thresholds if probabilities are requested
-      if(nc_info.do_freq || nc_info.do_nep || nc_info.do_nmep) {
+      // Only parse thresholds if relative frequencies are requested
+      if(nc_info.do_freq) {
 
          // Conf: cat_thresh
          ens_ta[i] = i_edict.lookup_thresh_array(conf_key_cat_thresh);
@@ -266,40 +263,6 @@ void EnsembleStatConfInfo::process_config(GrdFileType etype,
            << vld_data_thresh << ") must be set between 0 and 1.\n\n";
       exit(1);
    }
-
-   // Conf: nbrhd_prob
-   nbrhd_prob = parse_conf_nbrhd(edict, conf_key_nbrhd_prob);
-   n_nbrhd = nbrhd_prob.width.n();
-
-   // Conf: nmep_smooth 
-   nmep_smooth = parse_conf_interp(edict, conf_key_nmep_smooth);
-
-   // Loop through the neighborhood probability smoothing options
-   for(i=0; i<nmep_smooth.n_interp; i++) {
-
-      mthd = string_to_interpmthd(nmep_smooth.method[i].c_str());
-
-      // Check for unsupported neighborhood probability smoothing methods
-      if(mthd == InterpMthd_DW_Mean ||
-         mthd == InterpMthd_LS_Fit  ||
-         mthd == InterpMthd_Bilin) {
-         mlog << Error << "\nEnsembleStatConfInfo::process_config() -> "
-              << "Neighborhood probability smoothing methods DW_MEAN, "
-              << "LS_FIT, and BILIN are not supported for \""
-              << conf_key_nmep_smooth << "\".\n\n";
-         exit(1);
-      }
-
-      // Check for valid neighborhood probability interpolation widths
-      if(nmep_smooth.width[i] < 1 || nmep_smooth.width[i]%2 == 0) {
-         mlog << Error << "\nEnsembleStatConfInfo::process_config() -> "
-              << "Neighborhood probability smoothing widths must be set "
-              << "to odd values greater than or equal to 1 ("
-              << nmep_smooth.width[i] << ") for \""
-              << conf_key_nmep_smooth << "\".\n\n";
-         exit(1);
-      }
-   } // end for i
 
    // Conf: fcst.field and obs.field
    fdict = conf.lookup_array(conf_key_fcst_field);
@@ -408,8 +371,6 @@ void EnsembleStatConfInfo::parse_nc_info() {
    nc_info.do_range  = d->lookup_bool(conf_key_range_flag);
    nc_info.do_vld    = d->lookup_bool(conf_key_vld_count_flag);
    nc_info.do_freq   = d->lookup_bool(conf_key_frequency_flag);
-   nc_info.do_nep    = d->lookup_bool(conf_key_nep_flag);
-   nc_info.do_nmep   = d->lookup_bool(conf_key_nmep_flag);
    nc_info.do_orank  = d->lookup_bool(conf_key_rank_flag);
    nc_info.do_weight = d->lookup_bool(conf_key_weight);
 
@@ -649,14 +610,11 @@ void EnsembleStatVxOpt::clear() {
    mask_name_area.clear();
    msg_typ.clear();
    othr_ta.clear();
-   cdf_info.clear();
    ci_alpha.clear();
    interp_info.clear();
 
    ssvar_bin_size = bad_data_double;
    phist_bin_size = bad_data_double;
-   prob_cat_ta.clear();
-
    duplicate_flag = DuplicateType_None;
    obs_summary = ObsSummary_None;
    obs_perc = bad_data_int;
@@ -760,17 +718,13 @@ void EnsembleStatVxOpt::process_config(GrdFileType ftype, Dictionary &fdict,
    msg_typ = parse_conf_message_type(&odict, point_vx);
 
    // Conf: othr_thresh
-   othr_ta = process_perc_thresh_bins(
-                odict.lookup_thresh_array(conf_key_obs_thresh));
-
-   // Conf: climo_cdf
-   cdf_info = parse_conf_climo_cdf(&odict);
+   othr_ta = odict.lookup_thresh_array(conf_key_obs_thresh);
 
    // Conf: ci_alpha
    ci_alpha = parse_conf_ci_alpha(&odict);
 
    // Conf: interp
-   interp_info = parse_conf_interp(&odict, conf_key_interp);
+   interp_info = parse_conf_interp(&odict);
 
    // Conf: output_flag
    output_map = parse_conf_output_flag(&odict, txt_file_type, n_txt);
@@ -783,9 +737,6 @@ void EnsembleStatVxOpt::process_config(GrdFileType ftype, Dictionary &fdict,
 
    // Conf: phist_bin_size
    phist_bin_size = odict.lookup_double(conf_key_phist_bin);
-
-   // Conf: prob_cat_thresh
-   prob_cat_ta = fdict.lookup_thresh_array(conf_key_prob_cat_thresh);
 
    // Conf: duplicate_flag
    duplicate_flag = parse_conf_duplicate_flag(&odict);
@@ -823,11 +774,8 @@ void EnsembleStatVxOpt::process_config(GrdFileType ftype, Dictionary &fdict,
    // Conf: desc
    vx_pd.set_desc(parse_conf_string(&odict, conf_key_desc).c_str());
 
-   // Conf: sid_inc
-   vx_pd.set_sid_inc_filt(parse_conf_sid_list(&odict, conf_key_sid_inc));
-
    // Conf: sid_exc
-   vx_pd.set_sid_exc_filt(parse_conf_sid_list(&odict, conf_key_sid_exc));
+   vx_pd.set_sid_exc_filt(parse_conf_sid_exc(&odict));
 
    // Conf: obs_qty
    vx_pd.set_obs_qty_filt(parse_conf_obs_qty(&odict));
@@ -963,8 +911,7 @@ void EnsembleStatVxOpt::set_perc_thresh(const PairDataEnsemble *pd_ptr) {
 ////////////////////////////////////////////////////////////////////////
 
 int EnsembleStatVxOpt::n_txt_row(int i_txt_row) const {
-   int n = 0;
-   int n_bin;
+   int n;
 
    // Range check
    if(i_txt_row < 0 || i_txt_row >= n_txt) {
@@ -976,39 +923,18 @@ int EnsembleStatVxOpt::n_txt_row(int i_txt_row) const {
    // Check if this output line type is requested
    if(output_flag[i_txt_row] == STATOutputType_None) return(0);
 
-   // Determine row multiplier for climatology bins
-   if(cdf_info.write_bins) {
-      n_bin = get_n_cdf_bin();
-      if(n_bin > 1) n_bin++;
-   }
-   else {
-      n_bin = 1;
-   }
-
    // Switch on the index of the line type
    switch(i_txt_row) {
 
       case(i_ecnt):
-      case(i_rps):
-
-         // Maximum number of ECNT and RPS lines possible =
-         //    Point Vx: Message Types * Masks * Interpolations *
-         //                              Obs Thresholds * Climo Bins
-         //     Grid Vx:                 Masks * Interpolations *
-         //                              Obs Thresholds * Climo Bins
-         n = (get_n_msg_typ() + 1) * get_n_mask() * get_n_interp() *
-              get_n_o_thresh() * n_bin;
-         break;
-
       case(i_rhist):
       case(i_phist):
       case(i_relp):
-
          // Maximum number of RHIST, PHIST, and RELP lines possible =
          //    Point Vx: Message Types * Masks * Interpolations * Obs Thresholds
          //     Grid Vx:                 Masks * Interpolations * Obs Thresholds
-         n = (get_n_msg_typ() + 1) * get_n_mask() * get_n_interp() *
-              get_n_o_thresh();
+         n =   get_n_msg_typ() * get_n_mask() * get_n_interp() * get_n_o_thresh()
+             +                   get_n_mask() * get_n_interp() * get_n_o_thresh();
          break;
 
       case(i_orank):
@@ -1061,8 +987,7 @@ bool EnsembleStatNcOutInfo::all_false() const {
 
    bool status = do_latlon || do_mean || do_stdev || do_minus ||
                  do_plus   || do_min  || do_max   || do_range ||
-                 do_vld    || do_freq || do_nep   || do_nmep  ||
-                 do_orank  || do_weight;
+                 do_vld    || do_freq || do_orank || do_weight;
 
    return(!status);
 }
@@ -1081,8 +1006,6 @@ void EnsembleStatNcOutInfo::set_all_false() {
    do_range  = false;
    do_vld    = false;
    do_freq   = false;
-   do_nep    = false;
-   do_nmep   = false;
    do_orank  = false;
    do_weight = false;
 
@@ -1104,8 +1027,6 @@ void EnsembleStatNcOutInfo::set_all_true() {
    do_range  = true;
    do_vld    = true;
    do_freq   = true;
-   do_nep    = true;
-   do_nmep   = true;
    do_orank  = true;
    do_weight = true;
 

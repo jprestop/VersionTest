@@ -68,7 +68,6 @@ obs = {
 // May be set separately in each "obs.field" entry
 //
 message_type   = [ "ADPSFC" ];
-sid_inc        = [];
 sid_exc        = [];
 obs_quality    = [];
 duplicate_flag = NONE;
@@ -93,8 +92,9 @@ climo_mean = {
    }
 
    time_interp_method = DW_MEAN;
-   day_interval       = 31;
-   hour_interval      = 6;
+   match_month        = TRUE;
+   match_day          = FALSE;
+   time_step          = 21600;
 }
 
 climo_stdev = climo_mean;
@@ -102,14 +102,7 @@ climo_stdev = {
    file_name = [];
 }
 
-//
-// May be set separately in each "obs.field" entry
-//
-climo_cdf = {
-   cdf_bins    = 1;
-   center_bins = FALSE;
-   write_bins  = TRUE;
-}
+climo_cdf_bins = 1;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -199,7 +192,6 @@ output_flag = {
    pjc    = NONE;
    prc    = NONE;
    ecnt   = NONE;
-   rps    = NONE;
    eclv   = NONE;
    mpr    = STAT;
 }
@@ -209,7 +201,7 @@ output_flag = {
 rank_corr_flag = FALSE;
 tmp_dir        = "/tmp";
 output_prefix  = "";
-version        = "V9.1";
+version        = "V8.1";
 
 ////////////////////////////////////////////////////////////////////////////////
 

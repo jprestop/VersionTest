@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -205,35 +205,6 @@ void DataPlane::set(double v, int x, int y) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void DataPlane::set_block(double *v, int nx, int ny) {
-   const char *method_name = "DataPlane::set_block() -> ";
-   
-   if (nx > Nx) {
-      mlog << Error << "\n" << method_name << "nx is too big ("
-           << nx << " should be equal or less than " << Nx << "\n\n\n";
-      exit(1);
-   }
-   if (ny > Ny) {
-      mlog << Error << "\n" << method_name << "ny is too big ("
-           << ny << " should be equal or less than " << Ny << "\n\n\n";
-      exit(1);
-   }
-   
-   int offset = 0;
-   //Note: v should be a row first & the size is (nx * ny).
-   //      implemented based on two_to_one("n = y*Nx + x").
-   for (int y=0; y < ny; y++) {
-      int dp_offset = two_to_one(0, y);
-      for (int x=0; x < nx; x++) {
-         Data[dp_offset+x] = v[offset++];
-      }
-   }
-   
-   return;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
 void DataPlane::set_constant(double v) {
 
    if(Data.empty()) {
@@ -304,21 +275,6 @@ void DataPlane::threshold(const SingleThresh &st) {
       if( st.check(Data[j]) )     Data[j] = 1.0;
       else                        Data[j] = 0.0;
 
-   }
-
-   return;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-void DataPlane::convert(const UserFunc_1Arg &convert_fx) {
-
-   if(!convert_fx.is_set()) return;
-
-   mlog << Debug(3) << "Applying conversion function.\n";
-
-   for(int i=0; i<Nxy; i++) {
-      if(!is_bad_data(buf()[i])) buf()[i] = convert_fx(buf()[i]);
    }
 
    return;
@@ -862,6 +818,8 @@ if ( xb )  { delete [] xb;  xb = 0; }
 if ( C )  { delete [] C;  C = 0; }
 if ( S )  { delete [] S;  S = 0; }
 
+// cout << "\n\n  Elapsed time: " << (time(0) - start_time) << "\n\n";
+
    //
    //  done
    //
@@ -1026,7 +984,7 @@ return;
 ///////////////////////////////////////////////////////////////////////////////
 
 
-void DataPlaneArray::extend(int n, bool exact)
+void DataPlaneArray::extend(int n)
 
 {
 
@@ -1037,12 +995,9 @@ DataPlane ** p = (DataPlane **) 0;
 double * b = (double *) 0;
 double * t = (double *) 0;
 
-if ( ! exact )  {
+k = (n + AllocInc - 1)/AllocInc;
 
-   k = (n + AllocInc - 1)/AllocInc;
-   n = k*AllocInc;
-
-}
+n = k*AllocInc;
 
 p = new DataPlane * [n];
 b = new double      [n];
@@ -1101,7 +1056,7 @@ void DataPlaneArray::add(const DataPlane & p, double _low, double _up)
 
 check_xy_size(p);
 
-extend(Nplanes + 1, false);
+extend(Nplanes + 1);
 
 Plane[Nplanes] = new DataPlane;
 

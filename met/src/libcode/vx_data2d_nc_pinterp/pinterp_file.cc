@@ -1,7 +1,7 @@
 
 
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -567,11 +567,11 @@ if ( dim_count >= max_pinterp_args )  {
 
 }
 
-bool status = false;
+bool status;
 int i;
 short s;
 float f;
-double d = bad_data_double;
+double d;
 float add_offset   = 0.f;
 float scale_factor = 1.f;
 double missing_value = get_var_missing_value(var);
@@ -613,12 +613,10 @@ switch ( GET_NC_TYPE_ID_P(var) )  {
       break;
 
 }   //  switch
-
-if ((add_offset != 0.0 || scale_factor != 1.0) &&
-    !is_eq(d, missing_value)                   &&
-    !is_eq(d, fill_value)) {
+if ((add_offset != 0.0 || scale_factor != 1.0) && !is_eq(d, missing_value) && !is_eq(d, fill_value)) {
    d = d * scale_factor + add_offset;
 }
+
 
 if ( !status )  {
 
@@ -627,6 +625,7 @@ if ( !status )  {
 
    exit ( 1 );
 }
+
 
    //
    //  done

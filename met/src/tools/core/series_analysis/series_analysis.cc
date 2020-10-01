@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -12,23 +12,18 @@
 //
 //   Description:
 //
-//   Mod#   Date      Name           Description
-//   ----   ----      ----           -----------
-//   000    12/10/12  Halley Gotway  New
-//   001    05/27/14  Halley Gotway  Add EIQR and MAD to CNT line type.
-//   002    11/14/14  Halley Gotway  Pass the obtype entry from the
+//   Mod#   Date      Name            Description
+//   ----   ----      ----            -----------
+//   000    12/10/12  Halley Gotway   New
+//   001    05/27/14  Halley Gotway   Add EIQR and MAD to CNT line type.
+//   002    11/14/14  Halley Gotway   Pass the obtype entry from the
 //                    from the config file to the output file.
-//   003    02/25/15  Halley Gotway  Add automated regridding.
-//   004    08/04/15  Halley Gotway  Add conditional continuous
-//                    verification.
-//   005    09/21/15  Halley Gotway  Add climatology and SAL1L2 output.
-//   006    04/20/16  Halley Gotway  Add -paired command line option.
-//   007    05/15/17  Prestopnikk P  Add shape for regrid.
-//   008    10/06/17  Halley Gotway  Add RMSFA and RMSOA stats.
-//   009    10/14/19  Halley Gotway  Add support for climo distribution
-//                    percentile thresholds.
-//   010    12/11/19  Halley Gotway  Reorganize logic to support the use
-//                    of python embedding.
+//   003    02/25/15  Halley Gotway   Add automated regridding.
+//   004    08/04/15  Halley Gotway   Add conditional continuous verification.
+//   005    09/21/15  Halley Gotway   Add climatology and SAL1L2 output.
+//   006    04/20/16  Halley Gotway   Add -paired command line option.
+//   007    05/15/17  Prestopnikk P   Add shape for regrid.
+//   008    10/06/17  Halley Gotway   Add RMSFA and RMSOA stats.
 //
 ////////////////////////////////////////////////////////////////////////
 
@@ -58,28 +53,27 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////
 
 static void process_command_line(int, char **);
-static void process_grid        (const Grid &, const Grid &);
 
-static Met2dDataFile *get_mtddf(const StringArray &,
-                                const GrdFileType);
-static bool           file_is_ok(const ConcatString &,
-                                 const GrdFileType);
+static Met2dDataFile *get_mtddf(const StringArray &, const GrdFileType);
 
 static void get_series_data(int, VarInfo *, VarInfo *,
                             DataPlane &, DataPlane &);
 static void get_series_entry(int, VarInfo *, const StringArray &,
                              const GrdFileType, StringArray &,
-                             DataPlane &, Grid &);
+                             DataPlane &);
 static bool read_single_entry(VarInfo *, const ConcatString &,
                               const GrdFileType, DataPlane &, Grid &);
 
 static void process_scores();
 
-static void do_cts   (int, const PairDataPoint *);
-static void do_mcts  (int, const PairDataPoint *);
-static void do_cnt   (int, const PairDataPoint *);
-static void do_sl1l2 (int, const PairDataPoint *);
-static void do_pct   (int, const PairDataPoint *);
+static void do_cts   (int, const NumArray &, const NumArray &);
+static void do_mcts  (int, const NumArray &, const NumArray &);
+static void do_cnt   (int, const NumArray &, const NumArray &,
+                      const NumArray &);
+static void do_sl1l2 (int, const NumArray &, const NumArray &,
+                      const NumArray &);
+static void do_pct   (int, const NumArray &, const NumArray &,
+                      const NumArray &);
 
 static void store_stat_fho  (int, const ConcatString &, const CTSInfo &);
 static void store_stat_ctc  (int, const ConcatString &, const CTSInfo &);
@@ -115,6 +109,7 @@ static void set_log_file(const StringArray &);
 static void set_verbosity(const StringArray &);
 static void set_compress(const StringArray &);
 
+static StringArray parse_file_list(const StringArray &, const GrdFileType);
 static void parse_long_names();
 
 ////////////////////////////////////////////////////////////////////////
@@ -170,13 +165,13 @@ void process_command_line(int argc, char **argv) {
    if(cline.n() != 0) usage();
 
    // Check that the required arguments have been set.
-   if(fcst_files.n() == 0) {
+   if(fcst_files.n_elements() == 0) {
       mlog << Error << "\nprocess_command_line() -> "
            << "the forecast file list must be set using the "
            << "\"-fcst\" or \"-both\" option.\n\n";
       usage();
    }
-   if(obs_files.n() == 0) {
+   if(obs_files.n_elements() == 0) {
       mlog << Error << "\nprocess_command_line() -> "
            << "the observation file list must be set using the "
            << "\"-obs\" or \"-both\" option.\n\n";
@@ -203,16 +198,16 @@ void process_command_line(int argc, char **argv) {
         << "Default Config File: " << default_config_file << "\n"
         << "User Config File: "    << config_file << "\n";
 
-   // Parse the forecast and observation file lists
-   fcst_files = parse_file_list(fcst_files);
-   obs_files  = parse_file_list(obs_files);
-
    // Read the config files
    conf_info.read_config(default_config_file.c_str(), config_file.c_str());
 
    // Get the forecast and observation file types from config, if present
    ftype = parse_conf_file_type(conf_info.conf.lookup_dictionary(conf_key_fcst));
    otype = parse_conf_file_type(conf_info.conf.lookup_dictionary(conf_key_obs));
+
+   // Parse the forecast and observation file lists
+   fcst_files = parse_file_list(fcst_files, ftype);
+   obs_files  = parse_file_list(obs_files,  otype);
 
    // Get mtddf
    fcst_mtddf = get_mtddf(fcst_files, ftype);
@@ -225,6 +220,13 @@ void process_command_line(int argc, char **argv) {
    // Process the configuration
    conf_info.process_config(ftype, otype);
 
+   // Determine the verification grid
+   grid = parse_vx_grid(conf_info.fcst_info[0]->regrid(),
+                        &(fcst_mtddf->grid()), &(obs_mtddf->grid()));
+
+   // Process masking regions
+   conf_info.process_masks(grid);
+
    // Set the random number generator and seed value to be used when
    // computing bootstrap confidence intervals
    rng_set(rng_ptr, conf_info.boot_rng.c_str(), conf_info.boot_seed.c_str());
@@ -236,9 +238,9 @@ void process_command_line(int argc, char **argv) {
         << "Length of configuration \"obs.field\"  = "
         << conf_info.get_n_obs() << "\n"
         << "Length of forecast file list         = "
-        << fcst_files.n() << "\n"
+        << fcst_files.n_elements() << "\n"
         << "Length of observation file list      = "
-        << obs_files.n() << "\n";
+        << obs_files.n_elements() << "\n";
 
    // Determine the length of the series to be analyzed.  Series is
    // defined by the first parameter of length greater than one:
@@ -260,16 +262,16 @@ void process_command_line(int argc, char **argv) {
            << "Series defined by the \"obs.field\" configuration entry "
            << "of length " << n_series << ".\n";
    }
-   else if(fcst_files.n() > 1) {
+   else if(fcst_files.n_elements() > 1) {
       series_type = SeriesType_Fcst_Files;
-      n_series = fcst_files.n();
+      n_series = fcst_files.n_elements();
       mlog << Debug(1)
            << "Series defined by the forecast file list of length "
            << n_series << ".\n";
    }
-   else if(obs_files.n() > 1) {
+   else if(obs_files.n_elements() > 1) {
       series_type = SeriesType_Obs_Files;
-      n_series = obs_files.n();
+      n_series = obs_files.n_elements();
       mlog << Debug(1)
            << "Series defined by the observation file list of length "
            << n_series << ".\n";
@@ -287,20 +289,20 @@ void process_command_line(int argc, char **argv) {
    if(paired) {
 
       // The number of forecast and observation files must match.
-      if(fcst_files.n() != obs_files.n()) {
+      if(fcst_files.n_elements() != obs_files.n_elements()) {
          mlog << Error << "\nprocess_command_line() -> "
               << "when using the \"-paired\" command line option, the "
-              << "number of forecast (" << fcst_files.n()
-              << ") and observation (" << obs_files.n()
+              << "number of forecast (" << fcst_files.n_elements()
+              << ") and observation (" << obs_files.n_elements()
               << ") files must match.\n\n";
          usage();
       }
 
       // The number of files must match the series length.
-      if(fcst_files.n() != n_series) {
+      if(fcst_files.n_elements() != n_series) {
          mlog << Error << "\nprocess_command_line() -> "
               << "when using the \"-paired\" command line option, the "
-              << "the file list length (" << fcst_files.n()
+              << "the file list length (" << fcst_files.n_elements()
               << ") and series length (" << n_series
               << ") must match.\n\n";
          usage();
@@ -325,53 +327,18 @@ void process_command_line(int argc, char **argv) {
 
 ////////////////////////////////////////////////////////////////////////
 
-void process_grid(const Grid &fcst_grid, const Grid &obs_grid) {
-
-   // Determine the verification grid
-   grid = parse_vx_grid(conf_info.fcst_info[0]->regrid(),
-                        &fcst_grid, &obs_grid);
-   nxy  = grid.nx() * grid.ny();
-
-   // Process masking regions
-   conf_info.process_masks(grid);
-
-   // Compute the number of reads required
-   n_reads = nint(ceil((double) nxy / conf_info.block_size));
-
-   mlog << Debug(2)
-        << "Computing statistics using a block size of "
-        << conf_info.block_size << ", requiring " << n_reads
-        << " pass(es) through the " << grid.nx() << " x "
-        << grid.ny() << " grid.\n";
-
-   // Print a warning for too many passes through the data
-   if(n_reads > 4) {
-      mlog << Warning
-           << "\nA block size of " << conf_info.block_size << " for a "
-           << grid.nx() << " x " << grid.ny() << " grid requires "
-           << n_reads << " passes through the data which will be slow.\n"
-           << "Consider increasing \"block_size\" in the configuration "
-           << "file based on available memory.\n\n";
-   }
-
-   return;
-}
-
-////////////////////////////////////////////////////////////////////////
-
-Met2dDataFile *get_mtddf(const StringArray &file_list,
-                         const GrdFileType type) {
+Met2dDataFile *get_mtddf(const StringArray &file_list, const GrdFileType type) {
    int i;
    Met2dDataFile *mtddf = (Met2dDataFile *) 0;
 
    // Find the first file that actually exists
-   for(i=0; i<file_list.n(); i++) {
-      if(file_is_ok(file_list[i], type)) break;
+   for(i=0; i<file_list.n_elements(); i++) {
+      if(file_exists(file_list[i].c_str())) break;
    }
 
    // Check for no valid files
-   if(i == file_list.n()) {
-      mlog << Error << "\nTrouble reading input data files.\n\n";
+   if(i == fcst_files.n_elements()) {
+      mlog << Error << "\nTrouble reading forecast files.\n\n";
       exit(1);
    }
 
@@ -387,16 +354,9 @@ Met2dDataFile *get_mtddf(const StringArray &file_list,
 
 ////////////////////////////////////////////////////////////////////////
 
-bool file_is_ok(const ConcatString &file_name, const GrdFileType t) {
-   return(file_exists(file_name.c_str()) || is_python_grdfiletype(t));
-}
-
-////////////////////////////////////////////////////////////////////////
-
 void get_series_data(int i_series,
                      VarInfo *fcst_info, VarInfo *obs_info,
                      DataPlane &fcst_dp, DataPlane &obs_dp) {
-   Grid fcst_grid, obs_grid;
 
    mlog << Debug(2)
         << "Processing series entry " << i_series + 1 << " of "
@@ -408,7 +368,7 @@ void get_series_data(int i_series,
 
       case SeriesType_Fcst_Conf:
          get_series_entry(i_series, fcst_info, fcst_files,
-                          ftype, found_fcst_files, fcst_dp, fcst_grid);
+                          ftype, found_fcst_files, fcst_dp);
          if(conf_info.get_n_obs() == 1) {
             obs_info->set_valid(fcst_dp.valid());
             mlog << Debug(3)
@@ -417,12 +377,12 @@ void get_series_data(int i_series,
                  << unix_to_yyyymmdd_hhmmss(fcst_dp.valid()) << ".\n";
          }
          get_series_entry(i_series, obs_info, obs_files,
-                          otype, found_obs_files, obs_dp, obs_grid);
+                          otype, found_obs_files, obs_dp);
          break;
 
       case SeriesType_Obs_Conf:
          get_series_entry(i_series, obs_info, obs_files,
-                          otype, found_obs_files, obs_dp, obs_grid);
+                          otype, found_obs_files, obs_dp);
          if(conf_info.get_n_fcst() == 1) {
             fcst_info->set_valid(obs_dp.valid());
             mlog << Debug(3)
@@ -431,13 +391,13 @@ void get_series_data(int i_series,
                  << unix_to_yyyymmdd_hhmmss(obs_dp.valid()) << ".\n";
          }
          get_series_entry(i_series, fcst_info, fcst_files,
-                          ftype, found_fcst_files, fcst_dp, fcst_grid);
+                          ftype, found_fcst_files, fcst_dp);
          break;
 
       case SeriesType_Fcst_Files:
          found_fcst_files.set(i_series, fcst_files[i_series]);
          get_series_entry(i_series, fcst_info, fcst_files,
-                          ftype, found_fcst_files, fcst_dp, fcst_grid);
+                          ftype, found_fcst_files, fcst_dp);
          if(paired) {
             found_obs_files.set(i_series, obs_files[i_series]);
          }
@@ -449,13 +409,13 @@ void get_series_data(int i_series,
                  << unix_to_yyyymmdd_hhmmss(fcst_dp.valid()) << ".\n";
          }
          get_series_entry(i_series, obs_info, obs_files,
-                          otype, found_obs_files, obs_dp, obs_grid);
+                          otype, found_obs_files, obs_dp);
          break;
 
       case SeriesType_Obs_Files:
          found_obs_files.set(i_series, obs_files[i_series]);
          get_series_entry(i_series, obs_info, obs_files,
-                          otype, found_obs_files, obs_dp, obs_grid);
+                          otype, found_obs_files, obs_dp);
          if(paired) {
             found_fcst_files.set(i_series, fcst_files[i_series]);
          }
@@ -467,7 +427,7 @@ void get_series_data(int i_series,
                  << unix_to_yyyymmdd_hhmmss(obs_dp.valid()) << ".\n";
          }
          get_series_entry(i_series, fcst_info, fcst_files,
-                          ftype, found_fcst_files, fcst_dp, fcst_grid);
+                          ftype, found_fcst_files, fcst_dp);
          break;
 
       default:
@@ -476,49 +436,6 @@ void get_series_data(int i_series,
               << series_type << "\n\n";
          exit(1);
          break;
-   }
-
-   // Setup the verification grid
-   if(nxy == 0) process_grid(fcst_grid, obs_grid);
-
-   // Regrid the forecast, if necessary
-   if(!(fcst_grid == grid)) {
-      if(!fcst_info->regrid().enable) {
-         mlog << Error << "\nget_series_data() -> "
-              << "The grid of the current series entry does not "
-              << "match the verification grid and regridding is "
-              << "disabled:\n" << fcst_grid.serialize()
-              << " !=\n" << grid.serialize()
-              << "\nSpecify regridding logic in the config file "
-              << "\"regrid\" section.\n\n";
-         exit(1);
-      }
-
-      mlog << Debug(1)
-           << "Regridding field " << fcst_info->magic_str()
-           << " to the verification grid.\n";
-      fcst_dp = met_regrid(fcst_dp, fcst_grid, grid,
-                           fcst_info->regrid());
-   }
-
-   // Regrid the observation, if necessary
-   if(!(obs_grid == grid)) {
-      if(!obs_info->regrid().enable) {
-         mlog << Error << "\nget_series_data() -> "
-              << "The grid of the current series entry does not "
-              << "match the verification grid and regridding is "
-              << "disabled:\n" << obs_grid.serialize()
-              << " !=\n" << grid.serialize()
-              << "\nSpecify regridding logic in the config file "
-              << "\"regrid\" section.\n\n";
-         exit(1);
-      }
-
-      mlog << Debug(1)
-           << "Regridding field " << obs_info->magic_str()
-           << " to the verification grid.\n";
-      obs_dp = met_regrid(obs_dp, obs_grid, grid,
-                          obs_info->regrid());
    }
 
    // Rescale probabilities from [0, 100] to [0, 1]
@@ -545,10 +462,10 @@ void get_series_data(int i_series,
 void get_series_entry(int i_series, VarInfo *info,
                       const StringArray &search_files,
                       const GrdFileType type,
-                      StringArray &found_files, DataPlane &dp,
-                      Grid &cur_grid) {
+                      StringArray &found_files, DataPlane &dp) {
    int i, j;
    bool found = false;
+   Grid cur_grid;
 
    // Initialize
    dp.clear();
@@ -557,10 +474,10 @@ void get_series_entry(int i_series, VarInfo *info,
    if(found_files[i_series].length() == 0) {
 
       // Loop through the file list
-      for(i=0; i<search_files.n(); i++) {
+      for(i=0; i<search_files.n_elements(); i++) {
 
          // Start the search with the value of i_series
-         j = (i_series + i) % search_files.n();
+         j = (i_series + i) % search_files.n_elements();
 
          mlog << Debug(3)
               << "Searching file " << search_files[j] << "\n";
@@ -581,7 +498,7 @@ void get_series_entry(int i_series, VarInfo *info,
          mlog << Error << "\nget_series_entry() -> "
               << "Could not find data for " << info->magic_str()
               << " in file list:\n";
-         for(i=0; i<search_files.n(); i++)
+         for(i=0; i<search_files.n_elements(); i++)
             mlog << Error << "   " << search_files[i] << "\n";
          mlog << Error << "\n";
          exit(1);
@@ -599,6 +516,28 @@ void get_series_entry(int i_series, VarInfo *info,
       mlog << Debug(2)
            << "Found data for " << info->magic_str()
            << " in file: " << found_files[i_series] << "\n";
+
+      // Regrid, if necessary
+      if(!(cur_grid == grid)) {
+
+         // Check if regridding is disabled
+         if(!info->regrid().enable) {
+            mlog << Error << "\nget_series_entry() -> "
+                 << "The grid of the current series entry does not "
+                 << "match the verification grid and regridding is "
+                 << "disabled:\n" << cur_grid.serialize()
+                 << " !=\n" << grid.serialize()
+                 << "\nSpecify regridding logic in the config file "
+                 << "\"regrid\" section.\n\n";
+            exit(1);
+         }
+
+         mlog << Debug(1)
+              << "Regridding field " << info->magic_str()
+              << " to the verification grid.\n";
+         dp = met_regrid(dp, cur_grid, grid,
+                         info->regrid());
+      }
    }
    // No match here results in a warning.
    else {
@@ -626,7 +565,7 @@ bool read_single_entry(VarInfo *info, const ConcatString &cur_file,
    bool found = false;
 
    // Check that the file exists
-   if(!file_is_ok(cur_file, type)) {
+   if(!file_exists(cur_file.c_str())) {
       mlog << Warning << "\nread_single_entry() -> "
            << "File does not exist: " << cur_file << "\n\n";
       return(false);
@@ -650,32 +589,54 @@ bool read_single_entry(VarInfo *info, const ConcatString &cur_file,
 ////////////////////////////////////////////////////////////////////////
 
 void process_scores() {
-   int i, x, y, i_read, i_series, i_point, i_fcst;
+   int nxny, i, x, y, i_read, n_reads, i_series, i_point, i_fcst;
    VarInfo *fcst_info = (VarInfo *) 0;
    VarInfo *obs_info  = (VarInfo *) 0;
-   PairDataPoint *pd_ptr = (PairDataPoint *) 0;
-   DataPlane fcst_dp, obs_dp;
-
-   // Climatology mean and standard deviation
-   DataPlane cmn_dp, csd_dp;
-   bool cmn_flag, csd_flag;
+   NumArray *f_na = (NumArray *) 0;
+   NumArray *o_na = (NumArray *) 0;
+   NumArray *c_na = (NumArray *) 0;
+   DataPlane fcst_dp, obs_dp, cmn_dp;
+   bool cmn_flag;
 
    // Number of points skipped due to valid data threshold
    int n_skip_zero = 0;
    int n_skip_pos  = 0;
 
+   // Determine the block size
+   nxny    = grid.nx() * grid.ny();
+   n_reads = nint(ceil((double) nxny / conf_info.block_size));
+
    // Allocate space to store the pairs for each grid point
-   pd_ptr = new PairDataPoint [conf_info.block_size];
-   for(i=0; i<conf_info.block_size; i++) pd_ptr[i].extend(n_series);
+   f_na = new NumArray [conf_info.block_size];
+   o_na = new NumArray [conf_info.block_size];
+   c_na = new NumArray [conf_info.block_size];
+
+   mlog << Debug(2)
+        << "Computing statistics using a block size of "
+        << conf_info.block_size << ", requiring " << n_reads
+        << " pass(es) through the " << grid.nx() << " x "
+        << grid.ny() << " grid.\n";
+
+   // Print a warning for too many passes through the data
+   if(n_reads > 4) {
+      mlog << Warning
+           << "\nA block size of " << conf_info.block_size << " for a "
+           << grid.nx() << " x " << grid.ny() << " grid requires "
+           << n_reads << " passes through the data which will be slow.\n"
+           << "Consider increasing \"block_size\" in the configuration "
+           << "file based on available memory.\n\n";
+   }
 
    // Loop over the data reads
    for(i_read=0; i_read<n_reads; i_read++) {
 
-      // Initialize PairDataPoint objects
-      for(i=0; i<conf_info.block_size; i++) pd_ptr[i].erase();
-
       // Starting grid point
       i_point = i_read*conf_info.block_size;
+
+      mlog << Debug(2)
+           << "Processing data pass number " << i_read + 1 << " of "
+           << n_reads << " for grid points " << i_point + 1 << " to "
+           << min(i_point + conf_info.block_size, nxny) << ".\n";
 
       // Loop over the series variable
       for(i_series=0; i_series<n_series; i_series++) {
@@ -692,29 +653,16 @@ void process_scores() {
          // Retrieve the data planes for the current series entry
          get_series_data(i_series, fcst_info, obs_info, fcst_dp, obs_dp);
 
-         if(i_series == 0) {
-            mlog << Debug(2)
-                 << "Processing data pass number " << i_read + 1 << " of "
-                 << n_reads << " for grid points " << i_point + 1 << " to "
-                 << min(i_point + conf_info.block_size, nxy) << ".\n";
-         }
-
          // Read climatology data for the current series entry
          cmn_dp = read_climo_data_plane(
                   conf_info.conf.lookup_array(conf_key_climo_mean_field, false),
                   i_fcst, fcst_dp.valid(), grid);
-         csd_dp = read_climo_data_plane(
-                  conf_info.conf.lookup_array(conf_key_climo_stdev_field, false),
-                  i_fcst, fcst_dp.valid(), grid);
 
          cmn_flag = (cmn_dp.nx() == fcst_dp.nx() && cmn_dp.ny() == fcst_dp.ny());
-         csd_flag = (csd_dp.nx() == fcst_dp.nx() && csd_dp.ny() == fcst_dp.ny());
-
          mlog << Debug(3)
-           << "Found " << (cmn_flag ? 0 : 1)
-           << " climatology mean and " << (csd_flag == 0 ? 0 : 1)
-           << " climatology standard deviation field(s) for forecast "
-           << fcst_info->magic_str() << ".\n";
+              << "Found " << (cmn_flag ? 1 : 0)
+              << " climatology mean field(s) for forecast "
+              << fcst_info->magic_str() << ".\n";
 
          // Setup the output NetCDF file on the first pass
          if(nc_out == (NcFile *) 0) setup_nc_file(fcst_info, obs_info);
@@ -728,43 +676,40 @@ void process_scores() {
          set_range(obs_dp.lead(),   obs_lead_beg,   obs_lead_end);
 
          // Store matched pairs for each grid point
-         for(i=0; i<conf_info.block_size && (i_point+i)<nxy; i++) {
+         for(i=0; i<conf_info.block_size && (i_point+i)<nxny; i++) {
 
             // Convert n to x, y
             DefaultTO.one_to_two(grid.nx(), grid.ny(), i_point+i, x, y);
 
-            // Skip points outside the mask and bad data
-            if(!conf_info.mask_area(x, y)              ||
-               is_bad_data(fcst_dp(x, y))              ||
-               is_bad_data(obs_dp(x,y))                ||
-               (cmn_flag && is_bad_data(cmn_dp(x, y))) ||
-               (csd_flag && is_bad_data(csd_dp(x, y)))) continue;
-
-            pd_ptr[i].add_grid_pair(fcst_dp(x, y), obs_dp(x, y),
-                         (cmn_flag ? cmn_dp(x, y) : bad_data_double),
-                         (csd_flag ? csd_dp(x, y) : bad_data_double),
-                         default_grid_weight);
+            // Store valid fcst/obs/climo pairs where the mask is on
+            if(!is_bad_data(fcst_dp(x, y)) &&
+               !is_bad_data(obs_dp(x, y))  &&
+               !is_bad_data(conf_info.mask_area(x, y))) {
+               f_na[i].add(fcst_dp(x, y));
+               o_na[i].add(obs_dp(x, y));
+               c_na[i].add((cmn_flag ? cmn_dp(x, y) : bad_data_double));
+            }
 
          } // end for i
 
       } // end for i_series
 
       // Compute statistics for each grid point in the block
-      for(i=0; i<conf_info.block_size && (i_point+i)<nxy; i++) {
+      for(i=0; i<conf_info.block_size && (i_point+i)<nxny; i++) {
 
          // Determine x,y location
          DefaultTO.one_to_two(grid.nx(), grid.ny(), i_point+i, x, y);
 
          // Check for the required number of matched pairs
-         if(pd_ptr[i].f_na.n()/(double) n_series < conf_info.vld_data_thresh) {
+         if(f_na[i].n_elements()/(double) n_series < conf_info.vld_data_thresh) {
             mlog << Debug(4)
                  << "[" << i+1 << " of " << conf_info.block_size
                  << "] Skipping point (" << x << ", " << y << ") with "
-                 << pd_ptr[i].f_na.n() << " matched pairs.\n";
+                 << f_na[i].n_elements() << " matched pairs.\n";
 
             // Keep track of the number of points skipped
-            if(pd_ptr[i].f_na.n() == 0) n_skip_zero++;
-            else                        n_skip_pos++;
+            if(f_na[i].n_elements() == 0) n_skip_zero++;
+            else                          n_skip_pos++;
 
             continue;
          }
@@ -772,53 +717,52 @@ void process_scores() {
             mlog << Debug(4)
                  << "[" << i+1 << " of " << conf_info.block_size
                  << "] Processing point (" << x << ", " << y << ") with "
-                 << pd_ptr[i].n_obs << " matched pairs.\n";
+                 << f_na[i].n_elements() << " matched pairs.\n";
          }
 
          // Compute contingency table counts and statistics
          if(!conf_info.fcst_info[0]->is_prob() &&
-            (conf_info.output_stats[stat_fho].n() +
-             conf_info.output_stats[stat_ctc].n() +
-             conf_info.output_stats[stat_cts].n()) > 0) {
-            do_cts(i_point+i, &pd_ptr[i]);
+            (conf_info.output_stats[stat_fho].n_elements() +
+             conf_info.output_stats[stat_ctc].n_elements() +
+             conf_info.output_stats[stat_cts].n_elements()) > 0) {
+            do_cts(i_point+i, f_na[i], o_na[i]);
          }
 
          // Compute multi-category contingency table counts and statistics
          if(!conf_info.fcst_info[0]->is_prob() &&
-            (conf_info.output_stats[stat_mctc].n() +
-             conf_info.output_stats[stat_mcts].n()) > 0) {
-            do_mcts(i_point+i, &pd_ptr[i]);
+            (conf_info.output_stats[stat_mctc].n_elements() +
+             conf_info.output_stats[stat_mcts].n_elements()) > 0) {
+            do_mcts(i_point+i, f_na[i], o_na[i]);
          }
 
          // Compute continuous statistics
          if(!conf_info.fcst_info[0]->is_prob() &&
-            conf_info.output_stats[stat_cnt].n() > 0) {
-            do_cnt(i_point+i, &pd_ptr[i]);
+            conf_info.output_stats[stat_cnt].n_elements() > 0) {
+            do_cnt(i_point+i, f_na[i], o_na[i], c_na[i]);
          }
 
          // Compute partial sums
          if(!conf_info.fcst_info[0]->is_prob() &&
-            (conf_info.output_stats[stat_sl1l2].n()  > 0 ||
-             conf_info.output_stats[stat_sal1l2].n() > 0)) {
-            do_sl1l2(i_point+i, &pd_ptr[i]);
+            (conf_info.output_stats[stat_sl1l2].n_elements()  > 0 ||
+             conf_info.output_stats[stat_sal1l2].n_elements() > 0)) {
+            do_sl1l2(i_point+i, f_na[i], o_na[i], c_na[i]);
          }
 
          // Compute probabilistics counts and statistics
          if(conf_info.fcst_info[0]->is_prob() &&
-            (conf_info.output_stats[stat_pct].n() +
-             conf_info.output_stats[stat_pstd].n() +
-             conf_info.output_stats[stat_pjc].n() +
-             conf_info.output_stats[stat_prc].n()) > 0) {
-            do_pct(i_point+i, &pd_ptr[i]);
+            (conf_info.output_stats[stat_pct].n_elements() +
+             conf_info.output_stats[stat_pstd].n_elements() +
+             conf_info.output_stats[stat_pjc].n_elements() +
+             conf_info.output_stats[stat_prc].n_elements()) > 0) {
+            do_pct(i_point+i, f_na[i], o_na[i], c_na[i]);
          }
       } // end for i
 
-      // Erase the data
+      // Empty out the NumArray objects
       for(i=0; i<conf_info.block_size; i++) {
-         pd_ptr[i].f_na.erase();
-         pd_ptr[i].o_na.erase();
-         pd_ptr[i].cmn_na.erase();
-         pd_ptr[i].csd_na.erase();
+         f_na[i].erase();
+         o_na[i].erase();
+         c_na[i].erase();
       }
 
    } // end for i_read
@@ -837,17 +781,19 @@ void process_scores() {
    add_att(nc_out, "obs_lead_beg",   (string)sec_to_hhmmss(obs_lead_beg));
    add_att(nc_out, "obs_lead_end",   (string)sec_to_hhmmss(obs_lead_end));
 
-   // Clean up
-   if(pd_ptr) { delete [] pd_ptr; pd_ptr = (PairDataPoint *) 0; }
+   // Deallocate and clean up
+   if(f_na) { delete [] f_na; f_na = (NumArray *) 0; }
+   if(o_na) { delete [] o_na; o_na = (NumArray *) 0; }
+   if(c_na) { delete [] c_na; c_na = (NumArray *) 0; }
 
    // Print summary counts
    mlog << Debug(2)
         << "Finished processing statistics for "
-        << nxy - n_skip_zero - n_skip_pos << " of " << nxy
+        << nxny - n_skip_zero - n_skip_pos << " of " << nxny
         << " grid points.\n"
-        << "Skipped " << n_skip_zero << " of " << nxy
+        << "Skipped " << n_skip_zero << " of " << nxny
         << " points with no valid data.\n"
-        << "Skipped " << n_skip_pos << " of " << nxy
+        << "Skipped " << n_skip_pos << " of " << nxny
         << " points that did not meet the valid data threshold.\n";
 
    // Print config file suggestions about missing data
@@ -865,13 +811,13 @@ void process_scores() {
 
 ////////////////////////////////////////////////////////////////////////
 
-void do_cts(int n, const PairDataPoint *pd_ptr) {
+void do_cts(int n, const NumArray &f_na, const NumArray &o_na) {
    int i, j;
 
    mlog << Debug(4) << "Computing Categorical Statistics.\n";
 
    // Allocate objects to store categorical statistics
-   int n_cts = conf_info.fcat_ta.n();
+   int n_cts = conf_info.fcat_ta.n_elements();
    CTSInfo *cts_info = new CTSInfo [n_cts];
 
    // Setup CTSInfo objects
@@ -879,8 +825,8 @@ void do_cts(int n, const PairDataPoint *pd_ptr) {
       cts_info[i].fthresh = conf_info.fcat_ta[i];
       cts_info[i].othresh = conf_info.ocat_ta[i];
 
-      cts_info[i].allocate_n_alpha(conf_info.ci_alpha.n());
-      for(j=0; j<conf_info.ci_alpha.n(); j++) {
+      cts_info[i].allocate_n_alpha(conf_info.ci_alpha.n_elements());
+      for(j=0; j<conf_info.ci_alpha.n_elements(); j++) {
          cts_info[i].alpha[j] = conf_info.ci_alpha[j];
       }
    }
@@ -888,13 +834,13 @@ void do_cts(int n, const PairDataPoint *pd_ptr) {
    // Compute the counts, stats, normal confidence intervals, and
    // bootstrap confidence intervals
    if(conf_info.boot_interval == BootIntervalType_BCA) {
-      compute_cts_stats_ci_bca(rng_ptr, *pd_ptr,
+      compute_cts_stats_ci_bca(rng_ptr, f_na, o_na,
          conf_info.n_boot_rep,
          cts_info, n_cts, true,
          conf_info.rank_corr_flag, conf_info.tmp_dir.c_str());
    }
    else {
-      compute_cts_stats_ci_perc(rng_ptr, *pd_ptr,
+      compute_cts_stats_ci_perc(rng_ptr, f_na, o_na,
          conf_info.n_boot_rep, conf_info.boot_rep_prop,
          cts_info, n_cts, true,
          conf_info.rank_corr_flag, conf_info.tmp_dir.c_str());
@@ -904,19 +850,19 @@ void do_cts(int n, const PairDataPoint *pd_ptr) {
    for(i=0; i<n_cts; i++) {
 
       // Add statistic value for each possible FHO column
-      for(j=0; j<conf_info.output_stats[stat_fho].n(); j++) {
+      for(j=0; j<conf_info.output_stats[stat_fho].n_elements(); j++) {
          store_stat_fho(n, conf_info.output_stats[stat_fho][j],
                         cts_info[i]);
       }
 
       // Add statistic value for each possible CTC column
-      for(j=0; j<conf_info.output_stats[stat_ctc].n(); j++) {
+      for(j=0; j<conf_info.output_stats[stat_ctc].n_elements(); j++) {
          store_stat_ctc(n, conf_info.output_stats[stat_ctc][j],
                         cts_info[i]);
       }
 
       // Add statistic value for each possible CTS column
-      for(j=0; j<conf_info.output_stats[stat_cts].n(); j++) {
+      for(j=0; j<conf_info.output_stats[stat_cts].n_elements(); j++) {
          store_stat_cts(n, conf_info.output_stats[stat_cts][j],
                         cts_info[i]);
       }
@@ -930,7 +876,7 @@ void do_cts(int n, const PairDataPoint *pd_ptr) {
 
 ////////////////////////////////////////////////////////////////////////
 
-void do_mcts(int n, const PairDataPoint *pd_ptr) {
+void do_mcts(int n, const NumArray &f_na, const NumArray &o_na) {
    int i;
 
    mlog << Debug(4) << "Computing Multi-Category Statistics.\n";
@@ -939,38 +885,38 @@ void do_mcts(int n, const PairDataPoint *pd_ptr) {
    MCTSInfo mcts_info;
 
    // Setup the MCTSInfo object
-   mcts_info.cts.set_size(conf_info.fcat_ta.n() + 1);
+   mcts_info.cts.set_size(conf_info.fcat_ta.n_elements() + 1);
    mcts_info.set_fthresh(conf_info.fcat_ta);
    mcts_info.set_othresh(conf_info.ocat_ta);
 
-   mcts_info.allocate_n_alpha(conf_info.ci_alpha.n());
-   for(i=0; i<conf_info.ci_alpha.n(); i++) {
+   mcts_info.allocate_n_alpha(conf_info.ci_alpha.n_elements());
+   for(i=0; i<conf_info.ci_alpha.n_elements(); i++) {
       mcts_info.alpha[i] = conf_info.ci_alpha[i];
    }
 
    // Compute the counts, stats, normal confidence intervals, and
    // bootstrap confidence intervals
    if(conf_info.boot_interval == BootIntervalType_BCA) {
-      compute_mcts_stats_ci_bca(rng_ptr, *pd_ptr,
+      compute_mcts_stats_ci_bca(rng_ptr, f_na, o_na,
          conf_info.n_boot_rep,
          mcts_info, true,
          conf_info.rank_corr_flag, conf_info.tmp_dir.c_str());
    }
    else {
-      compute_mcts_stats_ci_perc(rng_ptr, *pd_ptr,
+      compute_mcts_stats_ci_perc(rng_ptr, f_na, o_na,
          conf_info.n_boot_rep, conf_info.boot_rep_prop,
          mcts_info, true,
          conf_info.rank_corr_flag, conf_info.tmp_dir.c_str());
    }
 
    // Add statistic value for each possible MCTC column
-   for(i=0; i<conf_info.output_stats[stat_mctc].n(); i++) {
+   for(i=0; i<conf_info.output_stats[stat_mctc].n_elements(); i++) {
       store_stat_mctc(n, conf_info.output_stats[stat_mctc][i],
                       mcts_info);
    }
 
    // Add statistic value for each possible MCTS column
-   for(i=0; i<conf_info.output_stats[stat_mcts].n(); i++) {
+   for(i=0; i<conf_info.output_stats[stat_mcts].n_elements(); i++) {
       store_stat_mcts(n, conf_info.output_stats[stat_mcts][i],
                       mcts_info);
    }
@@ -980,15 +926,16 @@ void do_mcts(int n, const PairDataPoint *pd_ptr) {
 
 ////////////////////////////////////////////////////////////////////////
 
-void do_cnt(int n, const PairDataPoint *pd_ptr) {
+void do_cnt(int n, const NumArray &f_na, const NumArray &o_na,
+            const NumArray &c_na) {
    int i, j;
    CNTInfo cnt_info;
-   PairDataPoint pd;
+   PairDataPoint pd_all, pd;
 
    mlog << Debug(4) << "Computing Continuous Statistics.\n";
 
    // Process each filtering threshold
-   for(i=0; i<conf_info.fcnt_ta.n(); i++) {
+   for(i=0; i<conf_info.fcnt_ta.n_elements(); i++) {
 
       // Initialize
       cnt_info.clear();
@@ -999,13 +946,19 @@ void do_cnt(int n, const PairDataPoint *pd_ptr) {
       cnt_info.logic   = conf_info.cnt_logic;
 
       // Setup the CNTInfo alpha values
-      cnt_info.allocate_n_alpha(conf_info.ci_alpha.n());
-      for(j=0; j<conf_info.ci_alpha.n(); j++) {
+      cnt_info.allocate_n_alpha(conf_info.ci_alpha.n_elements());
+      for(j=0; j<conf_info.ci_alpha.n_elements(); j++) {
          cnt_info.alpha[j] = conf_info.ci_alpha[j];
       }
 
+      // Store pairs in PairDataPoint object
+      pd_all.clear();
+      for(j=0; j<o_na.n_elements(); j++) {
+         pd_all.add_pair(f_na[j], o_na[j], c_na[j], bad_data_double);
+      }
+
       // Apply continuous filtering thresholds to subset pairs
-      pd = subset_pairs(*pd_ptr, cnt_info.fthresh, cnt_info.othresh,
+      pd = subset_pairs(pd_all, cnt_info.fthresh, cnt_info.othresh,
                         cnt_info.logic);
 
       // Check for no matched pairs to process
@@ -1017,20 +970,22 @@ void do_cnt(int n, const PairDataPoint *pd_ptr) {
                          conf_info.obs_info[0]->is_precipitation());
 
       if(conf_info.boot_interval == BootIntervalType_BCA) {
-         compute_cnt_stats_ci_bca(rng_ptr, pd,
+         compute_cnt_stats_ci_bca(rng_ptr,
+            pd.f_na, pd.o_na, pd.cmn_na, pd.wgt_na,
             precip_flag, conf_info.rank_corr_flag,
             conf_info.n_boot_rep,
             cnt_info, conf_info.tmp_dir.c_str());
       }
       else {
-         compute_cnt_stats_ci_perc(rng_ptr, pd,
+         compute_cnt_stats_ci_perc(rng_ptr,
+            pd.f_na, pd.o_na, pd.cmn_na, pd.wgt_na,
             precip_flag, conf_info.rank_corr_flag,
             conf_info.n_boot_rep, conf_info.boot_rep_prop,
             cnt_info, conf_info.tmp_dir.c_str());
       }
 
       // Add statistic value for each possible CNT column
-      for(j=0; j<conf_info.output_stats[stat_cnt].n(); j++) {
+      for(j=0; j<conf_info.output_stats[stat_cnt].n_elements(); j++) {
          store_stat_cnt(n, conf_info.output_stats[stat_cnt][j],
                         cnt_info);
       }
@@ -1041,14 +996,19 @@ void do_cnt(int n, const PairDataPoint *pd_ptr) {
 
 ////////////////////////////////////////////////////////////////////////
 
-void do_sl1l2(int n, const PairDataPoint *pd_ptr) {
+void do_sl1l2(int n, const NumArray &f_na, const NumArray &o_na,
+              const NumArray &c_na) {
    int i, j;
    SL1L2Info s_info;
+   NumArray w_na;
 
    mlog << Debug(4) << "Computing Scalar Partial Sums.\n";
 
+   // Set weights to constant value
+   for(i=0; i<f_na.n_elements(); i++) w_na.add(default_grid_weight);
+
    // Loop over the continuous thresholds and compute scalar partial sums
-   for(i=0; i<conf_info.fcnt_ta.n(); i++) {
+   for(i=0; i<conf_info.fcnt_ta.n_elements(); i++) {
 
       // Store thresholds
       s_info.fthresh = conf_info.fcnt_ta[i];
@@ -1056,10 +1016,10 @@ void do_sl1l2(int n, const PairDataPoint *pd_ptr) {
       s_info.logic   = conf_info.cnt_logic;
 
       // Compute partial sums
-      s_info.set(*pd_ptr);
+      s_info.set(f_na, o_na, c_na, w_na);
 
       // Add statistic value for each possible SL1L2 column
-      for(j=0; j<conf_info.output_stats[stat_sl1l2].n(); j++) {
+      for(j=0; j<conf_info.output_stats[stat_sl1l2].n_elements(); j++) {
          store_stat_sl1l2(n, conf_info.output_stats[stat_sl1l2][j], s_info);
       }
    } // end for i
@@ -1069,7 +1029,8 @@ void do_sl1l2(int n, const PairDataPoint *pd_ptr) {
 
 ////////////////////////////////////////////////////////////////////////
 
-void do_pct(int n, const PairDataPoint *pd_ptr) {
+void do_pct(int n, const NumArray &f_na, const NumArray &o_na,
+            const NumArray &c_na) {
    int i, j;
 
    mlog << Debug(4) << "Computing Probabilistic Statistics.\n";
@@ -1079,41 +1040,41 @@ void do_pct(int n, const PairDataPoint *pd_ptr) {
 
    // Setup the PCTInfo object
    pct_info.fthresh = conf_info.fcat_ta;
-   pct_info.allocate_n_alpha(conf_info.ci_alpha.n());
+   pct_info.allocate_n_alpha(conf_info.ci_alpha.n_elements());
 
-   for(i=0; i<conf_info.ci_alpha.n(); i++) {
+   for(i=0; i<conf_info.ci_alpha.n_elements(); i++) {
       pct_info.alpha[i] = conf_info.ci_alpha[i];
    }
 
    // Compute PCTInfo for each observation threshold
-   for(i=0; i<conf_info.ocat_ta.n(); i++) {
+   for(i=0; i<conf_info.ocat_ta.n_elements(); i++) {
 
       // Set the current observation threshold
       pct_info.othresh = conf_info.ocat_ta[i];
 
       // Compute the probabilistic counts and statistics
-      compute_pctinfo(*pd_ptr, true, pct_info);
+      compute_pctinfo(f_na, o_na, c_na, true, pct_info);
 
       // Add statistic value for each possible PCT column
-      for(j=0; j<conf_info.output_stats[stat_pct].n(); j++) {
+      for(j=0; j<conf_info.output_stats[stat_pct].n_elements(); j++) {
          store_stat_pct(n, conf_info.output_stats[stat_pct][j],
                         pct_info);
       }
 
       // Add statistic value for each possible PSTD column
-      for(j=0; j<conf_info.output_stats[stat_pstd].n(); j++) {
+      for(j=0; j<conf_info.output_stats[stat_pstd].n_elements(); j++) {
          store_stat_pstd(n, conf_info.output_stats[stat_pstd][j],
                          pct_info);
       }
 
       // Add statistic value for each possible PJC column
-      for(j=0; j<conf_info.output_stats[stat_pjc].n(); j++) {
+      for(j=0; j<conf_info.output_stats[stat_pjc].n_elements(); j++) {
          store_stat_pjc(n, conf_info.output_stats[stat_pjc][j],
                         pct_info);
       }
 
       // Add statistic value for each possible PRC column
-      for(j=0; j<conf_info.output_stats[stat_prc].n(); j++) {
+      for(j=0; j<conf_info.output_stats[stat_prc].n_elements(); j++) {
          store_stat_prc(n, conf_info.output_stats[stat_prc][j],
                         pct_info);
       }
@@ -1538,103 +1499,100 @@ void store_stat_cnt(int n, const ConcatString &col,
    for(i=0; i<n_ci; i++) {
 
       // Get the column value
-           if(c == "TOTAL")                { v = (double) cnt_info.n;                }
-      else if(c == "FBAR")                 { v = cnt_info.fbar.v;                    }
-      else if(c == "FBAR_NCL")             { v = cnt_info.fbar.v_ncl[i];             }
-      else if(c == "FBAR_NCU")             { v = cnt_info.fbar.v_ncu[i];             }
-      else if(c == "FBAR_BCL")             { v = cnt_info.fbar.v_bcl[i];             }
-      else if(c == "FBAR_BCU")             { v = cnt_info.fbar.v_bcu[i];             }
-      else if(c == "FSTDEV")               { v = cnt_info.fstdev.v;                  }
-      else if(c == "FSTDEV_NCL")           { v = cnt_info.fstdev.v_ncl[i];           }
-      else if(c == "FSTDEV_NCU")           { v = cnt_info.fstdev.v_ncu[i];           }
-      else if(c == "FSTDEV_BCL")           { v = cnt_info.fstdev.v_bcl[i];           }
-      else if(c == "FSTDEV_BCU")           { v = cnt_info.fstdev.v_bcu[i];           }
-      else if(c == "OBAR")                 { v = cnt_info.obar.v;                    }
-      else if(c == "OBAR_NCL")             { v = cnt_info.obar.v_ncl[i];             }
-      else if(c == "OBAR_NCU")             { v = cnt_info.obar.v_ncu[i];             }
-      else if(c == "OBAR_BCL")             { v = cnt_info.obar.v_bcl[i];             }
-      else if(c == "OBAR_BCU")             { v = cnt_info.obar.v_bcu[i];             }
-      else if(c == "OSTDEV")               { v = cnt_info.ostdev.v;                  }
-      else if(c == "OSTDEV_NCL")           { v = cnt_info.ostdev.v_ncl[i];           }
-      else if(c == "OSTDEV_NCU")           { v = cnt_info.ostdev.v_ncu[i];           }
-      else if(c == "OSTDEV_BCL")           { v = cnt_info.ostdev.v_bcl[i];           }
-      else if(c == "OSTDEV_BCU")           { v = cnt_info.ostdev.v_bcu[i];           }
-      else if(c == "PR_CORR")              { v = cnt_info.pr_corr.v;                 }
-      else if(c == "PR_CORR_NCL")          { v = cnt_info.pr_corr.v_ncl[i];          }
-      else if(c == "PR_CORR_NCU")          { v = cnt_info.pr_corr.v_ncu[i];          }
-      else if(c == "PR_CORR_BCL")          { v = cnt_info.pr_corr.v_bcl[i];          }
-      else if(c == "PR_CORR_BCU")          { v = cnt_info.pr_corr.v_bcu[i];          }
-      else if(c == "SP_CORR")              { v = cnt_info.sp_corr.v;                 }
-      else if(c == "KT_CORR")              { v = cnt_info.kt_corr.v;                 }
-      else if(c == "RANKS")                { v = cnt_info.n_ranks;                   }
-      else if(c == "FRANK_TIES")           { v = cnt_info.frank_ties;                }
-      else if(c == "ORANK_TIES")           { v = cnt_info.orank_ties;                }
-      else if(c == "ME")                   { v = cnt_info.me.v;                      }
-      else if(c == "ME_NCL")               { v = cnt_info.me.v_ncl[i];               }
-      else if(c == "ME_NCU")               { v = cnt_info.me.v_ncu[i];               }
-      else if(c == "ME_BCL")               { v = cnt_info.me.v_bcl[i];               }
-      else if(c == "ME_BCU")               { v = cnt_info.me.v_bcu[i];               }
-      else if(c == "ESTDEV")               { v = cnt_info.estdev.v;                  }
-      else if(c == "ESTDEV_NCL")           { v = cnt_info.estdev.v_ncl[i];           }
-      else if(c == "ESTDEV_NCU")           { v = cnt_info.estdev.v_ncu[i];           }
-      else if(c == "ESTDEV_BCL")           { v = cnt_info.estdev.v_bcl[i];           }
-      else if(c == "ESTDEV_BCU")           { v = cnt_info.estdev.v_bcu[i];           }
-      else if(c == "MBIAS")                { v = cnt_info.mbias.v;                   }
-      else if(c == "MBIAS_BCL")            { v = cnt_info.mbias.v_bcl[i];            }
-      else if(c == "MBIAS_BCU")            { v = cnt_info.mbias.v_bcu[i];            }
-      else if(c == "MAE")                  { v = cnt_info.mae.v;                     }
-      else if(c == "MAE_BCL")              { v = cnt_info.mae.v_bcl[i];              }
-      else if(c == "MAE_BCU")              { v = cnt_info.mae.v_bcu[i];              }
-      else if(c == "MSE")                  { v = cnt_info.mse.v;                     }
-      else if(c == "MSE_BCL")              { v = cnt_info.mse.v_bcl[i];              }
-      else if(c == "MSE_BCU")              { v = cnt_info.mse.v_bcu[i];              }
-      else if(c == "BCMSE")                { v = cnt_info.bcmse.v;                   }
-      else if(c == "BCMSE_BCL")            { v = cnt_info.bcmse.v_bcl[i];            }
-      else if(c == "BCMSE_BCU")            { v = cnt_info.bcmse.v_bcu[i];            }
-      else if(c == "RMSE")                 { v = cnt_info.rmse.v;                    }
-      else if(c == "RMSE_BCL")             { v = cnt_info.rmse.v_bcl[i];             }
-      else if(c == "RMSE_BCU")             { v = cnt_info.rmse.v_bcu[i];             }
-      else if(c == "E10")                  { v = cnt_info.e10.v;                     }
-      else if(c == "E10_BCL")              { v = cnt_info.e10.v_bcl[i];              }
-      else if(c == "E10_BCU")              { v = cnt_info.e10.v_bcu[i];              }
-      else if(c == "E25")                  { v = cnt_info.e25.v;                     }
-      else if(c == "E25_BCL")              { v = cnt_info.e25.v_bcl[i];              }
-      else if(c == "E25_BCU")              { v = cnt_info.e25.v_bcu[i];              }
-      else if(c == "E50")                  { v = cnt_info.e50.v;                     }
-      else if(c == "E50_BCL")              { v = cnt_info.e50.v_bcl[i];              }
-      else if(c == "E50_BCU")              { v = cnt_info.e50.v_bcu[i];              }
-      else if(c == "E75")                  { v = cnt_info.e75.v;                     }
-      else if(c == "E75_BCL")              { v = cnt_info.e75.v_bcl[i];              }
-      else if(c == "E75_BCU")              { v = cnt_info.e75.v_bcu[i];              }
-      else if(c == "E90")                  { v = cnt_info.e90.v;                     }
-      else if(c == "E90_BCL")              { v = cnt_info.e90.v_bcl[i];              }
-      else if(c == "E90_BCU")              { v = cnt_info.e90.v_bcu[i];              }
-      else if(c == "EIQR")                 { v = cnt_info.eiqr.v;                    }
-      else if(c == "EIQR_BCL")             { v = cnt_info.eiqr.v_bcl[i];             }
-      else if(c == "EIQR_BCU")             { v = cnt_info.eiqr.v_bcu[i];             }
-      else if(c == "MAD")                  { v = cnt_info.mad.v;                     }
-      else if(c == "MAD_BCL")              { v = cnt_info.mad.v_bcl[i];              }
-      else if(c == "MAD_BCU")              { v = cnt_info.mad.v_bcu[i];              }
-      else if(c == "ANOM_CORR")            { v = cnt_info.anom_corr.v;               }
-      else if(c == "ANOM_CORR_NCL")        { v = cnt_info.anom_corr.v_ncl[i];        }
-      else if(c == "ANOM_CORR_NCU")        { v = cnt_info.anom_corr.v_ncu[i];        }
-      else if(c == "ANOM_CORR_BCL")        { v = cnt_info.anom_corr.v_bcl[i];        }
-      else if(c == "ANOM_CORR_BCU")        { v = cnt_info.anom_corr.v_bcu[i];        }
-      else if(c == "ME2")                  { v = cnt_info.me2.v;                     }
-      else if(c == "ME2_BCL")              { v = cnt_info.me2.v_bcl[i];              }
-      else if(c == "ME2_BCU")              { v = cnt_info.me2.v_bcu[i];              }
-      else if(c == "MSESS")                { v = cnt_info.msess.v;                   }
-      else if(c == "MSESS_BCL")            { v = cnt_info.msess.v_bcl[i];            }
-      else if(c == "MSESS_BCU")            { v = cnt_info.msess.v_bcu[i];            }
-      else if(c == "RMSFA")                { v = cnt_info.rmsfa.v;                   }
-      else if(c == "RMSFA_BCL")            { v = cnt_info.rmsfa.v_bcl[i];            }
-      else if(c == "RMSFA_BCU")            { v = cnt_info.rmsfa.v_bcu[i];            }
-      else if(c == "RMSOA")                { v = cnt_info.rmsoa.v;                   }
-      else if(c == "RMSOA_BCL")            { v = cnt_info.rmsoa.v_bcl[i];            }
-      else if(c == "RMSOA_BCU")            { v = cnt_info.rmsoa.v_bcu[i];            }
-      else if(c == "ANOM_CORR_UNCNTR")     { v = cnt_info.anom_corr_uncntr.v;        }
-      else if(c == "ANOM_CORR_UNCNTR_BCL") { v = cnt_info.anom_corr_uncntr.v_bcl[i]; }
-      else if(c == "ANOM_CORR_UNCNTR_BCU") { v = cnt_info.anom_corr_uncntr.v_bcu[i]; }
+           if(c == "TOTAL")         { v = (double) cnt_info.n;         }
+      else if(c == "FBAR")          { v = cnt_info.fbar.v;             }
+      else if(c == "FBAR_NCL")      { v = cnt_info.fbar.v_ncl[i];      }
+      else if(c == "FBAR_NCU")      { v = cnt_info.fbar.v_ncu[i];      }
+      else if(c == "FBAR_BCL")      { v = cnt_info.fbar.v_bcl[i];      }
+      else if(c == "FBAR_BCU")      { v = cnt_info.fbar.v_bcu[i];      }
+      else if(c == "FSTDEV")        { v = cnt_info.fstdev.v;           }
+      else if(c == "FSTDEV_NCL")    { v = cnt_info.fstdev.v_ncl[i];    }
+      else if(c == "FSTDEV_NCU")    { v = cnt_info.fstdev.v_ncu[i];    }
+      else if(c == "FSTDEV_BCL")    { v = cnt_info.fstdev.v_bcl[i];    }
+      else if(c == "FSTDEV_BCU")    { v = cnt_info.fstdev.v_bcu[i];    }
+      else if(c == "OBAR")          { v = cnt_info.obar.v;             }
+      else if(c == "OBAR_NCL")      { v = cnt_info.obar.v_ncl[i];      }
+      else if(c == "OBAR_NCU")      { v = cnt_info.obar.v_ncu[i];      }
+      else if(c == "OBAR_BCL")      { v = cnt_info.obar.v_bcl[i];      }
+      else if(c == "OBAR_BCU")      { v = cnt_info.obar.v_bcu[i];      }
+      else if(c == "OSTDEV")        { v = cnt_info.ostdev.v;           }
+      else if(c == "OSTDEV_NCL")    { v = cnt_info.ostdev.v_ncl[i];    }
+      else if(c == "OSTDEV_NCU")    { v = cnt_info.ostdev.v_ncu[i];    }
+      else if(c == "OSTDEV_BCL")    { v = cnt_info.ostdev.v_bcl[i];    }
+      else if(c == "OSTDEV_BCU")    { v = cnt_info.ostdev.v_bcu[i];    }
+      else if(c == "PR_CORR")       { v = cnt_info.pr_corr.v;          }
+      else if(c == "PR_CORR_NCL")   { v = cnt_info.pr_corr.v_ncl[i];   }
+      else if(c == "PR_CORR_NCU")   { v = cnt_info.pr_corr.v_ncu[i];   }
+      else if(c == "PR_CORR_BCL")   { v = cnt_info.pr_corr.v_bcl[i];   }
+      else if(c == "PR_CORR_BCU")   { v = cnt_info.pr_corr.v_bcu[i];   }
+      else if(c == "SP_CORR")       { v = cnt_info.sp_corr.v;          }
+      else if(c == "KT_CORR")       { v = cnt_info.kt_corr.v;          }
+      else if(c == "RANKS")         { v = cnt_info.n_ranks;            }
+      else if(c == "FRANK_TIES")    { v = cnt_info.frank_ties;         }
+      else if(c == "ORANK_TIES")    { v = cnt_info.orank_ties;         }
+      else if(c == "ME")            { v = cnt_info.me.v;               }
+      else if(c == "ME_NCL")        { v = cnt_info.me.v_ncl[i];        }
+      else if(c == "ME_NCU")        { v = cnt_info.me.v_ncu[i];        }
+      else if(c == "ME_BCL")        { v = cnt_info.me.v_bcl[i];        }
+      else if(c == "ME_BCU")        { v = cnt_info.me.v_bcu[i];        }
+      else if(c == "ESTDEV")        { v = cnt_info.estdev.v;           }
+      else if(c == "ESTDEV_NCL")    { v = cnt_info.estdev.v_ncl[i];    }
+      else if(c == "ESTDEV_NCU")    { v = cnt_info.estdev.v_ncu[i];    }
+      else if(c == "ESTDEV_BCL")    { v = cnt_info.estdev.v_bcl[i];    }
+      else if(c == "ESTDEV_BCU")    { v = cnt_info.estdev.v_bcu[i];    }
+      else if(c == "MBIAS")         { v = cnt_info.mbias.v;            }
+      else if(c == "MBIAS_BCL")     { v = cnt_info.mbias.v_bcl[i];     }
+      else if(c == "MBIAS_BCU")     { v = cnt_info.mbias.v_bcu[i];     }
+      else if(c == "MAE")           { v = cnt_info.mae.v;              }
+      else if(c == "MAE_BCL")       { v = cnt_info.mae.v_bcl[i];       }
+      else if(c == "MAE_BCU")       { v = cnt_info.mae.v_bcu[i];       }
+      else if(c == "MSE")           { v = cnt_info.mse.v;              }
+      else if(c == "MSE_BCL")       { v = cnt_info.mse.v_bcl[i];       }
+      else if(c == "MSE_BCU")       { v = cnt_info.mse.v_bcu[i];       }
+      else if(c == "BCMSE")         { v = cnt_info.bcmse.v;            }
+      else if(c == "BCMSE_BCL")     { v = cnt_info.bcmse.v_bcl[i];     }
+      else if(c == "BCMSE_BCU")     { v = cnt_info.bcmse.v_bcu[i];     }
+      else if(c == "RMSE")          { v = cnt_info.rmse.v;             }
+      else if(c == "RMSE_BCL")      { v = cnt_info.rmse.v_bcl[i];      }
+      else if(c == "RMSE_BCU")      { v = cnt_info.rmse.v_bcu[i];      }
+      else if(c == "E10")           { v = cnt_info.e10.v;              }
+      else if(c == "E10_BCL")       { v = cnt_info.e10.v_bcl[i];       }
+      else if(c == "E10_BCU")       { v = cnt_info.e10.v_bcu[i];       }
+      else if(c == "E25")           { v = cnt_info.e25.v;              }
+      else if(c == "E25_BCL")       { v = cnt_info.e25.v_bcl[i];       }
+      else if(c == "E25_BCU")       { v = cnt_info.e25.v_bcu[i];       }
+      else if(c == "E50")           { v = cnt_info.e50.v;              }
+      else if(c == "E50_BCL")       { v = cnt_info.e50.v_bcl[i];       }
+      else if(c == "E50_BCU")       { v = cnt_info.e50.v_bcu[i];       }
+      else if(c == "E75")           { v = cnt_info.e75.v;              }
+      else if(c == "E75_BCL")       { v = cnt_info.e75.v_bcl[i];       }
+      else if(c == "E75_BCU")       { v = cnt_info.e75.v_bcu[i];       }
+      else if(c == "E90")           { v = cnt_info.e90.v;              }
+      else if(c == "E90_BCL")       { v = cnt_info.e90.v_bcl[i];       }
+      else if(c == "E90_BCU")       { v = cnt_info.e90.v_bcu[i];       }
+      else if(c == "EIQR")          { v = cnt_info.eiqr.v;             }
+      else if(c == "EIQR_BCL")      { v = cnt_info.eiqr.v_bcl[i];      }
+      else if(c == "EIQR_BCU")      { v = cnt_info.eiqr.v_bcu[i];      }
+      else if(c == "MAD")           { v = cnt_info.mad.v;              }
+      else if(c == "MAD_BCL")       { v = cnt_info.mad.v_bcl[i];       }
+      else if(c == "MAD_BCU")       { v = cnt_info.mad.v_bcu[i];       }
+      else if(c == "ANOM_CORR")     { v = cnt_info.anom_corr.v;        }
+      else if(c == "ANOM_CORR_NCL") { v = cnt_info.anom_corr.v_ncl[i]; }
+      else if(c == "ANOM_CORR_NCU") { v = cnt_info.anom_corr.v_ncu[i]; }
+      else if(c == "ANOM_CORR_BCL") { v = cnt_info.anom_corr.v_bcl[i]; }
+      else if(c == "ANOM_CORR_BCU") { v = cnt_info.anom_corr.v_bcu[i]; }
+      else if(c == "ME2")           { v = cnt_info.me2.v;              }
+      else if(c == "ME2_BCL")       { v = cnt_info.me2.v_bcl[i];       }
+      else if(c == "ME2_BCU")       { v = cnt_info.me2.v_bcu[i];       }
+      else if(c == "MSESS")         { v = cnt_info.msess.v;            }
+      else if(c == "MSESS_BCL")     { v = cnt_info.msess.v_bcl[i];     }
+      else if(c == "MSESS_BCU")     { v = cnt_info.msess.v_bcu[i];     }
+      else if(c == "RMSFA")         { v = cnt_info.rmsfa.v;            }
+      else if(c == "RMSFA_BCL")     { v = cnt_info.rmsfa.v_bcl[i];     }
+      else if(c == "RMSFA_BCU")     { v = cnt_info.rmsfa.v_bcu[i];     }
+      else if(c == "RMSOA")         { v = cnt_info.rmsoa.v;            }
+      else if(c == "RMSOA_BCL")     { v = cnt_info.rmsoa.v_bcl[i];     }
+      else if(c == "RMSOA_BCU")     { v = cnt_info.rmsoa.v_bcu[i];     }
       else {
         mlog << Error << "\nstore_stat_cnt() -> "
              << "unsupported column name requested \"" << c
@@ -1741,7 +1699,7 @@ void store_stat_sl1l2(int n, const ConcatString &col,
 
 void store_stat_pct(int n, const ConcatString &col,
                     const PCTInfo &pct_info) {
-   int i = 0;
+   int i;
    double v;
    ConcatString lty_stat, var_name;
 
@@ -1765,13 +1723,13 @@ void store_stat_pct(int n, const ConcatString &col,
    }  // end if
 
    // Get the column value
-        if(c == "TOTAL")                             { v = (double) pct_info.pct.n();                      }
-   else if(c == "N_THRESH")                          { v = (double) pct_info.pct.nrows() + 1;              }
+        if(c == "TOTAL")                     { v = (double) pct_info.pct.n();                      }
+   else if(c == "N_THRESH")                  { v = (double) pct_info.pct.nrows() + 1;              }
    else if(check_reg_exp("THRESH_[0-9]", c.c_str())) { v = pct_info.pct.threshold(i);                      }
    else if(check_reg_exp("OY_[0-9]", c.c_str()))     { v = (double) pct_info.pct.event_count_by_row(i);
-                                                       d = "OY_I";                                         }
+                                               d = "OY_I";                                         }
    else if(check_reg_exp("ON_[0-9]", c.c_str()))     { v = (double) pct_info.pct.nonevent_count_by_row(i);
-                                                       d = "ON_I";                                         }
+                                               d = "ON_I";                                         }
    else {
      mlog << Error << "\nstore_stat_pct() -> "
           << "unsupported column name requested \"" << c
@@ -1872,8 +1830,7 @@ void store_stat_pstd(int n, const ConcatString &col,
 
 void store_stat_pjc(int n, const ConcatString &col,
                     const PCTInfo &pct_info) {
-   int i = 0;
-   int tot;
+   int i, tot;
    double v;
    ConcatString lty_stat, var_name;
 
@@ -1900,22 +1857,22 @@ void store_stat_pjc(int n, const ConcatString &col,
    tot = pct_info.pct.n();
 
    // Get the column value
-        if(c == "TOTAL")                                  { v = (double) tot;                                       }
-   else if(c == "N_THRESH")                               { v = (double) pct_info.pct.nrows() + 1;                  }
+        if(c == "TOTAL")                          { v = (double) tot;                                       }
+   else if(c == "N_THRESH")                       { v = (double) pct_info.pct.nrows() + 1;                  }
    else if(check_reg_exp("THRESH_[0-9]", c.c_str()))      { v = pct_info.pct.threshold(i);
-                                                            d = "THRESH_I";                                         }
+                                                    d = "THRESH_I";                                         }
    else if(check_reg_exp("OY_TP_[0-9]", c.c_str()))       { v = pct_info.pct.event_count_by_row(i)/(double) tot;
-                                                            d = "OY_TP_I";                                          }
+                                                    d = "OY_TP_I";                                          }
    else if(check_reg_exp("ON_TP_[0-9]", c.c_str()))       { v = pct_info.pct.nonevent_count_by_row(i)/(double) tot;
-                                                            d = "ON_TP_I";                                          }
+                                                    d = "ON_TP_I";                                          }
    else if(check_reg_exp("CALIBRATION_[0-9]", c.c_str())) { v = pct_info.pct.row_calibration(i);
-                                                            d = "CALIBRATION_I";                                    }
+                                                    d = "CALIBRATION_I";                                    }
    else if(check_reg_exp("REFINEMENT_[0-9]", c.c_str()))  { v = pct_info.pct.row_refinement(i);
-                                                            d = "REFINEMENT_I";                                     }
+                                                    d = "REFINEMENT_I";                                     }
    else if(check_reg_exp("LIKELIHOOD_[0-9]", c.c_str()))  { v = pct_info.pct.row_event_likelihood(i);
-                                                            d = "LIKELIHOOD_I";                                     }
+                                                    d = "LIKELIHOOD_I";                                     }
    else if(check_reg_exp("BASER_[0-9]", c.c_str()))       { v = pct_info.pct.row_obar(i);
-                                                            d = "BASER_I";                                          }
+                                                    d = "BASER_I";                                          }
    else {
      mlog << Error << "\nstore_stat_pjc() -> "
           << "unsupported column name requested \"" << c
@@ -1950,7 +1907,7 @@ void store_stat_pjc(int n, const ConcatString &col,
 
 void store_stat_prc(int n, const ConcatString &col,
                     const PCTInfo &pct_info) {
-   int i = 0;
+   int i;
    double v;
    ConcatString lty_stat, var_name;
    TTContingencyTable ct;
@@ -1979,14 +1936,14 @@ void store_stat_prc(int n, const ConcatString &col,
    }  // end if
 
    // Get the column value
-        if(c == "TOTAL")                             { v = (double) pct_info.pct.n();         }
-   else if(c == "N_THRESH")                          { v = (double) pct_info.pct.nrows() + 1; }
+        if(c == "TOTAL")                     { v = (double) pct_info.pct.n();         }
+   else if(c == "N_THRESH")                  { v = (double) pct_info.pct.nrows() + 1; }
    else if(check_reg_exp("THRESH_[0-9]", c.c_str())) { v = pct_info.pct.threshold(i);
-                                                       d = "THRESH_I";                        }
+                                               d = "THRESH_I";                        }
    else if(check_reg_exp("PODY_[0-9]", c.c_str()))   { v = ct.pod_yes();
-                                                       d = "PODY_I";                          }
+                                               d = "PODY_I";                          }
    else if(check_reg_exp("POFD_[0-9]", c.c_str()))   { v = ct.pofd();
-                                                       d = "POFD_I";                          }
+                                               d = "POFD_I";                          }
    else {
      mlog << Error << "\nstore_stat_prc() -> "
           << "unsupported column name requested \"" << c
@@ -2034,12 +1991,12 @@ void setup_nc_file(const VarInfo *fcst_info, const VarInfo *obs_info) {
                                   (string)conf_info.mask_grid_name : na_str));
    add_att(nc_out, "mask_poly",  (conf_info.mask_poly_name.nonempty() ?
                                   (string)conf_info.mask_poly_name : na_str));
-   add_att(nc_out, "fcst_var",   (string)fcst_info->name_attr());
-   add_att(nc_out, "fcst_lev",   (string)fcst_info->level_attr());
-   add_att(nc_out, "fcst_units", (string)fcst_info->units_attr());
-   add_att(nc_out, "obs_var",    (string)obs_info->name_attr());
-   add_att(nc_out, "obs_lev",    (string)obs_info->level_attr());
-   add_att(nc_out, "obs_units",  (string)obs_info->units_attr());
+   add_att(nc_out, "fcst_var",   (string)fcst_info->name());
+   add_att(nc_out, "fcst_lev",   (string)fcst_info->level_name());
+   add_att(nc_out, "fcst_units", (string)fcst_info->units());
+   add_att(nc_out, "obs_var",    (string)obs_info->name());
+   add_att(nc_out, "obs_lev",    (string)obs_info->level_name());
+   add_att(nc_out, "obs_units",  (string)obs_info->units());
 
    // Add the projection information
    write_netcdf_proj(nc_out, grid);
@@ -2055,6 +2012,7 @@ void setup_nc_file(const VarInfo *fcst_info, const VarInfo *obs_info) {
    if (deflate_level < 0) deflate_level = conf_info.get_compression_level();
 
    // Add the series length variable
+   //NcVar * var = nc_out->add_var("n_series", ncInt);
    NcVar var = add_var(nc_out, "n_series", ncInt, deflate_level);
    add_att(&var, "long_name", "length of series");
 
@@ -2297,18 +2255,40 @@ void set_log_file(const StringArray & a) {
 
 void set_verbosity(const StringArray & a) {
    mlog.set_verbosity_level(atoi(a[0].c_str()));
-
-   if(mlog.verbosity_level() >= 3) {
-      mlog << Warning << "\nRunning Series-Analysis at verbosity >= 3 "
-           << "produces excessive log output and can slow the runtime "
-           << "considerably.\n\n";
-   }
 }
 
 ////////////////////////////////////////////////////////////////////////
 
 void set_compress(const StringArray & a) {
    compress_level = atoi(a[0].c_str());
+}
+
+////////////////////////////////////////////////////////////////////////
+
+StringArray parse_file_list(const StringArray & a, const GrdFileType type) {
+   int i;
+   Met2dDataFile *mtddf = (Met2dDataFile *) 0;
+   StringArray list;
+
+   // Check for empty list
+   if(a.n_elements() == 0) {
+      mlog << Error << "\nparse_file_list() -> "
+           << "empty list!\n\n";
+      exit(1);
+   }
+
+   // Attempt to read the first file as a gridded data file
+   mtddf = mtddf_factory.new_met_2d_data_file(a[0].c_str(), type);
+
+   // If the read was successful, store the list of gridded files.
+   // Otherwise, process entries as ASCII files.
+   if(mtddf)                            list.add(a);
+   else for(i=0; i<a.n_elements(); i++) list = parse_ascii_file_list(a[0].c_str());
+
+   // Cleanup
+   if(mtddf) { delete mtddf; mtddf = (Met2dDataFile *) 0; }
+
+   return(list);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -2338,7 +2318,7 @@ void parse_long_names() {
       sa = line.split("\"");
 
       // Skip any lines without enough elements
-      if(sa.n() < 2) continue;
+      if(sa.n_elements() < 2) continue;
 
       // Store the description
       key = sa[0];

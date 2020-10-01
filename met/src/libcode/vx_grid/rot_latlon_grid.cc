@@ -1,7 +1,7 @@
 
 
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -145,13 +145,22 @@ RData = rdata;
       //           moved along the (previously rotated) Greenwich meridian.
       //
 
+
+
+// double rlat, rlon;
 double angle;
 
     ////////////////////
 
 angle = rdata.true_lon_south_pole;
 
-er.set_rotz(angle);
+// angle = -angle;
+
+er.set_rotz(angle);   // cout << "rotz by " << angle << "\n";
+
+// er.latlon_true_to_rot(40.0, 0.0, rlat, rlon);
+//
+// cout << "rlat = " << rlat << " ... rlon = " << rlon << "\n";
 
     ////////////////////
 
@@ -159,11 +168,29 @@ angle = 90.0 + rdata.true_lat_south_pole;
 
 angle = -angle;
 
-er.pre_rotx(angle);
+er.pre_rotx(angle);   // cout << "pre rotx by " << angle << "\n";
+
+
+
+// er.latlon_rot_to_true(-90.0, 100.0, rlat, rlon);
+//
+// cout << "  south pole is at rlat = " << rlat << " ... rlon = " << rlon << "\n";
+
 
    //
    //  auilliary rotation, if any
    //
+/*
+if ( rdata.aux_rotation != 0.0 )  {
+
+   angle = rdata.aux_rotation;
+
+   angle = -angle;
+
+   er.post_rotz(angle);
+
+}
+*/
 
 if ( rdata.aux_rotation != 0.0 )  {   //  rotate about grid center
 
@@ -171,6 +198,8 @@ if ( rdata.aux_rotation != 0.0 )  {   //  rotate about grid center
    double x, y, z;
 
    xy_to_latlon((rdata.Nlon)/2, (rdata.Nlat)/2, lat, lon);
+
+   // cout << "\n\n     (lat, lon) = (" << lat << ", " << lon << ")\n\n";
 
    grid_latlon_to_xyz(lat, lon, x, y, z);
 
@@ -416,8 +445,6 @@ GridRep * RotatedLatLonGrid::copy() const
 {
 
 RotatedLatLonGrid * p = new RotatedLatLonGrid (RData);
-
-p->Name = Name;
 
 return ( p );
 

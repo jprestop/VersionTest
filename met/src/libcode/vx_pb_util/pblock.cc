@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -85,8 +85,8 @@ void pblock(const char *infile, const char *outfile, Action action) {
    //
    // Close in the input and output files
    //
-   close(in);
-   close(out);
+   close(in);  in = -1;
+   close(out); out = -1;
 
    return;
 }

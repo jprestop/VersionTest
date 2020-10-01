@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -26,6 +26,12 @@
 static const char default_config_path          [] = "MET_BASE/config/MTDConfig_default";
 
 static const char txt_2d_suffix                [] = "2d.txt";
+
+// static const char txt_3d_single_simple_suffix  [] = "3d_ss.txt";
+// static const char txt_3d_pair_simple_suffix    [] = "3d_ps.txt";
+//
+// static const char txt_3d_single_cluster_suffix [] = "3d_sc.txt";
+// static const char txt_3d_pair_cluster_suffix   [] = "3d_pc.txt";
 
 static const char txt_3d_single_simple_suffix  [] = "3d_single_simple.txt";
 static const char txt_3d_pair_simple_suffix    [] = "3d_pair_simple.txt";
@@ -90,6 +96,8 @@ static void set_config    (const StringArray &);
 static void set_verbosity (const StringArray &);
 static void set_logfile   (const StringArray &);
 static void set_outdir    (const StringArray &);
+
+static StringArray parse_file_list(const StringArray &, const GrdFileType);
 
 static ConcatString make_output_prefix(const MtdConfigInfo &, unixtime start_time);
 
@@ -171,7 +179,7 @@ if ( single_filenames.n() > 0 )  {
 
    stype = parse_conf_file_type(config.conf.lookup_dictionary(conf_key_fcst));   //  use the "fcst" dictionary
 
-   single_filenames = parse_file_list(single_filenames);
+   single_filenames = parse_file_list(single_filenames, stype);
 
    if ( stype == FileType_None ) stype = grd_file_type(single_filenames[0].c_str());
 
@@ -187,13 +195,13 @@ if ( single_filenames.n() > 0 )  {
    //  parse the forecast and observation file lists
    //
 
-fcst_filenames = parse_file_list(fcst_filenames);
-obs_filenames  = parse_file_list(obs_filenames);
-
 GrdFileType ftype, otype;
 
 ftype = parse_conf_file_type(config.conf.lookup_dictionary(conf_key_fcst));
 otype = parse_conf_file_type(config.conf.lookup_dictionary(conf_key_obs));
+
+fcst_filenames = parse_file_list(fcst_filenames, ftype);
+obs_filenames  = parse_file_list(obs_filenames,  otype);
 
 if ( ftype == FileType_None ) ftype = grd_file_type(fcst_filenames[0].c_str());
 if ( otype == FileType_None ) otype = grd_file_type(obs_filenames[0].c_str());
@@ -287,8 +295,8 @@ engine.calc.check();
    //  convolve
    //
 
- obs_conv =  obs_raw.convolve(config.obs_conv_radius, config.obs_conv_time_beg, config.obs_conv_time_end);
-fcst_conv = fcst_raw.convolve(config.fcst_conv_radius, config.fcst_conv_time_beg, config.fcst_conv_time_end);
+ obs_conv =  obs_raw.convolve(config.obs_conv_radius);
+fcst_conv = fcst_raw.convolve(config.fcst_conv_radius);
 
    //
    //  threshold
@@ -344,7 +352,7 @@ for (j=0; j<(fcst_obj.n_objects()); ++j)  {
 
    mask = fcst_obj.select(j + 1);   //  1-based
 
-   att_3 = calc_3d_single_atts(mask, fcst_raw, config.model.c_str(), config.inten_perc_value);
+   att_3 = calc_3d_single_atts(mask, fcst_raw, config.model.c_str());
 
    att_3.set_object_number(j + 1);   //  1-based
 
@@ -365,7 +373,7 @@ for (j=0; j<(obs_obj.n_objects()); ++j)  {
 
    mask = obs_obj.select(j + 1);   //  1-based
 
-   att_3 = calc_3d_single_atts(mask, obs_raw, config.model.c_str(), config.inten_perc_value);
+   att_3 = calc_3d_single_atts(mask, obs_raw, config.model.c_str());
 
    att_3.set_object_number(j + 1);   //  1-based
 
@@ -444,7 +452,7 @@ for (j=0; j<(fcst_obj.n_objects()); ++j)  {
 
       fcst_raw.get_data_plane(t, raw_2d);
 
-      att_2 = calc_2d_single_atts(mask_2d, raw_2d, j + 1, config.inten_perc_value);
+      att_2 = calc_2d_single_atts(mask_2d, raw_2d, j + 1);
 
       att_2.set_fcst();
 
@@ -478,7 +486,7 @@ for (j=0; j<(obs_obj.n_objects()); ++j)  {
 
       obs_raw.get_data_plane(t, raw_2d);
 
-      att_2 = calc_2d_single_atts(mask_2d, raw_2d, j + 1, config.inten_perc_value);
+      att_2 = calc_2d_single_atts(mask_2d, raw_2d, j + 1);
 
       att_2.set_obs();
 
@@ -574,7 +582,7 @@ if ( have_pairs )  {
 
       mask = fcst_obj.select_cluster(a);   //  1-based
 
-      att_3 = calc_3d_single_atts(mask, fcst_raw, config.model.c_str(), config.inten_perc_value);
+      att_3 = calc_3d_single_atts(mask, fcst_raw, config.model.c_str());
 
       att_3.set_object_number(j + 1);   //  1-based
 
@@ -599,7 +607,7 @@ if ( have_pairs )  {
 
       mask = obs_obj.select_cluster(a);   //  1-based
 
-      att_3 = calc_3d_single_atts(mask, obs_raw, config.model.c_str(), config.inten_perc_value);
+      att_3 = calc_3d_single_atts(mask, obs_raw, config.model.c_str());
 
       // if ( att.Xvelocity > 20.0 )  mask.write("w.nc");
 
@@ -693,7 +701,7 @@ if ( have_pairs )  {
 
          fcst_raw.get_data_plane(t, raw_2d);
 
-         att_2 = calc_2d_single_atts(mask_2d, raw_2d, j + 1, config.inten_perc_value);
+         att_2 = calc_2d_single_atts(mask_2d, raw_2d, j + 1);
 
          att_2.set_fcst();
 
@@ -734,7 +742,7 @@ if ( have_pairs )  {
 
          obs_raw.get_data_plane(t, raw_2d);
 
-         att_2 = calc_2d_single_atts(mask_2d, raw_2d, j + 1, config.inten_perc_value);
+         att_2 = calc_2d_single_atts(mask_2d, raw_2d, j + 1);
 
          att_2.set_obs();
 
@@ -1051,6 +1059,50 @@ return;
 ////////////////////////////////////////////////////////////////////////
 
 
+StringArray parse_file_list  (const StringArray & a, const GrdFileType type)
+
+{
+
+int i;
+Met2dDataFile * mtddf = (Met2dDataFile *) 0;
+Met2dDataFileFactory factory;
+StringArray list;
+
+   //
+   //  check for empty list
+   //
+if(a.n_elements() == 0) {
+   mlog << Error << "\nparse_file_list() -> "
+        << "empty list!\n\n";
+   exit(1);
+}
+
+   //
+   //  attempt to read the first file as a gridded data file
+   //
+mtddf = factory.new_met_2d_data_file(a[0].c_str(), type);
+
+   //
+   //  if the read was successful, store the list of gridded files.
+   //  otherwise, process entries as ASCII files.
+   //
+if(mtddf)                            list.add(a);
+else for(i=0; i<a.n_elements(); i++) list = parse_ascii_file_list(a[0].c_str());
+
+   //
+   //  done
+   //
+
+if ( mtddf )  { delete mtddf;  mtddf = (Met2dDataFile *) 0; }
+
+return ( list );
+
+}
+
+
+////////////////////////////////////////////////////////////////////////
+
+
 ConcatString make_output_prefix(const MtdConfigInfo & config, unixtime start_time)
 
 {
@@ -1100,11 +1152,11 @@ mtd_read_data(config, *(config.fcst_info), single_filenames, raw);
    //  copy forecast name/units/level to observation
    //
 
-config.obs_info->set_name(config.fcst_info->name_attr().text());
+config.obs_info->set_name(config.fcst_info->name().text());
 
-config.obs_info->set_units(config.fcst_info->units_attr().text());
+config.obs_info->set_units(config.fcst_info->units().text());
 
-config.obs_info->set_level_name(config.fcst_info->level_attr().text());
+config.obs_info->set_level_name(config.fcst_info->level_name().text());
 
 config.delta_t_seconds = raw.delta_t();
 
@@ -1129,7 +1181,7 @@ prefix = make_output_prefix(config, raw.start_valid_time());
    //  convolve
    //
 
-conv =  raw.convolve(config.fcst_conv_radius, config.fcst_conv_time_beg, config.fcst_conv_time_end);
+conv =  raw.convolve(config.fcst_conv_radius);
 
    //
    //  threshold
@@ -1165,7 +1217,7 @@ for (j=0; j<(obj.n_objects()); ++j)  {
 
    select_mask = obj.select(j + 1);   //  1-based
 
-   att_3 = calc_3d_single_atts(select_mask, raw, config.model.c_str(), config.inten_perc_value);
+   att_3 = calc_3d_single_atts(select_mask, raw, config.model.c_str());
 
    att_3.set_object_number(j + 1);   //  1-based
 
@@ -1200,7 +1252,7 @@ for (j=0; j<(obj.n_objects()); ++j)  {
 
       raw.get_data_plane(t, raw_2d);
 
-      att_2 = calc_2d_single_atts(mask_2d, raw_2d, j + 1, config.inten_perc_value);
+      att_2 = calc_2d_single_atts(mask_2d, raw_2d, j + 1);
 
       att_2.set_fcst();
 

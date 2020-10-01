@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -9,7 +9,7 @@
 ////////////////////////////////////////////////////////////////////////
 
 
-#include "vx_python3_utils.h"
+#include "vx_python_utils.h"
 
 #include "dataplane_from_numpy_array.h"
 #include "dataplane_from_xarray.h"
@@ -49,11 +49,7 @@ attrs_dict  = PyObject_GetAttrString(data_array, attrs_attr_name);
 
    /////////////////////
 
-Python3_Numpy np;
-
-np.set(numpy_array);
-
-bool status = dataplane_from_numpy_array(np, attrs_dict, dp_out, grid_out, vinfo);
+bool status = dataplane_from_numpy_array(numpy_array, attrs_dict, dp_out, grid_out, vinfo);
 
    //
    //  done
@@ -65,4 +61,5 @@ return ( status );
 
 
 ////////////////////////////////////////////////////////////////////////
+
 

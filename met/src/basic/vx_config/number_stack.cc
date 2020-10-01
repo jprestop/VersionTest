@@ -4,7 +4,7 @@
 
 
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -64,7 +64,7 @@ NumberStack::~NumberStack()
 
 {
 
-clear(false);
+clear();
 
 }
 
@@ -120,7 +120,7 @@ return;
 ////////////////////////////////////////////////////////////////////////
 
 
-void NumberStack::clear(bool initialize)
+void NumberStack::clear()
 
 {
 
@@ -131,11 +131,9 @@ Nelements = 0;
 
 Nalloc = 0;
 
-if (initialize) {
-   AllocInc = default_ns_alloc_inc;
+AllocInc = default_ns_alloc_inc;
 
-   extend(default_ns_alloc_inc);
-}
+extend(default_ns_alloc_inc);
 
 return;
 

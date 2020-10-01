@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -29,8 +29,6 @@ extern void gds_to_grid (const Section2_Header & gds, Grid & gr);
 extern void gds_to_order(const Section2_Header & gds, int & xdir, int & ydir, int & order);
 
 extern void instantiate_grid(GribFile &, int rec_num, Grid & out);
-
-extern double decode_lat_lon(const unsigned char *, int);
 
 ////////////////////////////////////////////////////////////////////////
 

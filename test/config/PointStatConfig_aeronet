@@ -53,7 +53,6 @@ fcst = {
 
 obs = {
    message_type = [ "AERONET_AOD_MEAN_010000" ];
-   sid_inc      = [];
    sid_exc      = [];
 
    field = [
@@ -98,8 +97,15 @@ climo_mean = {
    //    DW_MEAN for linear interpolation in time of data before and after
    //
    time_interp_method = DW_MEAN;
-   day_interval       = 31;
-   hour_interval      = 6;
+
+   match_month = TRUE;
+   match_day   = FALSE;
+
+   //
+   // Time step of the climatology data in seconds.  Set to 60*60*6 for
+   // 6-hourly data or 60*60 for hourly data.
+   //
+   time_step = 21600;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -161,12 +167,10 @@ interp = {
 // HiRA verification method
 //
 hira = {
-   flag            = FALSE;
-   width           = [ 2, 3, 4, 5 ];
-   vld_thresh      = 1.0;
-   cov_thresh      = [ ==0.25 ];
-   shape           = SQUARE;
-   prob_cat_thresh = [];
+   flag       = FALSE;
+   width      = [ 2, 3, 4, 5 ];
+   vld_thresh = 1.0;
+   cov_thresh = [ ==0.25 ];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -191,7 +195,6 @@ output_flag = {
    pjc    = NONE;
    prc    = NONE;
    ecnt   = NONE;
-   rps    = NONE;
    eclv   = NONE;
    mpr    = STAT;
 }
@@ -203,6 +206,6 @@ duplicate_flag = NONE;
 rank_corr_flag = TRUE;
 tmp_dir        = "/tmp";
 output_prefix  = "${OUTPUT_PREFIX}";
-version        = "V9.1";
+version        = "V8.1";
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -19,12 +19,6 @@ else
   echo "export MET_TEST_OUTPUT=${MET_TEST_OUTPUT}"
 fi
 
-PERL_UNIT_OPTS=""
-for arg in $@; do
-  [ $arg == "-memchk" -o $arg == "memchk" ] && PERL_UNIT_OPTS="$PERL_UNIT_OPTS -memchk"
-  [ $arg == "-callchk" -o $arg == "callchk" ] && PERL_UNIT_OPTS="$PERL_UNIT_OPTS -callchk"
-done
-
 # Unit test script
 PERL_UNIT=${MET_TEST_BASE}/perl/unit.pl
 
@@ -52,10 +46,6 @@ UNIT_XML="unit_ascii2nc.xml \
           unit_tc_dland.xml \
           unit_tc_pairs.xml \
           unit_tc_stat.xml \
-          unit_plot_tc.xml \
-          unit_tc_rmw.xml \
-          unit_rmw_analysis.xml \
-          unit_tc_gen.xml \
           unit_met_test_scripts.xml  \
           unit_modis.xml  \
           unit_ref_config.xml \
@@ -74,19 +64,15 @@ UNIT_XML="unit_ascii2nc.xml \
           unit_lidar2nc.xml \
           unit_airnow.xml \
           unit_python.xml \
-          unit_point2grid.xml \
-          unit_perc_thresh.xml \
-          unit_gaussian.xml \
-          unit_grid_diag.xml \
-          unit_quality_filter.xml"
+          unit_perc_thresh.xml"
 
 # Run each unit test
 for CUR_XML in ${UNIT_XML}; do
 
   echo
-  echo "CALLING: ${PERL_UNIT} $PERL_UNIT_OPTS ${MET_TEST_BASE}/xml/${CUR_XML}"
+  echo "CALLING: ${PERL_UNIT} ${MET_TEST_BASE}/xml/${CUR_XML}"
   echo
-  ${PERL_UNIT} $PERL_UNIT_OPTS ${MET_TEST_BASE}/xml/${CUR_XML}
+  ${PERL_UNIT} ${MET_TEST_BASE}/xml/${CUR_XML}
   RET_VAL=$?
 
   # Fail on non-zero return status

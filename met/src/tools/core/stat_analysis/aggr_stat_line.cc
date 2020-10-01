@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -32,7 +32,6 @@
 //   012    03/01/18  Halley Gotway   Update summary job type.
 //   013    04/25/18  Halley Gotway   Add ECNT line type.
 //   014    04/01/19  Fillmore        Add FCST and OBS units.
-//   015    01/24/20  Halley Gotway   Add aggregate RPS lines.
 //
 ////////////////////////////////////////////////////////////////////////
 
@@ -164,163 +163,163 @@ void StatHdrInfo::add(const STATLine &line) {
 void StatHdrInfo::check_shc(const ConcatString &cur_case) {
 
    // MODEL
-   if(model.n() > 1) {
+   if(model.n_elements() > 1) {
       mlog << Debug(2)
            << "For case \"" << cur_case << "\", found "
-           << model.n()
+           << model.n_elements()
            << " unique MODEL values: "
            << write_css(model) << "\n";
    }
 
    // DESC
-   if(desc.n() > 1) {
+   if(desc.n_elements() > 1) {
       mlog << Debug(2)
            << "For case \"" << cur_case << "\", found "
-           << desc.n()
+           << desc.n_elements()
            << " unique DESC values: "
            << write_css(desc) << "\n";
    }
 
    // FCST_LEAD
-   if(fcst_lead.n() > 1) {
+   if(fcst_lead.n_elements() > 1) {
       mlog << Debug(2)
            << "For case \"" << cur_case << "\", found "
-           << fcst_lead.n()
+           << fcst_lead.n_elements()
            << " unique FCST_LEAD values: "
            << write_css_hhmmss(fcst_lead) << "\n";
    }
 
    // OBS_LEAD
-   if(obs_lead.n() > 1) {
+   if(obs_lead.n_elements() > 1) {
       mlog << Debug(2)
            << "For case \"" << cur_case << "\", found "
-           << obs_lead.n()
+           << obs_lead.n_elements()
            << " unique OBS_LEAD values: "
            << write_css_hhmmss(obs_lead) << "\n";
    }
 
    // FCST_VAR
-   if(fcst_var.n() > 1) {
+   if(fcst_var.n_elements() > 1) {
       mlog << Debug(2)
            << "For case \"" << cur_case << "\", found "
-           << fcst_var.n()
+           << fcst_var.n_elements()
            << " unique FCST_VAR values: "
            << write_css(fcst_var) << "\n";
    }
 
    // FCST_UNITS
-   if(fcst_units.n() > 1) {
+   if(fcst_units.n_elements() > 1) {
       mlog << Debug(2)
            << "For case \"" << cur_case << "\", found "
-           << fcst_units.n()
+           << fcst_units.n_elements()
            << " unique FCST_UNITS values: "
            << write_css(fcst_units) << "\n";
    }
 
    // FCST_LEV
-   if(fcst_lev.n() > 1) {
+   if(fcst_lev.n_elements() > 1) {
       mlog << Debug(2)
            << "For case \"" << cur_case << "\", found "
-           << fcst_lev.n()
+           << fcst_lev.n_elements()
            << " unique FCST_LEV values: "
            << write_css(fcst_lev) << "\n";
    }
 
    // OBS_VAR
-   if(obs_var.n() > 1) {
+   if(obs_var.n_elements() > 1) {
       mlog << Debug(2)
            << "For case \"" << cur_case << "\", found "
-           << obs_var.n()
+           << obs_var.n_elements()
            << " unique OBS_VAR values: "
            << write_css(obs_var) << "\n";
    }
 
    // OBS_UNITS
-   if(obs_units.n() > 1) {
+   if(obs_units.n_elements() > 1) {
       mlog << Debug(2)
            << "For case \"" << cur_case << "\", found "
-           << obs_units.n()
+           << obs_units.n_elements()
            << " unique OBS_UNITS values: "
            << write_css(obs_units) << "\n";
    }
 
    // OBS_LEV
-   if(obs_lev.n() > 1) {
+   if(obs_lev.n_elements() > 1) {
       mlog << Debug(2)
            << "For case \"" << cur_case << "\", found "
-           << obs_lev.n()
+           << obs_lev.n_elements()
            << " unique OBS_LEV values: "
            << write_css(obs_lev) << "\n";
    }
 
    // OBTYPE
-   if(obtype.n() > 1) {
+   if(obtype.n_elements() > 1) {
       mlog << Debug(2)
            << "For case \"" << cur_case << "\", found "
-           << obtype.n()
+           << obtype.n_elements()
            << " unique OBTYPE values: "
            << write_css(obtype) << "\n";
    }
 
    // VX_MASK
-   if(vx_mask.n() > 1) {
+   if(vx_mask.n_elements() > 1) {
       mlog << Debug(2)
            << "For case \"" << cur_case << "\", found "
-           << vx_mask.n()
+           << vx_mask.n_elements()
            << " unique VX_MASK values: "
            << write_css(vx_mask) << "\n";
    }
 
    // INTERP_MTHD
-   if(interp_mthd.n() > 1) {
+   if(interp_mthd.n_elements() > 1) {
       mlog << Warning
            << "For case \"" << cur_case << "\", found "
-           << interp_mthd.n()
+           << interp_mthd.n_elements()
            << " unique INTERP_MTHD values: "
            << write_css(interp_mthd) << ".\n";
    }
 
    // INTERP_PNTS
-   if(interp_pnts.n() > 1) {
+   if(interp_pnts.n_elements() > 1) {
       mlog << Warning
            << "For case \"" << cur_case << "\", found "
-           << interp_pnts.n()
+           << interp_pnts.n_elements()
            << " unique INTERP_PNTS values: "
            << write_css(interp_pnts) << ".\n";
    }
 
    // FCST_THRESH
-   if(fcst_thresh.n() > 1) {
+   if(fcst_thresh.n_elements() > 1) {
       mlog << Warning
            << "For case \"" << cur_case << "\", found "
-           << fcst_thresh.n()
+           << fcst_thresh.n_elements()
            << " unique FCST_THRESH values: "
            << write_css(fcst_thresh) << "\n";
    }
 
    // OBS_THRESH
-   if(obs_thresh.n() > 1) {
+   if(obs_thresh.n_elements() > 1) {
       mlog << Warning
            << "For case \"" << cur_case << "\", found "
-           << obs_thresh.n()
+           << obs_thresh.n_elements()
            << " unique OBS_THRESH values: "
            << write_css(obs_thresh) << "\n";
    }
 
    // COV_THRESH
-   if(cov_thresh.n() > 1) {
+   if(cov_thresh.n_elements() > 1) {
       mlog << Warning
            << "For case \"" << cur_case << "\", found "
-           << cov_thresh.n()
+           << cov_thresh.n_elements()
            << " unique COV_THRESH values: "
            << write_css(cov_thresh) << ".\n";
    }
 
    // ALPHA
-   if(alpha.n() > 1) {
+   if(alpha.n_elements() > 1) {
       mlog << Warning
            << "For case \"" << cur_case << "\", found "
-           << alpha.n()
+           << alpha.n_elements()
            << " unique ALPHA values: "
            << write_css(alpha) << ".\n";
    }
@@ -361,10 +360,10 @@ StatHdrColumns StatHdrInfo::get_shc(const ConcatString &cur_case,
 
    // FCST_LEAD
    css = write_css_hhmmss(fcst_lead);
-   if(fcst_lead.n() > 1) {
+   if(fcst_lead.n_elements() > 1) {
       mlog << Debug(2)
            << "For case \"" << cur_case << "\", found "
-           << fcst_lead.n()
+           << fcst_lead.n_elements()
            << " unique FCST_LEAD values: " << css << "\n";
    }
    if(hdr_cols.has("FCST_LEAD", index)) {
@@ -390,10 +389,10 @@ StatHdrColumns StatHdrInfo::get_shc(const ConcatString &cur_case,
 
    // OBS_LEAD
    css = write_css_hhmmss(obs_lead);
-   if(obs_lead.n() > 1) {
+   if(obs_lead.n_elements() > 1) {
       mlog << Debug(2)
            << "For case \"" << cur_case << "\", found "
-           << obs_lead.n()
+           << obs_lead.n_elements()
            << " unique OBS_LEAD values: " << css << "\n";
    }
    if(hdr_cols.has("OBS_LEAD", index)) {
@@ -464,10 +463,10 @@ StatHdrColumns StatHdrInfo::get_shc(const ConcatString &cur_case,
 
    // INTERP_PNTS
    css = write_css(interp_pnts);
-   if(interp_pnts.n() > 1) {
+   if(interp_pnts.n_elements() > 1) {
       mlog << Warning
            << "For case \"" << cur_case << "\", found "
-           << interp_pnts.n()
+           << interp_pnts.n_elements()
            << " unique INTERP_PNTS values: " << css << ".\n";
       wdth = bad_data_int;
    }
@@ -500,10 +499,10 @@ StatHdrColumns StatHdrInfo::get_shc(const ConcatString &cur_case,
 
    // ALPHA
    css = write_css(alpha);
-   if(alpha.n() > 1) {
+   if(alpha.n_elements() > 1) {
       mlog << Warning
            << "For case \"" << cur_case << "\", found "
-           << alpha.n()
+           << alpha.n_elements()
            << " unique ALPHA values: " << css << ".\n";
       out_alpha = bad_data_double;
    }
@@ -540,10 +539,10 @@ ConcatString StatHdrInfo::get_shc_str(const ConcatString &cur_case,
    css = write_css(col_vals);
 
    // Check for multiple entries
-   if(col_vals.n() > 1) {
+   if(col_vals.n_elements() > 1) {
       ConcatString msg;
       msg << "For case \"" << cur_case << "\", found "
-          << col_vals.n() << " unique " << col_name
+          << col_vals.n_elements() << " unique " << col_name
           << " values: " << css << "\n";
       if(warning) mlog << Warning  << msg;
       else        mlog << Debug(2) << msg;
@@ -607,12 +606,12 @@ void AggrTimeSeriesInfo::sort() {
    ri_sort.obs_var  = obs_var;
 
    // Sort by valid time
-   if(valid_ts.n() == f_na.n()) {
+   if(valid_ts.n_elements() == f_na.n_elements()) {
 
       ri_sort.valid_ts = valid_ts;
       ri_sort.valid_ts.sort_array();
 
-      for(int i=0; i<valid_ts.n(); i++) {
+      for(int i=0; i<valid_ts.n_elements(); i++) {
          j = valid_ts.index(ri_sort.valid_ts[i]);
          ri_sort.f_na.add(f_na[j]);
          ri_sort.o_na.add(o_na[j]);
@@ -620,13 +619,13 @@ void AggrTimeSeriesInfo::sort() {
       }
    }
    // Sort by initialization time
-   else if(init_ts.n() == f_na.n()) {
+   else if(init_ts.n_elements() == f_na.n_elements()) {
 
       ri_sort.init_ts = init_ts;
       ri_sort.init_ts.sort_array();
       ri_sort.valid_ts = valid_ts; // Single value
 
-      for(int i=0; i<init_ts.n(); i++) {
+      for(int i=0; i<init_ts.n_elements(); i++) {
          j = init_ts.index(ri_sort.init_ts[i]);
          ri_sort.f_na.add(f_na[j]);
          ri_sort.o_na.add(o_na[j]);
@@ -647,7 +646,7 @@ void AggrTimeSeriesInfo::sort() {
 
 ////////////////////////////////////////////////////////////////////////
 
-void aggr_summary_lines(LineDataFile &f, STATAnalysisJob &job,
+void aggr_summary_lines(LineDataFile &f, STATAnalysisJob &j,
                         map<ConcatString, AggrSummaryInfo> &m,
                         int &n_in, int &n_out) {
    STATLine line;
@@ -670,27 +669,27 @@ void aggr_summary_lines(LineDataFile &f, STATAnalysisJob &job,
    //
    // Build list of requested line types and column names
    //
-   for(i=0; i<job.column.n(); i++) {
+   for(i=0; i<j.column.n_elements(); i++) {
 
       // Split -column entry on colon
-      sa = ConcatString(job.column[i]).split(":");
+      sa = ConcatString(j.column[i]).split(":");
 
       // Option 1: Use -line_type once with no colons in -column option
-      if(sa.n() == 1 && job.line_type.n() == 1) {
-         cs << cs_erase << job.line_type[0] << ":" << sa[0];
+      if(sa.n_elements() == 1 && j.line_type.n_elements() == 1) {
+         cs << cs_erase << j.line_type[0] << ":" << sa[0];
          req_stat.add(cs);
-         req_lty.add(job.line_type[0]);
+         req_lty.add(j.line_type[0]);
          req_col.add(sa[0]);
       }
       // Option 2: Use colons in -column option
-      else if(sa.n() == 2) {
-         req_stat.add(job.column[i]);
+      else if(sa.n_elements() == 2) {
+         req_stat.add(j.column[i]);
          req_lty.add(sa[0]);
          req_col.add(sa[1]);
       }
       else {
          mlog << Error << "\naggr_summary_lines() -> "
-              << "trouble parsing \"-column " << job.column[i]
+              << "trouble parsing \"-column " << j.column[i]
               << "\" option.  Either use \"-line_type\" exactly once "
               << "or use format \"-column LINE_TYPE:COLUMN\".\n\n";
          throw(1);
@@ -700,7 +699,7 @@ void aggr_summary_lines(LineDataFile &f, STATAnalysisJob &job,
    //
    // When -column_union is true, store a list of unique line types and columns
    //
-   if(job.column_union) {
+   if(j.column_union) {
       cs << cs_erase << write_css(req_lty.uniq()) << ":" << write_css(req_col.uniq());
       req_stat.set(0, cs);
    }
@@ -711,13 +710,13 @@ void aggr_summary_lines(LineDataFile &f, STATAnalysisJob &job,
    //   SL1L2, SAL1L2 -> CNT
    //   VL1L2         -> VCNT
    //
-   bool do_cts  = job.do_derive && req_lty.has(stat_cts_str);
+   bool do_cts  = j.do_derive && req_lty.has(stat_cts_str);
    if(do_cts)  mlog << Debug(3)
                     << "Deriving CTS statistics from input FHO/CTC lines.\n";
-   bool do_cnt  = job.do_derive && req_lty.has(stat_cnt_str);
+   bool do_cnt  = j.do_derive && req_lty.has(stat_cnt_str);
    if(do_cnt)  mlog << Debug(3)
                     << "Deriving CNT statistics from input SL1L2/SAL1L2 lines.\n";
-   bool do_vcnt = job.do_derive && req_lty.has(stat_vcnt_str);
+   bool do_vcnt = j.do_derive && req_lty.has(stat_vcnt_str);
    if(do_vcnt) mlog << Debug(3)
                     << "Deriving VCNT statistics from input VL1L2 lines.\n";
 
@@ -730,12 +729,12 @@ void aggr_summary_lines(LineDataFile &f, STATAnalysisJob &job,
 
       n_in++;
 
-      if(job.is_keeper(line)) {
+      if(j.is_keeper(line)) {
 
          //
          // Build the map key for the current line
          //
-         key = job.get_case_info(line);
+         key = j.get_case_info(line);
 
          //
          // Add a new map entry, if necessary
@@ -743,7 +742,7 @@ void aggr_summary_lines(LineDataFile &f, STATAnalysisJob &job,
          if(m.count(key) == 0) {
             aggr.val.clear();
             aggr.wgt.clear();
-            for(i=0; i<req_stat.n(); i++) {
+            for(i=0; i<req_stat.n_elements(); i++) {
                aggr.val[req_stat[i]] = empty_na;
                aggr.wgt[req_stat[i]] = empty_na;
             }
@@ -779,7 +778,7 @@ void aggr_summary_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          // Update the map entries for each requested statistic
          //
-         for(i=0,n_add=0; i<req_col.n(); i++) {
+         for(i=0,n_add=0; i<req_col.n_elements(); i++) {
 
             //
             // Store the current requested line type
@@ -810,7 +809,7 @@ void aggr_summary_lines(LineDataFile &f, STATAnalysisJob &job,
                continue;
             }
             else {
-               v = job.get_column_double(line, req_col[i]);
+               v = j.get_column_double(line, req_col[i]);
                w = atoi(line.get_item("TOTAL"));
             }
 
@@ -823,7 +822,7 @@ void aggr_summary_lines(LineDataFile &f, STATAnalysisJob &job,
             // Add the current column value and weight
             // If computing a union, concatentate them all
             //
-            if(job.column_union) {
+            if(j.column_union) {
                m[key].val[req_stat[0]].add(v);
                m[key].wgt[req_stat[0]].add(w);
             }
@@ -842,7 +841,7 @@ void aggr_summary_lines(LineDataFile &f, STATAnalysisJob &job,
          // Dump only the lines that were actually used
          //
          if(n_add > 0) {
-            job.dump_stat_line(line);
+            j.dump_stat_line(line);
             n_out++;
          }
       }
@@ -858,7 +857,7 @@ void aggr_summary_lines(LineDataFile &f, STATAnalysisJob &job,
 //
 ////////////////////////////////////////////////////////////////////////
 
-void aggr_ctc_lines(LineDataFile &f, STATAnalysisJob &job,
+void aggr_ctc_lines(LineDataFile &f, STATAnalysisJob &j,
                     map<ConcatString, AggrCTCInfo> &m,
                     int &n_in, int &n_out) {
    STATLine line;
@@ -878,9 +877,9 @@ void aggr_ctc_lines(LineDataFile &f, STATAnalysisJob &job,
 
       n_in++;
 
-      if(job.is_keeper(line)) {
+      if(j.is_keeper(line)) {
 
-         job.dump_stat_line(line);
+         j.dump_stat_line(line);
 
          //
          // Zero out the contingency table object
@@ -916,7 +915,7 @@ void aggr_ctc_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          // Build the map key for the current line
          //
-         key = job.get_case_info(line);
+         key = j.get_case_info(line);
 
          //
          // Add a new map entry, if necessary
@@ -953,7 +952,7 @@ void aggr_ctc_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          // Keep track of scores for each time step for VIF
          //
-         if(job.vif_flag) {
+         if(j.vif_flag) {
 
             //
             // Cannot compute VIF when the times are not unique
@@ -965,7 +964,7 @@ void aggr_ctc_lines(LineDataFile &f, STATAnalysisJob &job,
                     << "the variance inflation factor adjustment can "
                     << "only be computed for time series with unique "
                     << "valid times.\n\n";
-               job.vif_flag = 0;
+               j.vif_flag = 0;
             }
             else {
                m[key].valid_ts.add((double) ut);
@@ -1007,25 +1006,25 @@ void aggr_ctc_lines(LineDataFile &f, STATAnalysisJob &job,
       //
       // Check for the minimum length of time series
       //
-      if(job.vif_flag && it->second.valid_ts.n() < min_time_series) {
+      if(j.vif_flag && it->second.valid_ts.n_elements() < min_time_series) {
          mlog << Warning << "\naggr_ctc_lines() -> "
               << "the variance inflation factor adjustment can only "
               << "be computed for at least " << min_time_series
               << " unique valid times.\n\n";
-         job.vif_flag = 0;
+         j.vif_flag = 0;
       }
 
       //
       // Compute the auto-correlations for VIF
       //
-      if(job.vif_flag) {
+      if(j.vif_flag) {
 
          //
          // Sort the valid times
          //
          n = it->second.valid_ts.rank_array(n_ties);
 
-         if(n_ties > 0 || n != it->second.valid_ts.n()) {
+         if(n_ties > 0 || n != it->second.valid_ts.n_elements()) {
             mlog << Error << "\naggr_ctc_lines() -> "
                  << "should be no ties in the valid time array.\n\n";
             throw(1);
@@ -1065,7 +1064,7 @@ void aggr_ctc_lines(LineDataFile &f, STATAnalysisJob &job,
 
 ////////////////////////////////////////////////////////////////////////
 
-void aggr_mctc_lines(LineDataFile &f, STATAnalysisJob &job,
+void aggr_mctc_lines(LineDataFile &f, STATAnalysisJob &j,
                      map<ConcatString, AggrMCTCInfo> &m,
                      int &n_in, int &n_out) {
    STATLine line;
@@ -1085,9 +1084,9 @@ void aggr_mctc_lines(LineDataFile &f, STATAnalysisJob &job,
 
       n_in++;
 
-      if(job.is_keeper(line)) {
+      if(j.is_keeper(line)) {
 
-         job.dump_stat_line(line);
+         j.dump_stat_line(line);
 
          //
          // Check for expected line type
@@ -1108,7 +1107,7 @@ void aggr_mctc_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          // Build the map key for the current line
          //
-         key = job.get_case_info(line);
+         key = j.get_case_info(line);
 
          //
          // Add a new map entry, if necessary
@@ -1153,7 +1152,7 @@ void aggr_mctc_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          // Keep track of scores for each time step for VIF
          //
-         if(job.vif_flag) {
+         if(j.vif_flag) {
 
             //
             // Cannot compute VIF when the times are not unique
@@ -1165,7 +1164,7 @@ void aggr_mctc_lines(LineDataFile &f, STATAnalysisJob &job,
                     << "the variance inflation factor adjustment can "
                     << "only be computed for time series with unique "
                     << "valid times.\n\n";
-               job.vif_flag = 0;
+               j.vif_flag = 0;
             }
             else {
                m[key].valid_ts.add((double) ut);
@@ -1199,25 +1198,25 @@ void aggr_mctc_lines(LineDataFile &f, STATAnalysisJob &job,
       //
       // Check for the minimum length of time series
       //
-      if(job.vif_flag && it->second.valid_ts.n() < min_time_series) {
+      if(j.vif_flag && it->second.valid_ts.n_elements() < min_time_series) {
          mlog << Warning << "\naggr_mctc_lines() -> "
               << "the variance inflation factor adjustment can only "
               << "be computed for at least " << min_time_series
               << " unique valid times.\n\n";
-         job.vif_flag = 0;
+         j.vif_flag = 0;
       }
 
       //
       // Compute the auto-correlations for VIF
       //
-      if(job.vif_flag) {
+      if(j.vif_flag) {
 
          //
          // Sort the valid times
          //
          n = it->second.valid_ts.rank_array(n_ties);
 
-         if(n_ties > 0 || n != it->second.valid_ts.n()) {
+         if(n_ties > 0 || n != it->second.valid_ts.n_elements()) {
             mlog << Error << "\naggr_mctc_lines() -> "
                  << "should be no ties in the valid time array.\n\n";
             throw(1);
@@ -1241,7 +1240,7 @@ void aggr_mctc_lines(LineDataFile &f, STATAnalysisJob &job,
 
 ////////////////////////////////////////////////////////////////////////
 
-void aggr_pct_lines(LineDataFile &f, STATAnalysisJob &job,
+void aggr_pct_lines(LineDataFile &f, STATAnalysisJob &j,
                     map<ConcatString, AggrPCTInfo> &m,
                     int &n_in, int &n_out) {
    STATLine line;
@@ -1261,9 +1260,9 @@ void aggr_pct_lines(LineDataFile &f, STATAnalysisJob &job,
 
       n_in++;
 
-      if(job.is_keeper(line)) {
+      if(j.is_keeper(line)) {
 
-         job.dump_stat_line(line);
+         j.dump_stat_line(line);
 
          //
          // Check for expected line type
@@ -1284,7 +1283,7 @@ void aggr_pct_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          // Build the map key for the current line
          //
-         key = job.get_case_info(line);
+         key = j.get_case_info(line);
 
          //
          // Add a new map entry, if necessary
@@ -1344,7 +1343,7 @@ void aggr_pct_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          // Keep track of scores for each time step for VIF
          //
-         if(job.vif_flag) {
+         if(j.vif_flag) {
 
             //
             // Cannot compute VIF when the times are not unique
@@ -1356,7 +1355,7 @@ void aggr_pct_lines(LineDataFile &f, STATAnalysisJob &job,
                     << "the variance inflation factor adjustment can "
                     << "only be computed for time series with unique "
                     << "valid times.\n\n";
-               job.vif_flag = 0;
+               j.vif_flag = 0;
             }
             else {
                m[key].valid_ts.add((double) ut);
@@ -1391,25 +1390,25 @@ void aggr_pct_lines(LineDataFile &f, STATAnalysisJob &job,
       //
       // Check for the minimum length of time series
       //
-      if(job.vif_flag && it->second.valid_ts.n() < min_time_series) {
+      if(j.vif_flag && it->second.valid_ts.n_elements() < min_time_series) {
          mlog << Warning << "\naggr_pct_lines() -> "
               << "the variance inflation factor adjustment can only "
               << "be computed for at least " << min_time_series
               << " unique valid times.\n\n";
-         job.vif_flag = 0;
+         j.vif_flag = 0;
       }
 
       //
       // Compute the auto-correlations for VIF
       //
-      if(job.vif_flag) {
+      if(j.vif_flag) {
 
          //
          // Sort the valid times
          //
          n = it->second.valid_ts.rank_array(n_ties);
 
-         if(n_ties > 0 || n != it->second.valid_ts.n()) {
+         if(n_ties > 0 || n != it->second.valid_ts.n_elements()) {
             mlog << Error << "\naggr_pct_lines() -> "
                  << "should be no ties in the valid time array.\n\n";
             throw(1);
@@ -1435,7 +1434,7 @@ void aggr_pct_lines(LineDataFile &f, STATAnalysisJob &job,
 
 ////////////////////////////////////////////////////////////////////////
 
-void aggr_psum_lines(LineDataFile &f, STATAnalysisJob &job,
+void aggr_psum_lines(LineDataFile &f, STATAnalysisJob &j,
                      map<ConcatString, AggrPSumInfo> &m,
                      int &n_in, int &n_out) {
    STATLine line;
@@ -1458,9 +1457,9 @@ void aggr_psum_lines(LineDataFile &f, STATAnalysisJob &job,
 
       n_in++;
 
-      if(job.is_keeper(line)) {
+      if(j.is_keeper(line)) {
 
-         job.dump_stat_line(line);
+         j.dump_stat_line(line);
 
          //
          // Initialize
@@ -1506,7 +1505,7 @@ void aggr_psum_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          // Build the map key for the current line
          //
-         key = job.get_case_info(line);
+         key = j.get_case_info(line);
 
          //
          // Add a new map entry, if necessary
@@ -1535,7 +1534,7 @@ void aggr_psum_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          // Keep track of scores for each time step for VIF
          //
-         if(line.type() == stat_sl1l2 && job.vif_flag) {
+         if(line.type() == stat_sl1l2 && j.vif_flag) {
 
             //
             // Cannot compute VIF when the times are not unique
@@ -1547,7 +1546,7 @@ void aggr_psum_lines(LineDataFile &f, STATAnalysisJob &job,
                     << "the variance inflation factor adjustment can "
                     << "only be computed for time series with unique "
                     << "valid times.\n\n";
-               job.vif_flag = 0;
+               j.vif_flag = 0;
             }
             else {
                m[key].valid_ts.add((double) ut);
@@ -1583,26 +1582,26 @@ void aggr_psum_lines(LineDataFile &f, STATAnalysisJob &job,
       //
       // Check for the minimum length of time series
       //
-      if(job.vif_flag && job.out_line_type.has(stat_cnt_str) &&
-         it->second.valid_ts.n() < min_time_series) {
+      if(j.vif_flag && j.out_line_type.has(stat_cnt_str) &&
+         it->second.valid_ts.n_elements() < min_time_series) {
          mlog << Warning << "\naggr_psum_lines() -> "
               << "the variance inflation factor adjustment can only "
               << "be computed for at least " << min_time_series
               << " unique valid times.\n\n";
-         job.vif_flag = 0;
+         j.vif_flag = 0;
       }
 
       //
       // Compute the auto-correlations for VIF
       //
-      if(job.vif_flag && job.out_line_type.has(stat_cnt_str)) {
+      if(j.vif_flag && j.out_line_type.has(stat_cnt_str)) {
 
          //
          // Sort the valid times
          //
          n = it->second.valid_ts.rank_array(n_ties);
 
-         if(n_ties > 0 || n != it->second.valid_ts.n()) {
+         if(n_ties > 0 || n != it->second.valid_ts.n_elements()) {
             mlog << Error << "\naggr_psum_lines() -> "
                  << "should be no ties in the valid time array.\n\n";
             throw(1);
@@ -1630,7 +1629,7 @@ void aggr_psum_lines(LineDataFile &f, STATAnalysisJob &job,
 
 ////////////////////////////////////////////////////////////////////////
 
-void aggr_grad_lines(LineDataFile &f, STATAnalysisJob &job,
+void aggr_grad_lines(LineDataFile &f, STATAnalysisJob &j,
                       map<ConcatString, AggrGRADInfo> &m,
                       int &n_in, int &n_out) {
    STATLine line;
@@ -1648,9 +1647,9 @@ void aggr_grad_lines(LineDataFile &f, STATAnalysisJob &job,
 
       n_in++;
 
-      if(job.is_keeper(line)) {
+      if(j.is_keeper(line)) {
 
-         job.dump_stat_line(line);
+         j.dump_stat_line(line);
 
          if(line.type() != stat_grad) {
             mlog << Error << "\naggr_grad_lines() -> "
@@ -1667,7 +1666,7 @@ void aggr_grad_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          // Build the map key for the current line
          //
-         key = job.get_case_info(line);
+         key = j.get_case_info(line);
 
          //
          // Add a new map entry, if necessary
@@ -1717,7 +1716,7 @@ void aggr_grad_lines(LineDataFile &f, STATAnalysisJob &job,
 
 ////////////////////////////////////////////////////////////////////////
 
-void aggr_wind_lines(LineDataFile &f, STATAnalysisJob &job,
+void aggr_wind_lines(LineDataFile &f, STATAnalysisJob &j,
                      map<ConcatString, AggrWindInfo> &m,
                      int &n_in, int &n_out) {
    STATLine line;
@@ -1735,9 +1734,9 @@ void aggr_wind_lines(LineDataFile &f, STATAnalysisJob &job,
 
       n_in++;
 
-      if(job.is_keeper(line)) {
+      if(j.is_keeper(line)) {
 
-         job.dump_stat_line(line);
+         j.dump_stat_line(line);
 
          //
          // Initialize
@@ -1773,14 +1772,16 @@ void aggr_wind_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          // Build the map key for the current line
          //
-         key = job.get_case_info(line);
+         key = j.get_case_info(line);
 
          //
          // Add a new map entry, if necessary
          //
          if(m.count(key) == 0) {
-            aggr.pd_u.clear();
-            aggr.pd_v.clear();
+            aggr.uf_na.clear();
+            aggr.vf_na.clear();
+            aggr.uo_na.clear();
+            aggr.vo_na.clear();
             aggr.vl1l2_info = cur;
             aggr.hdr.clear();
             m[key] = aggr;
@@ -1793,12 +1794,12 @@ void aggr_wind_lines(LineDataFile &f, STATAnalysisJob &job,
          }
 
          //
-         // Append the unit vectors with no climatological values
+         // Append the unit vectors
          //
-         m[key].pd_u.add_grid_pair(uf, uo, bad_data_double,
-                        bad_data_double, default_grid_weight);
-         m[key].pd_v.add_grid_pair(vf, vo, bad_data_double,
-                        bad_data_double, default_grid_weight);
+         m[key].uf_na.add(uf);
+         m[key].vf_na.add(vf);
+         m[key].uo_na.add(uo);
+         m[key].vo_na.add(vo);
 
          //
          // Keep track of the unique header column entries
@@ -1814,7 +1815,7 @@ void aggr_wind_lines(LineDataFile &f, STATAnalysisJob &job,
 
 ////////////////////////////////////////////////////////////////////////
 
-void aggr_mpr_wind_lines(LineDataFile &f, STATAnalysisJob &job,
+void aggr_mpr_wind_lines(LineDataFile &f, STATAnalysisJob &j,
                          map<ConcatString, AggrWindInfo> &m,
                          int &n_in, int &n_out) {
    STATLine line;
@@ -1822,9 +1823,7 @@ void aggr_mpr_wind_lines(LineDataFile &f, STATAnalysisJob &job,
    VL1L2Info v_info;
    MPRData cur;
    ConcatString hdr, key;
-   double uf, uo, ucmn, ucsd;
-   double vf, vo, vcmn, vcsd;
-   double fcst_wind, obs_wind, cmn_wind, csd_wind;
+   double uf, vf, uo, vo, fwind, owind;
    bool is_ugrd;
    int i;
    map<ConcatString, AggrWindInfo>::iterator it;
@@ -1838,20 +1837,16 @@ void aggr_mpr_wind_lines(LineDataFile &f, STATAnalysisJob &job,
 
       n_in++;
 
-      if(job.is_keeper(line)) {
+      if(j.is_keeper(line)) {
 
-         job.dump_stat_line(line);
+         j.dump_stat_line(line);
 
          parse_mpr_line(line, cur);
          is_ugrd = (cur.fcst_var == ugrd_abbr_str);
          uf      = (is_ugrd ? cur.fcst        : bad_data_double);
          uo      = (is_ugrd ? cur.obs         : bad_data_double);
-         ucmn    = (is_ugrd ? cur.climo_mean  : bad_data_double);
-         ucsd    = (is_ugrd ? cur.climo_stdev : bad_data_double);
          vf      = (is_ugrd ? bad_data_double : cur.fcst);
          vo      = (is_ugrd ? bad_data_double : cur.obs);
-         vcmn    = (is_ugrd ? bad_data_double : cur.climo_mean);
-         vcsd    = (is_ugrd ? bad_data_double : cur.climo_stdev);
 
          //
          // Build header string for matching UGRD and VGRD lines
@@ -1880,7 +1875,7 @@ void aggr_mpr_wind_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          // Build the map key for the current line
          //
-         key = job.get_case_info(line);
+         key = j.get_case_info(line);
 
          //
          // Add a new map entry, if necessary
@@ -1892,17 +1887,19 @@ void aggr_mpr_wind_lines(LineDataFile &f, STATAnalysisJob &job,
             //
             aggr.vl1l2_info.clear();
             aggr.hdr_sa.clear();
-            aggr.pd_u.clear();
-            aggr.pd_v.clear();
+            aggr.uf_na.clear();
+            aggr.vf_na.clear();
+            aggr.uo_na.clear();
+            aggr.vo_na.clear();
 
             //
             // Initialize values
             //
             aggr.hdr_sa.add(hdr);
-            aggr.pd_u.add_grid_pair(uf, uo, ucmn, ucsd,
-                         default_grid_weight);
-            aggr.pd_v.add_grid_pair(vf, vo, vcmn, vcsd,
-                         default_grid_weight);
+            aggr.uf_na.add(uf);
+            aggr.vf_na.add(vf);
+            aggr.uo_na.add(uo);
+            aggr.vo_na.add(vo);
 
             //
             // Add the new map entry
@@ -1923,8 +1920,8 @@ void aggr_mpr_wind_lines(LineDataFile &f, STATAnalysisJob &job,
                //
                // Check for duplicate UGRD lines
                //
-               if((!is_bad_data(uf) && !is_bad_data(m[key].pd_u.f_na[i])) ||
-                  (!is_bad_data(uo) && !is_bad_data(m[key].pd_u.o_na[i]))) {
+               if((!is_bad_data(uf) && !is_bad_data(m[key].uf_na[i])) ||
+                  (!is_bad_data(uo) && !is_bad_data(m[key].uo_na[i]))) {
                   mlog << Warning << "\naggr_mpr_wind_lines() -> "
                        << "found duplicate UGRD lines for header:\n"
                        << hdr << "\n\n";
@@ -1933,8 +1930,8 @@ void aggr_mpr_wind_lines(LineDataFile &f, STATAnalysisJob &job,
                //
                // Check for duplicate VGRD lines
                //
-               if((!is_bad_data(vf) && !is_bad_data(m[key].pd_v.f_na[i])) ||
-                  (!is_bad_data(vo) && !is_bad_data(m[key].pd_v.o_na[i]))) {
+               if((!is_bad_data(vf) && !is_bad_data(m[key].vf_na[i])) ||
+                  (!is_bad_data(vo) && !is_bad_data(m[key].vo_na[i]))) {
                   mlog << Warning << "\naggr_mpr_wind_lines() -> "
                        << "found duplicate VGRD lines for header:\n"
                        << hdr << "\n\n";
@@ -1943,24 +1940,20 @@ void aggr_mpr_wind_lines(LineDataFile &f, STATAnalysisJob &job,
                //
                // Update the existing values
                //
-               if(!is_bad_data(uf))   m[key].pd_u.f_na.set(i, uf);
-               if(!is_bad_data(uo))   m[key].pd_u.o_na.set(i, uo);
-               if(!is_bad_data(ucmn)) m[key].pd_u.cmn_na.set(i, ucmn);
-               if(!is_bad_data(ucsd)) m[key].pd_u.csd_na.set(i, ucsd);
-               if(!is_bad_data(vf))   m[key].pd_v.f_na.set(i, vf);
-               if(!is_bad_data(vo))   m[key].pd_v.o_na.set(i, vo);
-               if(!is_bad_data(vcmn)) m[key].pd_v.cmn_na.set(i, vcmn);
-               if(!is_bad_data(vcsd)) m[key].pd_v.csd_na.set(i, vcsd);
+               if(!is_bad_data(uf)) m[key].uf_na.set(i, uf);
+               if(!is_bad_data(vf)) m[key].vf_na.set(i, vf);
+               if(!is_bad_data(uo)) m[key].uo_na.set(i, uo);
+               if(!is_bad_data(vo)) m[key].vo_na.set(i, vo);
             }
             //
             // Add data for a new header entry
             //
             else {
                m[key].hdr_sa.add(hdr);
-               m[key].pd_u.add_grid_pair(uf, uo, ucmn, ucsd,
-                              default_grid_weight);
-               m[key].pd_v.add_grid_pair(vf, vo, vcmn, vcsd,
-                              default_grid_weight);
+               m[key].uf_na.add(uf);
+               m[key].vf_na.add(vf);
+               m[key].uo_na.add(uo);
+               m[key].vo_na.add(vo);
             }
          }
 
@@ -1984,19 +1977,22 @@ void aggr_mpr_wind_lines(LineDataFile &f, STATAnalysisJob &job,
       //
       aggr.hdr = it->second.hdr;
       aggr.vl1l2_info.clear();
-      aggr.pd_u.clear();
-      aggr.pd_v.clear();
+      aggr.hdr_sa.clear();
+      aggr.uf_na.clear();
+      aggr.vf_na.clear();
+      aggr.uo_na.clear();
+      aggr.vo_na.clear();
 
       //
       // Loop over the pairs for the current map entry
       //
-      for(i=0; i<it->second.hdr_sa.n(); i++) {
+      for(i=0; i<it->second.hdr_sa.n_elements(); i++) {
 
          //
          // Check for missing UGRD data
          //
-         if(is_bad_data(it->second.pd_u.f_na[i]) ||
-            is_bad_data(it->second.pd_u.o_na[i])) {
+         if(is_bad_data(it->second.uf_na[i]) ||
+            is_bad_data(it->second.uo_na[i])) {
             mlog << Warning << "\naggr_mpr_wind_lines() -> "
                  << "could not find matching UGRD line for header:\n"
                  << it->second.hdr_sa[i] << "\n\n";
@@ -2006,8 +2002,8 @@ void aggr_mpr_wind_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          // Check for missing VGRD data
          //
-         if(is_bad_data(it->second.pd_v.f_na[i]) ||
-            is_bad_data(it->second.pd_v.o_na[i])) {
+         if(is_bad_data(it->second.vf_na[i]) ||
+            is_bad_data(it->second.vo_na[i])) {
             mlog << Warning << "\naggr_mpr_wind_lines() -> "
                  << "could not find matching VGRD line for header:\n"
                  << it->second.hdr_sa[i] << "\n\n";
@@ -2017,34 +2013,26 @@ void aggr_mpr_wind_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          // Apply the wind speed thresholds and logic
          //
-         if(job.out_fcst_wind_thresh.get_type() != thresh_na ||
-            job.out_obs_wind_thresh.get_type()  != thresh_na) {
+         if(j.out_fcst_wind_thresh.get_type() != thresh_na ||
+            j.out_obs_wind_thresh.get_type()  != thresh_na) {
 
             // Compute wind speeds
-            fcst_wind = convert_u_v_to_wind(it->second.pd_u.f_na[i],
-                                            it->second.pd_v.f_na[i]);
-             obs_wind = convert_u_v_to_wind(it->second.pd_u.o_na[i],
-                                            it->second.pd_v.o_na[i]);
-             cmn_wind = convert_u_v_to_wind(it->second.pd_u.cmn_na[i],
-                                            it->second.pd_v.cmn_na[i]);
-             csd_wind = convert_u_v_to_wind(it->second.pd_u.csd_na[i],
-                                            it->second.pd_v.csd_na[i]);
+            fwind = convert_u_v_to_wind(it->second.uf_na[i], it->second.vf_na[i]);
+            owind = convert_u_v_to_wind(it->second.uo_na[i], it->second.vo_na[i]);
 
-            // No climo mean and standard deviation in the input VL1L2 lines,
-            // so just fill with bad data.
-            if(!check_fo_thresh(fcst_wind, obs_wind, cmn_wind, csd_wind,
-                                job.out_fcst_wind_thresh, job.out_obs_wind_thresh,
-                                job.out_wind_logic)) {
+            if(!check_fo_thresh(fwind, j.out_fcst_wind_thresh,
+                                owind, j.out_obs_wind_thresh,
+                                j.out_wind_logic)) {
                mlog << Debug(4) << "aggr_mpr_wind_lines() -> "
                     << "skipping vector forecast ("
-                    << it->second.pd_u.f_na[i] << ", " << it->second.pd_v.f_na[i]
-                    << ") wind speed threshold (" << fcst_wind << " "
-                    << job.out_fcst_wind_thresh.get_str()
+                    << it->second.uf_na[i] << ", " << it->second.vf_na[i]
+                    << ") wind speed threshold (" << fwind << " "
+                    << j.out_fcst_wind_thresh.get_str()
                     << ") and vector observation ("
-                    << it->second.pd_u.o_na[i] << ", " << it->second.pd_v.o_na[i]
-                    << ") wind speed threshold (" << obs_wind << " "
-                    << job.out_obs_wind_thresh.get_str()
-                    << ") with " << setlogic_to_string(job.out_wind_logic)
+                    << it->second.uo_na[i] << ", " << it->second.vo_na[i]
+                    << ") wind speed threshold (" << owind << " "
+                    << j.out_obs_wind_thresh.get_str()
+                    << ") with " << setlogic_to_string(j.out_wind_logic)
                     << " logic for header:\n"
                     << it->second.hdr_sa[i] << "\n";
                continue;
@@ -2055,34 +2043,34 @@ void aggr_mpr_wind_lines(LineDataFile &f, STATAnalysisJob &job,
          // Keep running partial sums of matches
          //
          v_info.vcount      = 1;
-         v_info.uf_bar      = it->second.pd_u.f_na[i];
-         v_info.vf_bar      = it->second.pd_v.f_na[i];
-         v_info.uo_bar      = it->second.pd_u.o_na[i];
-         v_info.vo_bar      = it->second.pd_v.o_na[i];
-         v_info.uvfo_bar    = it->second.pd_u.f_na[i]*it->second.pd_u.o_na[i] +
-                              it->second.pd_v.f_na[i]*it->second.pd_v.o_na[i];
-         v_info.uvff_bar    = it->second.pd_u.f_na[i]*it->second.pd_u.f_na[i] +
-                              it->second.pd_v.f_na[i]*it->second.pd_v.f_na[i];
-         v_info.uvoo_bar    = it->second.pd_u.o_na[i]*it->second.pd_u.o_na[i] +
-                              it->second.pd_v.o_na[i]*it->second.pd_v.o_na[i];
-         v_info.f_speed_bar = sqrt(it->second.pd_u.f_na[i]*it->second.pd_u.f_na[i] +
-                                   it->second.pd_v.f_na[i]*it->second.pd_v.f_na[i]);
-         v_info.o_speed_bar = sqrt(it->second.pd_u.o_na[i]*it->second.pd_u.o_na[i] +
-                                   it->second.pd_v.o_na[i]*it->second.pd_v.o_na[i]);
+         v_info.uf_bar      = it->second.uf_na[i];
+         v_info.vf_bar      = it->second.vf_na[i];
+         v_info.uo_bar      = it->second.uo_na[i];
+         v_info.vo_bar      = it->second.vo_na[i];
+         v_info.uvfo_bar    = it->second.uf_na[i]*it->second.uo_na[i] +
+                              it->second.vf_na[i]*it->second.vo_na[i];
+         v_info.uvff_bar    = it->second.uf_na[i]*it->second.uf_na[i] +
+                              it->second.vf_na[i]*it->second.vf_na[i];
+         v_info.uvoo_bar    = it->second.uo_na[i]*it->second.uo_na[i] +
+                              it->second.vo_na[i]*it->second.vo_na[i];
+         v_info.f_speed_bar = sqrt(it->second.uf_na[i]*it->second.uf_na[i] +
+                                   it->second.vf_na[i]*it->second.vf_na[i]);
+         v_info.o_speed_bar = sqrt(it->second.uo_na[i]*it->second.uo_na[i] +
+                                   it->second.vo_na[i]*it->second.vo_na[i]);
          aggr.vl1l2_info += v_info;
 
          //
          // Check for vectors of length zero
          //
-         if((is_eq(it->second.pd_u.f_na[i], 0.0) &&
-             is_eq(it->second.pd_v.f_na[i], 0.0)) ||
-            (is_eq(it->second.pd_u.o_na[i], 0.0) &&
-             is_eq(it->second.pd_v.o_na[i], 0.0))) {
+         if((is_eq(it->second.uf_na[i], 0.0) &&
+             is_eq(it->second.vf_na[i], 0.0)) ||
+            (is_eq(it->second.uo_na[i], 0.0) &&
+             is_eq(it->second.vo_na[i], 0.0))) {
             mlog << Debug(4) << "aggr_mpr_wind_lines() -> "
                  << "angle not defined for zero forecast ("
-                 << it->second.pd_u.f_na[i] << ", " << it->second.pd_v.f_na[i]
+                 << it->second.uf_na[i] << ", " << it->second.vf_na[i]
                  << ") or observation ("
-                 << it->second.pd_u.o_na[i] << ", " << it->second.pd_v.o_na[i]
+                 << it->second.uo_na[i] << ", " << it->second.vo_na[i]
                  << ") vector for header:\n"
                  << it->second.hdr_sa[i] << "\n";
             continue;
@@ -2092,14 +2080,12 @@ void aggr_mpr_wind_lines(LineDataFile &f, STATAnalysisJob &job,
          // Convert to and append unit vectors
          //
          aggr.hdr_sa.add(it->second.hdr_sa[i]);
-         convert_u_v_to_unit(it->second.pd_u.f_na[i],
-                             it->second.pd_v.f_na[i], uf, vf);
-         convert_u_v_to_unit(it->second.pd_u.o_na[i],
-                             it->second.pd_v.o_na[i], uo, vo);
-         aggr.pd_u.add_grid_pair(uf, uo, bad_data_double,
-                                 bad_data_double, default_grid_weight);
-         aggr.pd_v.add_grid_pair(vf, vo, bad_data_double,
-                                 bad_data_double, default_grid_weight);
+         convert_u_v_to_unit(it->second.uf_na[i], it->second.vf_na[i], uf, vf);
+         convert_u_v_to_unit(it->second.uo_na[i], it->second.vo_na[i], uo, vo);
+         aggr.uf_na.add(uf);
+         aggr.vf_na.add(vf);
+         aggr.uo_na.add(uo);
+         aggr.vo_na.add(vo);
       }
 
       //
@@ -2113,7 +2099,7 @@ void aggr_mpr_wind_lines(LineDataFile &f, STATAnalysisJob &job,
 
 ////////////////////////////////////////////////////////////////////////
 
-void aggr_mpr_lines(LineDataFile &f, STATAnalysisJob &job,
+void aggr_mpr_lines(LineDataFile &f, STATAnalysisJob &j,
                     map<ConcatString, AggrMPRInfo> &m,
                     int &n_in, int &n_out) {
    STATLine line;
@@ -2130,9 +2116,9 @@ void aggr_mpr_lines(LineDataFile &f, STATAnalysisJob &job,
 
       n_in++;
 
-      if(job.is_keeper(line)) {
+      if(j.is_keeper(line)) {
 
-         job.dump_stat_line(line);
+         j.dump_stat_line(line);
 
          //
          // Check for expected line type
@@ -2157,29 +2143,28 @@ void aggr_mpr_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          // Build the map key for the current line
          //
-         key = job.get_case_info(line);
+         key = j.get_case_info(line);
 
          //
          // Apply the continuous statistics filtering threshold
          //
-         if((job.out_line_type.has(stat_cnt_str) ||
-             job.out_line_type.has(stat_sl1l2_str)) &&
-            (job.out_fcst_thresh.n() > 0 ||
-             job.out_obs_thresh.n()  > 0)) {
+         if((j.out_line_type.has(stat_cnt_str) ||
+             j.out_line_type.has(stat_sl1l2_str)) &&
+            (j.out_fcst_thresh.n_elements() > 0 ||
+             j.out_obs_thresh.n_elements()  > 0)) {
 
             SingleThresh fst, ost;
-            if(job.out_fcst_thresh.n() > 0) fst = job.out_fcst_thresh[0];
-            if(job.out_obs_thresh.n()  > 0) ost = job.out_obs_thresh[0];
+            if(j.out_fcst_thresh.n_elements() > 0) fst = j.out_fcst_thresh[0];
+            if(j.out_obs_thresh.n_elements()  > 0) ost = j.out_obs_thresh[0];
 
-            if(!check_fo_thresh(cur.fcst, cur.obs, cur.climo_mean, cur.climo_stdev,
-                                fst, ost, job.out_cnt_logic)) {
+            if(!check_fo_thresh(cur.fcst, fst, cur.obs, ost, j.out_cnt_logic)) {
                mlog << Debug(4) << "aggr_mpr_lines() -> "
                     << "skipping forecast ("
-                    << cur.fcst << " " << job.out_fcst_thresh.get_str()
+                    << cur.fcst << " " << j.out_fcst_thresh.get_str()
                     << ") and observation ("
-                    << cur.obs << " " << job.out_obs_thresh.get_str()
+                    << cur.obs << " " << j.out_obs_thresh.get_str()
                     << ") matched pair with "
-                    << setlogic_to_string(job.out_cnt_logic)
+                    << setlogic_to_string(j.out_cnt_logic)
                     << " logic.\n";
                continue;
             }
@@ -2189,22 +2174,16 @@ void aggr_mpr_lines(LineDataFile &f, STATAnalysisJob &job,
          // Add a new map entry, if necessary
          //
          if(m.count(key) == 0) {
-
-            aggr.pd.f_na.clear();
-            aggr.pd.o_na.clear();
-            aggr.pd.cmn_na.clear();
-            aggr.pd.csd_na.clear();
-            aggr.pd.cdf_na.clear();
-            aggr.pd.wgt_na.clear();
-
-            aggr.pd.n_obs = 1;
-            aggr.pd.f_na.add(cur.fcst);
-            aggr.pd.o_na.add(cur.obs);
-            aggr.pd.cmn_na.add(cur.climo_mean);
-            aggr.pd.csd_na.add(cur.climo_stdev);
-            aggr.pd.cdf_na.add(cur.climo_cdf);
-            aggr.pd.wgt_na.add(default_grid_weight);
-
+            aggr.f_na.clear();
+            aggr.o_na.clear();
+            aggr.cmn_na.clear();
+            aggr.csd_na.clear();
+            aggr.cdf_na.clear();
+            aggr.f_na.add(cur.fcst);
+            aggr.o_na.add(cur.obs);
+            aggr.cmn_na.add(cur.climo_mean);
+            aggr.csd_na.add(cur.climo_stdev);
+            aggr.cdf_na.add(cur.climo_cdf);
             aggr.fcst_var = cur.fcst_var;
             aggr.obs_var = cur.obs_var;
             aggr.hdr.clear();
@@ -2215,13 +2194,11 @@ void aggr_mpr_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          else {
 
-            m[key].pd.n_obs++;
-            m[key].pd.f_na.add(cur.fcst);
-            m[key].pd.o_na.add(cur.obs);
-            m[key].pd.cmn_na.add(cur.climo_mean);
-            m[key].pd.csd_na.add(cur.climo_stdev);
-            m[key].pd.cdf_na.add(cur.climo_cdf);
-            m[key].pd.wgt_na.add(default_grid_weight);
+            m[key].f_na.add(cur.fcst);
+            m[key].o_na.add(cur.obs);
+            m[key].cmn_na.add(cur.climo_mean);
+            m[key].csd_na.add(cur.climo_stdev);
+            m[key].cdf_na.add(cur.climo_cdf);
 
             //
             // Only aggregate consistent variable names
@@ -2251,7 +2228,7 @@ void aggr_mpr_lines(LineDataFile &f, STATAnalysisJob &job,
 
 ////////////////////////////////////////////////////////////////////////
 
-void aggr_isc_lines(LineDataFile &ldf, STATAnalysisJob &job,
+void aggr_isc_lines(LineDataFile &ldf, STATAnalysisJob &j,
                     map<ConcatString, AggrISCInfo> &m,
                     int &n_in, int &n_out) {
    STATLine line;
@@ -2271,9 +2248,9 @@ void aggr_isc_lines(LineDataFile &ldf, STATAnalysisJob &job,
 
       n_in++;
 
-      if(job.is_keeper(line)) {
+      if(j.is_keeper(line)) {
 
-         job.dump_stat_line(line);
+         j.dump_stat_line(line);
 
          if(line.type() != stat_isc) {
             mlog << Error << "\naggr_isc_lines() -> "
@@ -2298,7 +2275,7 @@ void aggr_isc_lines(LineDataFile &ldf, STATAnalysisJob &job,
          //
          // Build the map key for the current line
          //
-         key = job.get_case_info(line);
+         key = j.get_case_info(line);
 
          //
          // Add a new map entry, if necessary
@@ -2413,7 +2390,7 @@ void aggr_isc_lines(LineDataFile &ldf, STATAnalysisJob &job,
          baser_fbias_sum = 0.0;
 
          // Loop through all scores for this scale
-         for(k=0; k<it->second.total_na[i].n(); k++) {
+         for(k=0; k<it->second.total_na[i].n_elements(); k++) {
 
             // Compute the weight for each score to be aggregated
             // based on the number of points it represents
@@ -2507,9 +2484,10 @@ void aggr_isc_lines(LineDataFile &ldf, STATAnalysisJob &job,
 
 ////////////////////////////////////////////////////////////////////////
 
-void aggr_ecnt_lines(LineDataFile &f, STATAnalysisJob &job,
+void aggr_ecnt_lines(LineDataFile &f, STATAnalysisJob &j,
                      map<ConcatString, AggrENSInfo> &m,
                      int &n_in, int &n_out) {
+
    STATLine line;
    AggrENSInfo aggr;
    ECNTData cur;
@@ -2526,13 +2504,13 @@ void aggr_ecnt_lines(LineDataFile &f, STATAnalysisJob &job,
 
       n_in++;
 
-      if(job.is_keeper(line)) {
+      if(j.is_keeper(line)) {
 
-         job.dump_stat_line(line);
+         j.dump_stat_line(line);
 
          if(line.type() != stat_ecnt) {
             mlog << Error << "\naggr_ecnt_lines() -> "
-                 << "should only encounter ensemble continuous statistics "
+                 << "should only encounter ranked histogram "
                  << "(ECNT) line types.\n"
                  << "ERROR occurred on STAT line:\n" << line << "\n\n";
             throw(1);
@@ -2546,7 +2524,7 @@ void aggr_ecnt_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          // Build the map key for the current line
          //
-         key = job.get_case_info(line);
+         key = j.get_case_info(line);
 
          //
          // Add a new map entry, if necessary
@@ -2573,9 +2551,9 @@ void aggr_ecnt_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          m[key].ens_pd.crps_na.add(cur.crps);
          m[key].ens_pd.ign_na.add(cur.ign);
-         m[key].ens_pd.var_na.add(square(cur.spread));
-         m[key].ens_pd.var_oerr_na.add(square(cur.spread_oerr));
-         m[key].ens_pd.var_plus_oerr_na.add(square(cur.spread_plus_oerr));
+         m[key].ens_pd.spread_na.add(cur.spread);
+         m[key].ens_pd.spread_oerr_na.add(cur.spread_oerr);
+         m[key].ens_pd.spread_plus_oerr_na.add(cur.spread_plus_oerr);
          m[key].ens_pd.wgt_na.add(cur.total);
 
          //
@@ -2646,98 +2624,7 @@ void aggr_ecnt_lines(LineDataFile &f, STATAnalysisJob &job,
 
 ////////////////////////////////////////////////////////////////////////
 
-void aggr_rps_lines(LineDataFile &f, STATAnalysisJob &job,
-                    map<ConcatString, AggrRPSInfo> &m,
-                    int &n_in, int &n_out) {
-   STATLine line;
-   AggrRPSInfo aggr;
-   RPSInfo cur;
-   ConcatString key;
-   map<ConcatString, AggrRPSInfo>::iterator it;
-
-   //
-   // Process the STAT lines
-   //
-   while(f >> line) {
-
-      if(line.is_header()) continue;
-
-      n_in++;
-
-      if(job.is_keeper(line)) {
-
-         job.dump_stat_line(line);
-
-         //
-         // Check for expected line type
-         //
-         if(line.type() != stat_rps) {
-            mlog << Error << "\naggr_rps_lines() -> "
-                 << "should only encounter ranked probability score "
-                 << "(RPS) line types.\n"
-                 << "ERROR occurred on STAT line:\n" << line << "\n\n";
-            throw(1);
-         }
-
-         //
-         // Parse the current RPS line
-         //
-         parse_rps_line(line, cur);
-
-         //
-         // Build the map key for the current line
-         //
-         key = job.get_case_info(line);
-
-         //
-         // Add a new map entry, if necessary
-         //
-         if(m.count(key) == 0) {
-            aggr.rps_info = cur;
-            aggr.hdr.clear();
-            m[key] = aggr;
-         }
-         //
-         // Increment counts in the existing map entry
-         //
-         else {
-
-            //
-            // Check for N_PROB remaining constant
-            //
-            if(m[key].rps_info.n_prob == 0) {
-               m[key].rps_info.n_prob = cur.n_prob;
-            }
-            else if(m[key].rps_info.n_prob != cur.n_prob) {
-               mlog << Error << "\naggr_rps_lines() -> "
-                    << "the \"N_PROB\" column must remain constant ("
-                    << m[key].rps_info.n_prob << " != " << cur.n_prob
-                    << ").  Try setting \"-column_eq N_PROB n\".\n\n";
-               throw(1);
-            }
-
-            //
-            // Aggregate the GRAD partial sums
-            //
-            m[key].rps_info += cur;
-
-         } // end else
-
-         //
-         // Keep track of the unique header column entries
-         //
-         m[key].hdr.add(line);
-
-         n_out++;
-      }
-   } // end while
-
-   return;
-}
-
-////////////////////////////////////////////////////////////////////////
-
-void aggr_rhist_lines(LineDataFile &f, STATAnalysisJob &job,
+void aggr_rhist_lines(LineDataFile &f, STATAnalysisJob &j,
                       map<ConcatString, AggrENSInfo> &m,
                       int &n_in, int &n_out) {
    STATLine line;
@@ -2756,9 +2643,9 @@ void aggr_rhist_lines(LineDataFile &f, STATAnalysisJob &job,
 
       n_in++;
 
-      if(job.is_keeper(line)) {
+      if(j.is_keeper(line)) {
 
-         job.dump_stat_line(line);
+         j.dump_stat_line(line);
 
          if(line.type() != stat_rhist) {
             mlog << Error << "\naggr_rhist_lines() -> "
@@ -2776,7 +2663,7 @@ void aggr_rhist_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          // Build the map key for the current line
          //
-         key = job.get_case_info(line);
+         key = j.get_case_info(line);
 
          //
          // Add a new map entry, if necessary
@@ -2791,10 +2678,10 @@ void aggr_rhist_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          // Check for N_RANK remaining constant
          //
-         if(m[key].ens_pd.rhist_na.n() != cur.n_rank) {
+         if(m[key].ens_pd.rhist_na.n_elements() != cur.n_rank) {
             mlog << Error << "\naggr_rhist_lines() -> "
                  << "the \"N_RANK\" column must remain constant ("
-                 << m[key].ens_pd.rhist_na.n() << " != " << cur.n_rank
+                 << m[key].ens_pd.rhist_na.n_elements() << " != " << cur.n_rank
                  << ").  Try setting \"-column_eq N_RANK n\".\n\n";
             throw(1);
          }
@@ -2807,7 +2694,7 @@ void aggr_rhist_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          // Aggregate the ranked histogram counts
          //
-         for(i=0; i<m[key].ens_pd.rhist_na.n(); i++) {
+         for(i=0; i<m[key].ens_pd.rhist_na.n_elements(); i++) {
             m[key].ens_pd.rhist_na.set(i, m[key].ens_pd.rhist_na[i] + cur.rhist_na[i]);
          }
 
@@ -2825,7 +2712,7 @@ void aggr_rhist_lines(LineDataFile &f, STATAnalysisJob &job,
 
 ////////////////////////////////////////////////////////////////////////
 
-void aggr_phist_lines(LineDataFile &f, STATAnalysisJob &job,
+void aggr_phist_lines(LineDataFile &f, STATAnalysisJob &j,
                       map<ConcatString, AggrENSInfo> &m,
                       int &n_in, int &n_out) {
    STATLine line;
@@ -2844,9 +2731,9 @@ void aggr_phist_lines(LineDataFile &f, STATAnalysisJob &job,
 
       n_in++;
 
-      if(job.is_keeper(line)) {
+      if(j.is_keeper(line)) {
 
-         job.dump_stat_line(line);
+         j.dump_stat_line(line);
 
          if(line.type() != stat_phist) {
             mlog << Error << "\naggr_phist_lines() -> "
@@ -2864,7 +2751,7 @@ void aggr_phist_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          // Build the map key for the current line
          //
-         key = job.get_case_info(line);
+         key = j.get_case_info(line);
 
          //
          // Add a new map entry, if necessary
@@ -2894,7 +2781,7 @@ void aggr_phist_lines(LineDataFile &f, STATAnalysisJob &job,
             //
             // Aggregate the probability integral transform histogram counts
             //
-            for(i=0; i<m[key].ens_pd.phist_na.n(); i++) {
+            for(i=0; i<m[key].ens_pd.phist_na.n_elements(); i++) {
                m[key].ens_pd.phist_na.set(i, m[key].ens_pd.phist_na[i] + cur.phist_na[i]);
             }
          } // end else
@@ -2913,7 +2800,7 @@ void aggr_phist_lines(LineDataFile &f, STATAnalysisJob &job,
 
 ////////////////////////////////////////////////////////////////////////
 
-void aggr_relp_lines(LineDataFile &f, STATAnalysisJob &job,
+void aggr_relp_lines(LineDataFile &f, STATAnalysisJob &j,
                       map<ConcatString, AggrENSInfo> &m,
                       int &n_in, int &n_out) {
    STATLine line;
@@ -2932,9 +2819,9 @@ void aggr_relp_lines(LineDataFile &f, STATAnalysisJob &job,
 
       n_in++;
 
-      if(job.is_keeper(line)) {
+      if(j.is_keeper(line)) {
 
-         job.dump_stat_line(line);
+         j.dump_stat_line(line);
 
          if(line.type() != stat_relp) {
             mlog << Error << "\naggr_relp_lines() -> "
@@ -2952,7 +2839,7 @@ void aggr_relp_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          // Build the map key for the current line
          //
-         key = job.get_case_info(line);
+         key = j.get_case_info(line);
 
          //
          // Add a new map entry, if necessary
@@ -2970,10 +2857,10 @@ void aggr_relp_lines(LineDataFile &f, STATAnalysisJob &job,
             //
             // Check for N_ENS remaining constant
             //
-            if(m[key].ens_pd.relp_na.n() != cur.n_ens) {
+            if(m[key].ens_pd.relp_na.n_elements() != cur.n_ens) {
                mlog << Error << "\naggr_relp_lines() -> "
                     << "the \"N_ENS\" column must remain constant ("
-                    << m[key].ens_pd.relp_na.n() << " != " << cur.n_ens
+                    << m[key].ens_pd.relp_na.n_elements() << " != " << cur.n_ens
                     << ").  Try setting \"-column_eq N_ENS n\".\n\n";
                throw(1);
             }
@@ -2981,7 +2868,7 @@ void aggr_relp_lines(LineDataFile &f, STATAnalysisJob &job,
             //
             // Aggregate the RELP histogram counts
             //
-            for(i=0; i<m[key].ens_pd.relp_na.n(); i++) {
+            for(i=0; i<m[key].ens_pd.relp_na.n_elements(); i++) {
                m[key].ens_pd.relp_na.set(i, m[key].ens_pd.relp_na[i] + cur.relp_na[i]);
             }
          } // end else
@@ -3000,7 +2887,7 @@ void aggr_relp_lines(LineDataFile &f, STATAnalysisJob &job,
 
 ////////////////////////////////////////////////////////////////////////
 
-void aggr_orank_lines(LineDataFile &f, STATAnalysisJob &job,
+void aggr_orank_lines(LineDataFile &f, STATAnalysisJob &j,
                       map<ConcatString, AggrENSInfo> &m,
                       int &n_in, int &n_out) {
    STATLine line;
@@ -3020,9 +2907,9 @@ void aggr_orank_lines(LineDataFile &f, STATAnalysisJob &job,
 
       n_in++;
 
-      if(job.is_keeper(line)) {
+      if(j.is_keeper(line)) {
 
-         job.dump_stat_line(line);
+         j.dump_stat_line(line);
 
          if(line.type() != stat_orank) {
             mlog << Error << "\naggr_orank_lines() -> "
@@ -3040,7 +2927,7 @@ void aggr_orank_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          // Build the map key for the current line
          //
-         key = job.get_case_info(line);
+         key = j.get_case_info(line);
 
          //
          // Skip missing data
@@ -3055,10 +2942,10 @@ void aggr_orank_lines(LineDataFile &f, STATAnalysisJob &job,
             aggr.ens_pd.obs_error_flag = !is_bad_data(cur.ens_mean_oerr);
             aggr.ens_pd.set_ens_size(cur.n_ens);
             for(i=0; i<cur.n_ens+1; i++) aggr.ens_pd.rhist_na.add(0);
-            aggr.ens_pd.phist_bin_size = job.out_bin_size;
+            aggr.ens_pd.phist_bin_size = j.out_bin_size;
             n_bin = ceil(1.0/aggr.ens_pd.phist_bin_size);
             for(i=0; i<n_bin; i++) aggr.ens_pd.phist_na.add(0);
-            aggr.ens_pd.ssvar_bin_size = job.out_bin_size;
+            aggr.ens_pd.ssvar_bin_size = j.out_bin_size;
             aggr.hdr.clear();
             m[key] = aggr;
          }
@@ -3078,14 +2965,13 @@ void aggr_orank_lines(LineDataFile &f, STATAnalysisJob &job,
          // ensemble spread, ensemble member values, and
          // valid ensemble count
          //
-         m[key].ens_pd.add_grid_obs(cur.obs, cur.climo,
-                                    bad_data_double, default_grid_weight);
+         m[key].ens_pd.add_obs(0.0, 0.0, cur.obs, cur.climo, bad_data_double);
          m[key].ens_pd.skip_ba.add(false);
          m[key].ens_pd.n_pair++;
          m[key].ens_pd.r_na.add(cur.rank);
-         m[key].ens_pd.var_na.add(square(cur.spread));
-         m[key].ens_pd.var_oerr_na.add(square(cur.spread_oerr));
-         m[key].ens_pd.var_plus_oerr_na.add(square(cur.spread_plus_oerr));
+         m[key].ens_pd.spread_na.add(cur.spread);
+         m[key].ens_pd.spread_oerr_na.add(cur.spread_oerr);
+         m[key].ens_pd.spread_plus_oerr_na.add(cur.spread_plus_oerr);
          m[key].ens_pd.mn_na.add(cur.ens_mean);
          m[key].ens_pd.mn_oerr_na.add(cur.ens_mean_oerr);
 
@@ -3119,7 +3005,7 @@ void aggr_orank_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          if(!is_bad_data(cur.pit)) {
             i = (is_eq(cur.pit, 1.0) ?
-                 m[key].ens_pd.phist_na.n() - 1:
+                 m[key].ens_pd.phist_na.n_elements() - 1:
                  floor(cur.pit / m[key].ens_pd.phist_bin_size));
             m[key].ens_pd.phist_na.set(i, m[key].ens_pd.phist_na[i] + 1);
          }
@@ -3138,7 +3024,7 @@ void aggr_orank_lines(LineDataFile &f, STATAnalysisJob &job,
 
 ////////////////////////////////////////////////////////////////////////
 
-void aggr_ssvar_lines(LineDataFile &f, STATAnalysisJob &job,
+void aggr_ssvar_lines(LineDataFile &f, STATAnalysisJob &j,
                       map<ConcatString, AggrSSVARInfo> &m,
                       int &n_in, int &n_out) {
    STATLine line;
@@ -3157,9 +3043,9 @@ void aggr_ssvar_lines(LineDataFile &f, STATAnalysisJob &job,
 
       n_in++;
 
-      if(job.is_keeper(line)) {
+      if(j.is_keeper(line)) {
 
-         job.dump_stat_line(line);
+         j.dump_stat_line(line);
 
          if(line.type() != stat_ssvar) {
             mlog << Error << "\naggr_ssvar_lines() -> "
@@ -3206,7 +3092,7 @@ void aggr_ssvar_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          // Build the case map and bin map keys for the current line
          //
-         case_key = job.get_case_info(line);
+         case_key = j.get_case_info(line);
          bin_key << cs_erase << cur.var_min << ":" << cur.var_max;
 
          //
@@ -3245,7 +3131,7 @@ void aggr_ssvar_lines(LineDataFile &f, STATAnalysisJob &job,
 
 ////////////////////////////////////////////////////////////////////////
 
-void aggr_time_series_lines(LineDataFile &f, STATAnalysisJob &job,
+void aggr_time_series_lines(LineDataFile &f, STATAnalysisJob &j,
                             map<ConcatString, AggrTimeSeriesInfo> &m,
                             int &n_in, int &n_out) {
    STATLine line;
@@ -3263,14 +3149,14 @@ void aggr_time_series_lines(LineDataFile &f, STATAnalysisJob &job,
 
       n_in++;
 
-      if(job.is_keeper(line)) {
+      if(j.is_keeper(line)) {
 
-         job.dump_stat_line(line);
+         j.dump_stat_line(line);
 
          //
          // Build the map key for the current line
          //
-         key = job.get_case_info(line);
+         key = j.get_case_info(line);
 
          //
          // Add a new map entry, if necessary
@@ -3330,8 +3216,8 @@ void aggr_time_series_lines(LineDataFile &f, STATAnalysisJob &job,
          //
          // Add forecast and observation values
          //
-         m[key].f_na.add(atof(line.get_item(job.column[0].c_str())));
-         m[key].o_na.add(atof(line.get_item(job.column[1].c_str())));
+         m[key].f_na.add(atof(line.get_item(j.column[0].c_str())));
+         m[key].o_na.add(atof(line.get_item(j.column[1].c_str())));
 
          //
          // Keep track of the unique header column entries
@@ -3347,26 +3233,31 @@ void aggr_time_series_lines(LineDataFile &f, STATAnalysisJob &job,
 
 ////////////////////////////////////////////////////////////////////////
 
-void mpr_to_ctc(STATAnalysisJob &job, const AggrMPRInfo &info,
+void mpr_to_ctc(STATAnalysisJob &j, const AggrMPRInfo &info,
                 CTSInfo &cts_info) {
    int i;
-   int n = info.pd.f_na.n();
-   SingleThresh ft = job.out_fcst_thresh[0];
-   SingleThresh ot = job.out_obs_thresh[0];
+   int n = info.f_na.n_elements();
+   SingleThresh ft = j.out_fcst_thresh[0];
+   SingleThresh ot = j.out_obs_thresh[0];
 
    //
    // Initialize
    //
    cts_info.clear();
-   cts_info.fthresh = ft;
-   cts_info.othresh = ot;
 
    //
-   // Populate the contingency table
+   // Update the contingency table counts
    //
    for(i=0; i<n; i++) {
-      cts_info.add(info.pd.f_na[i], info.pd.o_na[i],
-                   info.pd.cmn_na[i], info.pd.csd_na[i]);
+
+      if(      ft.check(info.f_na[i]) &&  ot.check(info.o_na[i]))
+         cts_info.cts.inc_fy_oy();
+      else if( ft.check(info.f_na[i]) && !ot.check(info.o_na[i]))
+         cts_info.cts.inc_fy_on();
+      else if(!ft.check(info.f_na[i]) &&  ot.check(info.o_na[i]))
+         cts_info.cts.inc_fn_oy();
+      else if(!ft.check(info.f_na[i]) && !ot.check(info.o_na[i]))
+         cts_info.cts.inc_fn_on();
    }
 
    return;
@@ -3374,7 +3265,7 @@ void mpr_to_ctc(STATAnalysisJob &job, const AggrMPRInfo &info,
 
 ////////////////////////////////////////////////////////////////////////
 
-void mpr_to_cts(STATAnalysisJob &job, const AggrMPRInfo &info,
+void mpr_to_cts(STATAnalysisJob &j, const AggrMPRInfo &info,
                 CTSInfo &cts_info, const char *tmp_dir,
                 gsl_rng *rng_ptr) {
    CTSInfo *cts_info_ptr = (CTSInfo *) 0;
@@ -3387,36 +3278,36 @@ void mpr_to_cts(STATAnalysisJob &job, const AggrMPRInfo &info,
    //
    // If there are no matched pairs to process, return
    //
-   if(info.pd.f_na.n() == 0 || info.pd.o_na.n() == 0) return;
+   if(info.f_na.n_elements() == 0 || info.o_na.n_elements() == 0) return;
 
    //
    // Store the out_alpha value
    //
    cts_info.allocate_n_alpha(1);
-   cts_info.alpha[0] = job.out_alpha;
+   cts_info.alpha[0] = j.out_alpha;
 
    //
    // Store the thresholds
    //
-   cts_info.fthresh = job.out_fcst_thresh[0];
-   cts_info.othresh = job.out_obs_thresh[0];
+   cts_info.fthresh = j.out_fcst_thresh[0];
+   cts_info.othresh = j.out_obs_thresh[0];
 
    //
    // Compute the counts, stats, normal confidence intervals, and
    // bootstrap confidence intervals
    //
    cts_info_ptr = &cts_info;
-   if(job.boot_interval == boot_bca_flag) {
-      compute_cts_stats_ci_bca(rng_ptr, info.pd,
-         job.n_boot_rep,
+   if(j.boot_interval == boot_bca_flag) {
+      compute_cts_stats_ci_bca(rng_ptr, info.f_na, info.o_na,
+         j.n_boot_rep,
          cts_info_ptr, 1, 1,
-         job.rank_corr_flag, tmp_dir);
+         j.rank_corr_flag, tmp_dir);
    }
    else {
-      compute_cts_stats_ci_perc(rng_ptr, info.pd,
-         job.n_boot_rep, job.boot_rep_prop,
+      compute_cts_stats_ci_perc(rng_ptr, info.f_na, info.o_na,
+         j.n_boot_rep, j.boot_rep_prop,
          cts_info_ptr, 1, 1,
-         job.rank_corr_flag, tmp_dir);
+         j.rank_corr_flag, tmp_dir);
    }
 
    return;
@@ -3424,10 +3315,10 @@ void mpr_to_cts(STATAnalysisJob &job, const AggrMPRInfo &info,
 
 ////////////////////////////////////////////////////////////////////////
 
-void mpr_to_mctc(STATAnalysisJob &job, const AggrMPRInfo &info,
+void mpr_to_mctc(STATAnalysisJob &j, const AggrMPRInfo &info,
                  MCTSInfo &mcts_info) {
    int i;
-   int n = info.pd.f_na.n();
+   int n = info.f_na.n_elements();
 
    //
    // Initialize
@@ -3437,21 +3328,21 @@ void mpr_to_mctc(STATAnalysisJob &job, const AggrMPRInfo &info,
    //
    // Setup
    //
-   mcts_info.cts.set_size(job.out_fcst_thresh.n() + 1);
-   mcts_info.set_fthresh(job.out_fcst_thresh);
-   mcts_info.set_othresh(job.out_obs_thresh);
+   mcts_info.cts.set_size(j.out_fcst_thresh.n_elements() + 1);
+   mcts_info.set_fthresh(j.out_fcst_thresh);
+   mcts_info.set_othresh(j.out_obs_thresh);
 
    //
    // Update the contingency table counts
    //
-   for(i=0; i<n; i++) mcts_info.add(info.pd.f_na[i], info.pd.o_na[i]);
+   for(i=0; i<n; i++) mcts_info.add(info.f_na[i], info.o_na[i]);
 
    return;
 }
 
 ////////////////////////////////////////////////////////////////////////
 
-void mpr_to_mcts(STATAnalysisJob &job, const AggrMPRInfo &info,
+void mpr_to_mcts(STATAnalysisJob &j, const AggrMPRInfo &info,
                  MCTSInfo &mcts_info, const char *tmp_dir,
                  gsl_rng *rng_ptr) {
 
@@ -3463,36 +3354,36 @@ void mpr_to_mcts(STATAnalysisJob &job, const AggrMPRInfo &info,
    //
    // If there are no matched pairs to process, return
    //
-   if(info.pd.f_na.n() == 0 || info.pd.o_na.n() == 0) return;
+   if(info.f_na.n_elements() == 0 || info.o_na.n_elements() == 0) return;
 
    //
    // Setup
    //
-   mcts_info.cts.set_size(job.out_fcst_thresh.n() + 1);
-   mcts_info.set_fthresh(job.out_fcst_thresh);
-   mcts_info.set_othresh(job.out_obs_thresh);
+   mcts_info.cts.set_size(j.out_fcst_thresh.n_elements() + 1);
+   mcts_info.set_fthresh(j.out_fcst_thresh);
+   mcts_info.set_othresh(j.out_obs_thresh);
 
    //
    // Store the out_alpha value
    //
    mcts_info.allocate_n_alpha(1);
-   mcts_info.alpha[0] = job.out_alpha;
+   mcts_info.alpha[0] = j.out_alpha;
 
    //
    // Compute the counts, stats, normal confidence intervals, and
    // bootstrap confidence intervals
    //
-   if(job.boot_interval == boot_bca_flag) {
-      compute_mcts_stats_ci_bca(rng_ptr, info.pd,
-         job.n_boot_rep,
+   if(j.boot_interval == boot_bca_flag) {
+      compute_mcts_stats_ci_bca(rng_ptr, info.f_na, info.o_na,
+         j.n_boot_rep,
          mcts_info, 1,
-         job.rank_corr_flag, tmp_dir);
+         j.rank_corr_flag, tmp_dir);
    }
    else {
-      compute_mcts_stats_ci_perc(rng_ptr, info.pd,
-         job.n_boot_rep, job.boot_rep_prop,
+      compute_mcts_stats_ci_perc(rng_ptr, info.f_na, info.o_na,
+         j.n_boot_rep, j.boot_rep_prop,
          mcts_info, 1,
-         job.rank_corr_flag, tmp_dir);
+         j.rank_corr_flag, tmp_dir);
    }
 
    return;
@@ -3500,11 +3391,12 @@ void mpr_to_mcts(STATAnalysisJob &job, const AggrMPRInfo &info,
 
 ////////////////////////////////////////////////////////////////////////
 
-void mpr_to_cnt(STATAnalysisJob &job, const AggrMPRInfo &info,
+void mpr_to_cnt(STATAnalysisJob &j, const AggrMPRInfo &info,
                 CNTInfo &cnt_info, const char *tmp_dir,
                 gsl_rng *rng_ptr) {
    bool precip_flag = false;
    NumArray w_na;
+   int i;
 
    //
    // Initialize
@@ -3514,7 +3406,7 @@ void mpr_to_cnt(STATAnalysisJob &job, const AggrMPRInfo &info,
    //
    // If there are no matched pairs to process, return
    //
-   if(info.pd.f_na.n() == 0 || info.pd.o_na.n() == 0) return;
+   if(info.f_na.n_elements() == 0 || info.o_na.n_elements() == 0) return;
 
    //
    // Set the precip flag based on fcst_var and obs_var
@@ -3526,22 +3418,29 @@ void mpr_to_cnt(STATAnalysisJob &job, const AggrMPRInfo &info,
    // Store the out_alpha value
    //
    cnt_info.allocate_n_alpha(1);
-   cnt_info.alpha[0] = job.out_alpha;
+   cnt_info.alpha[0] = j.out_alpha;
+
+   //
+   // Set weights to default values
+   //
+   for(i=0; i<info.f_na.n_elements(); i++) w_na.add(default_grid_weight);
 
    //
    // Compute the stats, normal confidence intervals, and
    // bootstrap confidence intervals
    //
-   if(job.boot_interval == boot_bca_flag) {
+   if(j.boot_interval == boot_bca_flag) {
 
-      compute_cnt_stats_ci_bca(rng_ptr, info.pd,
-         precip_flag, job.rank_corr_flag, job.n_boot_rep,
+      compute_cnt_stats_ci_bca(rng_ptr,
+         info.f_na, info.o_na, info.cmn_na, w_na,
+         precip_flag, j.rank_corr_flag, j.n_boot_rep,
          cnt_info, tmp_dir);
    }
    else {
 
-      compute_cnt_stats_ci_perc(rng_ptr, info.pd,
-         precip_flag, job.rank_corr_flag, job.n_boot_rep, job.boot_rep_prop,
+      compute_cnt_stats_ci_perc(rng_ptr,
+         info.f_na, info.o_na, info.cmn_na, w_na,
+         precip_flag, j.rank_corr_flag, j.n_boot_rep, j.boot_rep_prop,
          cnt_info, tmp_dir);
    }
 
@@ -3550,10 +3449,10 @@ void mpr_to_cnt(STATAnalysisJob &job, const AggrMPRInfo &info,
 
 ////////////////////////////////////////////////////////////////////////
 
-void mpr_to_psum(STATAnalysisJob &job, const AggrMPRInfo &info,
+void mpr_to_psum(STATAnalysisJob &j, const AggrMPRInfo &info,
                  SL1L2Info &s_info) {
    int i;
-   int n = info.pd.f_na.n();
+   int n = info.f_na.n_elements();
    int scount, sacount;
    double f, o, c;
    double f_sum,  o_sum,  ff_sum,  oo_sum,  fo_sum;
@@ -3577,9 +3476,9 @@ void mpr_to_psum(STATAnalysisJob &job, const AggrMPRInfo &info,
       //
       // Update the counts for this matched pair
       //
-      f = info.pd.f_na[i];
-      o = info.pd.o_na[i];
-      c = info.pd.cmn_na[i];
+      f = info.f_na[i];
+      o = info.o_na[i];
+      c = info.cmn_na[i];
 
       f_sum       += f;
       o_sum       += o;
@@ -3627,9 +3526,10 @@ void mpr_to_psum(STATAnalysisJob &job, const AggrMPRInfo &info,
 
 ////////////////////////////////////////////////////////////////////////
 
-void mpr_to_pct(STATAnalysisJob &job, const AggrMPRInfo &info,
+void mpr_to_pct(STATAnalysisJob &j, const AggrMPRInfo &info,
                 PCTInfo &pct_info) {
    int pstd_flag;
+   NumArray c_na;
 
    //
    // Initialize
@@ -3639,23 +3539,28 @@ void mpr_to_pct(STATAnalysisJob &job, const AggrMPRInfo &info,
    //
    // If there are no matched pairs to process, return
    //
-   if(info.pd.f_na.n() == 0 || info.pd.o_na.n() == 0) return;
+   if(info.f_na.n_elements() == 0 || info.o_na.n_elements() == 0) return;
 
    //
    // Set up the PCTInfo thresholds and alpha values
    //
-   pct_info.fthresh = job.out_fcst_thresh;
-   pct_info.othresh = job.out_obs_thresh[0];
+   pct_info.fthresh = j.out_fcst_thresh;
+   pct_info.othresh = j.out_obs_thresh[0];
    pct_info.allocate_n_alpha(1);
-   pct_info.alpha[0] = job.out_alpha;
+   pct_info.alpha[0] = j.out_alpha;
 
-   if(job.out_line_type.has(stat_pstd_str)) pstd_flag = 1;
+   if(j.out_line_type.has(stat_pstd_str)) pstd_flag = 1;
    else                                   pstd_flag = 0;
+
+   //
+   // Compute the climatological probabilities
+   //
+   c_na = derive_climo_prob(info.cmn_na, info.csd_na, pct_info.othresh);
 
    //
    // Compute the probabilistic counts and statistics
    //
-   compute_pctinfo(info.pd, pstd_flag, pct_info);
+   compute_pctinfo(info.f_na, info.o_na, c_na, pstd_flag, pct_info);
 
    return;
 }
@@ -3669,7 +3574,7 @@ double compute_vif(NumArray &na) {
    corr = stats_lag1_autocorrelation(na);
 
    // Compute the variance inflation factor
-   vif = 1 + 2.0*fabs(corr) - 2.0*fabs(corr)/na.n();
+   vif = 1 + 2.0*fabs(corr) - 2.0*fabs(corr)/na.n_elements();
 
    return(vif);
 }

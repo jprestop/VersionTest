@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -17,7 +17,6 @@
 
 
 #include "vx_grid.h"
-#include "vx_python3_utils.h"
 
 
 extern "C" {
@@ -30,7 +29,7 @@ extern "C" {
 ////////////////////////////////////////////////////////////////////////
 
 
-extern void grid_from_python_dict(const Python3_Dict & dict, Grid & grid_out);
+extern void grid_from_python_dict(PyObject * dict, Grid & grid_out);
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -40,4 +39,5 @@ extern void grid_from_python_dict(const Python3_Dict & dict, Grid & grid_out);
 
 
 ////////////////////////////////////////////////////////////////////////
+
 

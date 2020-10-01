@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -28,8 +28,6 @@ using namespace std;
 
 ////////////////////////////////////////////////////////////////////////
 
-
-static const int default_inten_perc_value = 99;
 
 static const int default_min_volume = 2000;
 
@@ -94,17 +92,20 @@ void MtdConfigInfo::clear()
    fcst_conv_radius = bad_data_int;
    obs_conv_radius = bad_data_int;
 
-   fcst_conv_time_beg = bad_data_int;
-   obs_conv_time_beg = bad_data_int;
-
    fcst_conv_thresh.clear();
    obs_conv_thresh.clear();
 
-   fcst_conv_time_end = bad_data_int;
-   obs_conv_time_end = bad_data_int;
-
    fcst_vld_thresh = bad_data_double;
    obs_vld_thresh = bad_data_double;
+
+   fcst_area_thresh.clear();
+   obs_area_thresh.clear();
+
+   fcst_inten_perc_value = bad_data_int;
+   obs_inten_perc_value = bad_data_int;
+
+   fcst_inten_perc_thresh.clear();
+   obs_inten_perc_thresh.clear();
 
    fcst_merge_thresh.clear();
    obs_merge_thresh.clear();
@@ -131,6 +132,8 @@ void MtdConfigInfo::clear()
    start_time_delta_wt    = bad_data_double;
    end_time_delta_wt      = bad_data_double;
 
+   // inten_perc_value = bad_data_int;
+
    space_centroid_dist_if = (PiecewiseLinear *) 0;
    time_centroid_delta_if = (PiecewiseLinear *) 0;
    speed_delta_if         = (PiecewiseLinear *) 0;
@@ -149,8 +152,6 @@ void MtdConfigInfo::clear()
    nc_info.set_all_true();
 
    ct_stats_flag   = false;
-
-   inten_perc_value = default_inten_perc_value;
 
    min_volume = default_min_volume;
 
@@ -297,7 +298,7 @@ void MtdConfigInfo::process_config(GrdFileType ftype, GrdFileType otype)
    obs_info->set_dict(*(obs_dict->lookup_dictionary(conf_key_field)));
 
       // Dump the contents of the VarInfo objects
-//
+// 
 //       if(mlog.verbosity_level() >= 5) {
 //       mlog << Debug(5)
 //            << "Parsed forecast field:\n";
@@ -333,16 +334,6 @@ void MtdConfigInfo::process_config(GrdFileType ftype, GrdFileType otype)
       exit(1);
    }
 
-      // Conf: fcst.conv_time_window
-
-   dict = fcst_dict->lookup_dictionary(conf_key_conv_time_window);
-   parse_conf_range_int(dict, fcst_conv_time_beg, fcst_conv_time_end);
-
-      // Conf: obs.conv_time_window
-
-   dict = obs_dict->lookup_dictionary(conf_key_conv_time_window);
-   parse_conf_range_int(dict, obs_conv_time_beg, obs_conv_time_end);
-
       // Conf: fcst.conv_thresh and obs.conv_thresh
 
    fcst_conv_thresh = fcst_dict->lookup_thresh(conf_key_conv_thresh);
@@ -352,6 +343,21 @@ void MtdConfigInfo::process_config(GrdFileType ftype, GrdFileType otype)
 
    // fcst_vld_thresh = fcst_dict->lookup_double(conf_key_vld_thresh);
    // obs_vld_thresh  = obs_dict->lookup_double(conf_key_vld_thresh);
+
+      // Conf: fcst.area_thresh and obs.area_thresh
+
+   // fcst_area_thresh = fcst_dict->lookup_thresh(conf_key_area_thresh);
+   // obs_area_thresh  = obs_dict->lookup_thresh(conf_key_area_thresh);
+
+      // Conf: fcst.inten_perc and obs.inten_perc
+
+   // fcst_inten_perc_value = fcst_dict->lookup_int(conf_key_inten_perc_value);
+   // obs_inten_perc_value  = obs_dict->lookup_int(conf_key_inten_perc_value);
+
+      // Conf: fcst.inten_perc_thresh and obs.inten_perc_thresh
+
+   // fcst_inten_perc_thresh = fcst_dict->lookup_thresh(conf_key_inten_perc_thresh);
+   // obs_inten_perc_thresh  = obs_dict->lookup_thresh(conf_key_inten_perc_thresh);
 
       // Conf: fcst.merge_thresh and obs.merge_thresh
 
@@ -425,6 +431,15 @@ void MtdConfigInfo::process_config(GrdFileType ftype, GrdFileType otype)
    start_time_delta_wt    = dict->lookup_double(conf_key_start_time_delta);
    end_time_delta_wt      = dict->lookup_double(conf_key_end_time_delta);
 
+      // Check that intensity_percentile >= 0 and <= 100
+/*
+   if(inten_perc_value < 0 || inten_perc_value > 100) {
+      mlog << Error << "\nMtdConfigInfo::process_config() -> "
+           << "inten_perc_value (" << inten_perc_value
+           << ") must be set between 0 and 100.\n\n";
+      exit(1);
+   }
+*/
       // Check that the fuzzy engine weights are non-negative
 
    status =    (space_centroid_dist_wt >= 0.0)
@@ -521,19 +536,6 @@ void MtdConfigInfo::process_config(GrdFileType ftype, GrdFileType otype)
       // Conf: output_prefix
 
    output_prefix = conf.lookup_string(conf_key_output_prefix);
-
-      // Conf: inten_perc_value
-
-   inten_perc_value = conf.lookup_int(conf_key_inten_perc_value);
-
-      // Check that intensity_percentile >= 0 and <= 100
-
-   if(inten_perc_value < 0 || inten_perc_value > 100) {
-      mlog << Error << "\nMtdConfigInfo::process_config() -> "
-           << "inten_perc_value (" << inten_perc_value
-           << ") must be set between 0 and 100.\n\n";
-      exit(1);
-   }
 
       // Conf: min_volume
 
@@ -711,6 +713,7 @@ table.set_entry(row, c++, s.text());
 
 table.set_entry(row, c++, sec_to_hhmmss(fcst_info->lead()));
 
+
    //  fcst valid
 
 table.set_entry(row, c++, unix_to_yyyymmdd_hhmmss(fcst_info->valid()));
@@ -727,14 +730,6 @@ table.set_entry(row, c++, unix_to_yyyymmdd_hhmmss(obs_info->valid()));
 
 table.set_entry(row, c++, sec_to_hhmmss(delta_t_seconds));
 
-   //  fcst time convolution begin
-
-table.set_entry(row, c++, fcst_conv_time_beg);
-
-   //  fcst time convolution end
-
-table.set_entry(row, c++, fcst_conv_time_end);
-
    //  fcst radius
 
 table.set_entry(row, c++, fcst_conv_radius);
@@ -744,14 +739,6 @@ table.set_entry(row, c++, fcst_conv_radius);
 s = fcst_conv_thresh.get_str();
 
 table.set_entry(row, c++, s.text());
-
-   //  obs time convolution begin
-
-table.set_entry(row, c++, obs_conv_time_beg);
-
-   //  obs time convolution end
-
-table.set_entry(row, c++, obs_conv_time_end);
 
    //  obs radius
 
@@ -765,37 +752,37 @@ table.set_entry(row, c++, s.text());
 
    //  fcst var
 
-s = check_hdr_str(fcst_info->name_attr());
+s = check_hdr_str(fcst_info->name());
 
 table.set_entry(row, c++, s.text());
 
    //  fcst units
 
-s = check_hdr_str(fcst_info->units_attr(), true);
+s = check_hdr_str(fcst_info->units(), true);
 
 table.set_entry(row, c++, s.text());
 
    //  fcst level
 
-s = check_hdr_str(fcst_info->level_attr(), true);
+s = check_hdr_str(fcst_info->level_name());
 
 table.set_entry(row, c++, s.text());
 
    //  obs var
 
-s = check_hdr_str(obs_info->name_attr());
+s = check_hdr_str(obs_info->name());
 
 table.set_entry(row, c++, s.text());
 
    //  obs units
 
-s = check_hdr_str(obs_info->units_attr(), true);
+s = check_hdr_str(obs_info->units(), true);
 
 table.set_entry(row, c++, s.text());
 
    //  obs level
 
-s = check_hdr_str(obs_info->level_attr(), true);
+s = check_hdr_str(obs_info->level_name());
 
 table.set_entry(row, c++, s.text());
 
@@ -913,3 +900,6 @@ return;
 
 
 ////////////////////////////////////////////////////////////////////////
+
+
+

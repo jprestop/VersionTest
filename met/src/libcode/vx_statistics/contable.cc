@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -96,32 +96,6 @@ return ( * this );
 ////////////////////////////////////////////////////////////////////////
 
 
-ContingencyTable & ContingencyTable::operator+=(const ContingencyTable & t)
-
-{
-
-if ( Nrows != t.Nrows || Ncols != t.Ncols )  {
-
-   mlog << Error << "\nContingencyTable::operator+=() -> "
-        << "table dimensions do not match: (" << Nrows << ", " << Ncols
-        << ") != (" << t.Nrows << ", " << t.Ncols << ")\n\n";
-
-   exit ( 1 );
-
-}
-
-if ( E )  {
-   for ( int i=0; i<E->size(); ++i )  (*E)[i] += (*t.E)[i];
-}
-
-return ( * this );
-
-}
-
-
-////////////////////////////////////////////////////////////////////////
-
-
 void ContingencyTable::init_from_scratch()
 {
     E = new vector<int>();
@@ -181,6 +155,8 @@ void ContingencyTable::zero_out()
     
     if ( n == 0 )  return;
     
+    int j;
+    
     E->assign(n, 0);
     
     return;
@@ -197,6 +173,8 @@ void ContingencyTable::dump(ostream & out, int depth) const
 int r, c;
 Indent prefix(depth);
 ConcatString junk;
+ConcatString j2;
+
 
 out << prefix << "Name  = ";
 
@@ -212,7 +190,9 @@ if ( E->empty() )  { out.flush();  return; }
 
 for (r=0; r<Nrows; ++r)  {
 
-   junk.format("Sum for row %2d is %12d", r, row_total(r));
+   comma_string(row_total(r), j2);
+
+   junk.format("Sum for row %2d is %12s", r, j2.c_str());
 
    out << prefix << junk << "\n";
 
@@ -224,7 +204,9 @@ out << prefix << "\n";
 
 for (c=0; c<Ncols; ++c)  {
 
-   junk.format("Sum for col %2d is %12d", c, col_total(c));
+   comma_string(col_total(c), j2);
+
+   junk.format("Sum for col %2d is %12s", c, j2.c_str());
 
    out << prefix << junk << "\n";
 
@@ -234,7 +216,9 @@ for (c=0; c<Ncols; ++c)  {
 
 out << prefix << "\n";
 
-out << prefix << "Table Total = " << total() << "\n";
+comma_string(total(), junk);
+
+out << prefix << "Table Total = " << junk << "\n";
 
 out << prefix << "\n";
 
@@ -289,8 +273,7 @@ table = new char [w*h];
 
 if ( !table )  {
 
-   mlog << Error << "\nContingencyTable::dump() -> "
-        << "memory allocation error\n\n";
+   mlog << Error << "\nContingencyTable::dump() -> memory allocation error\n\n";
 
    exit ( 1 );
 
@@ -388,7 +371,7 @@ for (r=0; r<Nrows; ++r)  {
 
       n = rc_to_n(r, c);
 
-      junk << cs_erase << (*E)[n];
+      comma_string((*E)[n], junk);
 
       k = junk.length();
 
@@ -468,15 +451,13 @@ clear();
 
 if ( (NR < 2) || (NC < 2) )  {
 
-   mlog << Error << "\nContingencyTable::set_size() -> "
-        << "# rows (" << NR << ") and # cols (" << NC
-        << ") must be at least 2!\n\n";
+   mlog << Error << "\nContingencyTable::set_size() -> # rows (" << NR << ") and # cols (" << NC << ") must be at least 2!\n\n";
 
    exit ( 1 );
 
 }
 
-int n;
+int j, n;
 
 n = NR*NC;
 
@@ -517,8 +498,7 @@ int ContingencyTable::rc_to_n(int r, int c) const
 
 if ( (r < 0) || (r >= Nrows) || (c < 0) || (c >= Ncols) )  {
 
-   mlog << Error << "\nContingencyTable::rc_to_n() -> "
-        << "range check error!\n\n";
+   mlog << Error << "\nContingencyTable::rc_to_n() -> range check error!\n\n";
 
    exit ( 1 );
 
@@ -608,8 +588,7 @@ int ContingencyTable::row_total(int row) const
 
 if ( (row < 0) || (row >= Nrows) )  {
 
-   mlog << Error << "\nContingencyTable::row_total() -> "
-        << "range check error!\n\n";
+   mlog << Error << "\nContingencyTable::row_total() -> range check error!\n\n";
 
    exit ( 1 );
 
@@ -645,8 +624,7 @@ int ContingencyTable::col_total(int col) const
 
 if ( (col < 0) || (col >= Ncols) )  {
 
-   mlog << Error << "\nContingencyTable::col_total() -> "
-        << "range check error!\n\n";
+   mlog << Error << "\nContingencyTable::col_total() -> range check error!\n\n";
 
    exit ( 1 );
 
@@ -758,8 +736,7 @@ TTContingencyTable ContingencyTable::condition_on(int k) const
 
 if ( Nrows != Ncols )  {
 
-   mlog << Error << "\nContingencyTable::condition_on() -> "
-        << "table not square!\n\n";
+   mlog << Error << "\nContingencyTable::condition_on() -> table not square!\n\n";
 
    exit ( 1 );
 
@@ -767,8 +744,7 @@ if ( Nrows != Ncols )  {
 
 if ( (k < 0) || (k >= Nrows) )  {
 
-   mlog << Error << "\nContingencyTable::condition_on() -> "
-        << "range check error\n\n";
+   mlog << Error << "\nContingencyTable::condition_on() -> range check error\n\n";
 
    exit ( 1 );
 
@@ -1613,8 +1589,7 @@ void TTContingencyTable::set_size(int N)
 
 {
 
-mlog << Error << "\nTTContingencyTable::set_size(int) -> "
-     << "2 x 2 tables cannot be resized!\n\n";
+mlog << Error << "\nTTContingencyTable::set_size(int) -> 2 x 2 tables cannot be resized!\n\n";
 
 exit ( 1 );
 
@@ -1630,8 +1605,7 @@ void TTContingencyTable::set_size(int NR, int NC)
 
 {
 
-mlog << Error << "\nTTContingencyTable::set_size(int, int) -> "
-     << "2 x 2 tables cannot be resized!\n\n";
+mlog << Error << "\nTTContingencyTable::set_size(int, int) -> 2 x 2 tables cannot be resized!\n\n";
 
 exit ( 1 );
 

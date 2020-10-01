@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -30,10 +30,8 @@ static const char met_base_str[] = "MET_BASE";
 
 ////////////////////////////////////////////////////////////////////////
 
-extern bool         is_regular_file(const char * path);
 
 extern ConcatString replace_path(const ConcatString path);
-
 extern ConcatString replace_path(const char * path);
 
 extern int          met_open(const char *path, int oflag);
@@ -44,9 +42,11 @@ extern void         met_open(ofstream &out, const char *path);
 
 extern FILE *       met_fopen(const char *path, const char *mode);
 
+
 extern DIR *        met_opendir(const char *path);
 
 extern void         met_closedir(DIR * &);
+
 
 ////////////////////////////////////////////////////////////////////////
 

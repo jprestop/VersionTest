@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -21,9 +21,6 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static const char met_python_input_arg [] = "MET_PYTHON_INPUT_ARG";
-
-///////////////////////////////////////////////////////////////////////////////
 
 class VarInfoPython : public VarInfo
 
@@ -74,6 +71,13 @@ class VarInfoPython : public VarInfo
 ///////////////////////////////////////////////////////////////////////////////
 
 inline GrdFileType VarInfoPython::file_type() const { return(Type); }
+
+inline bool VarInfoPython::is_precipitation()     const { return ( false ); }
+inline bool VarInfoPython::is_specific_humidity() const { return ( false ); }
+inline bool VarInfoPython::is_u_wind()            const { return ( false ); }
+inline bool VarInfoPython::is_v_wind()            const { return ( false ); }
+inline bool VarInfoPython::is_wind_speed()        const { return ( false ); }
+inline bool VarInfoPython::is_wind_direction()    const { return ( false ); }
 
 ///////////////////////////////////////////////////////////////////////////////
 

@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -55,9 +55,7 @@ class TimeArray {
 
       void clear();
 
-      void erase();
-
-      void extend(int, bool exact = true);
+      void extend(int);
 
       void dump(ostream &, int depth = 0) const;
 
@@ -81,7 +79,6 @@ class TimeArray {
       unixtime max() const;
 
       int n_elements() const;
-      int n() const;
 
 };
 
@@ -90,7 +87,6 @@ class TimeArray {
 
 
 inline int TimeArray::n_elements() const { return ( Nelements ); }
-inline int TimeArray::n()          const { return ( Nelements ); }
 
 
 ////////////////////////////////////////////////////////////////////////

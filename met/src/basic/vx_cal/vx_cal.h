@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -79,8 +79,6 @@ extern  void      sec_to_hms      (int in_sec, int & hour, int & min, int & sec)
 extern  int       hms_to_sec      (int hour, int min, int sec);
 
 extern  int       unix_to_sec_of_day (unixtime u);
-
-extern  long      unix_to_long_yyyymmddhh (unixtime u);
 
 // Parse time strings
 

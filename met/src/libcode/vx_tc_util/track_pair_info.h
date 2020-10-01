@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -42,7 +42,8 @@ class TrackPairInfo {
 
       void init_from_scratch();
       void assign(const TrackPairInfo &);
-      void extend(int, bool exact = true);
+
+      void extend(int);
 
       // Number of track points
       int          NPoints;
@@ -178,7 +179,7 @@ class TrackPairInfoArray {
 
       void init_from_scratch();
       void assign(const TrackPairInfoArray &);
-      void extend(int, bool exact = true);
+      void extend(int);
 
       TrackPairInfo *Pair;
       int            NPairs;

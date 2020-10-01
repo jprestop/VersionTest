@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -31,7 +31,6 @@
 #include "ncrr_array.h"
 #include "shp_file.h"
 #include "shp_poly_record.h"
-#include "vx_grid.h"
 
 
 ///////////////////////////////////////////////////////////////////////////////

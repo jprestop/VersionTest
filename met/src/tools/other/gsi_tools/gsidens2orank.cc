@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -31,7 +31,6 @@ using namespace std;
 #include <cstdio>
 #include <cmath>
 
-#include "vx_data2d_factory.h"
 #include "vx_util.h"
 #include "vx_math.h"
 #include "config_constants.h"
@@ -80,7 +79,6 @@ static void set_verbosity(const StringArray &);
 int main(int argc, char * argv []) {
    CommandLine cline;
    StringArray ens_file_list;
-   int i;
 
    // Parse the command line into tokens
    cline.set(argc, argv);
@@ -113,11 +111,15 @@ int main(int argc, char * argv []) {
    if(cline.n() == 0) {
       usage();
    }
-   // Process remaining arguments as input files
+   // Process one remaining argument as a filename
+   else if(cline.n() == 1) {
+      ens_file_list = parse_ascii_file_list(cline[0].c_str());
+   }
+   // Process multiple remaining arguments as a list of filenames
    else {
-      StringArray sa;
-      for(i=0; i<cline.n(); i++) sa.add(cline[i]);
-      ens_file_list = parse_file_list(sa);
+      for(int i=0; i<(cline.n()); i++) {
+         ens_file_list.add(cline[i].c_str());
+      }
    }
 
    // Set the expected number of ensemble members
@@ -263,10 +265,11 @@ void process_conv_data(ConvData &d, int i_mem) {
       conv_data.push_back(d);
 
       // Store the current observation info
-      ens_pd.add_point_obs(d.sid.c_str(), d.lat, d.lon,
-                bad_data_double, bad_data_double, d.obs_ut, d.prs,
-                d.elv, d.obs, na_str, bad_data_double, bad_data_double,
-                default_grid_weight);
+      // Store default weight value of 1
+      ens_pd.add_obs(d.sid.c_str(), d.lat, d.lon,
+                     bad_data_double, bad_data_double,
+                     d.obs_ut, d.prs, d.elv, d.obs, na_str,
+                     bad_data_double, bad_data_double);
 
       // Initialize ensemble members and mean to bad data
       for(i=0; i<n_ens; i++) ens_pd.add_ens(i, bad_data_double);
@@ -422,10 +425,11 @@ void process_rad_data(RadData &d, int i_mem) {
       rad_data.push_back(d);
 
       // Store the current observation info
-      ens_pd.add_point_obs(na_str, d.lat, d.lon,
-                bad_data_double, bad_data_double, d.obs_ut,
-                bad_data_double, d.elv, d.obs, na_str,
-                bad_data_double, bad_data_double, default_grid_weight);
+      // Store default weight value of 1
+      ens_pd.add_obs(na_str, d.lat, d.lon,
+                     bad_data_double, bad_data_double,
+                     d.obs_ut, bad_data_double, d.elv, d.obs, na_str,
+                     bad_data_double, bad_data_double);
 
       // Initialize ensemble members and mean to bad data
       for(i=0; i<n_ens; i++) ens_pd.add_ens(i, bad_data_double);
@@ -542,8 +546,9 @@ void write_orank() {
       exit(1);
    }
 
-   // Compute ensemble pair values
+   // Compute statistics
    ens_pd.compute_pair_vals(rng_ptr);
+   ens_pd.compute_stats();
 
    // Compute ensemble mean, if necessary
    if(ens_mean_filename.length() == 0) {
@@ -625,10 +630,10 @@ void write_orank_row_conv(AsciiTable &at, int row, int i_obs) {
       if(i==0) cs << d->obs_qc[i];
       else     cs << "," << d->obs_qc[i];
    }
-   at.set_entry(row, col++, cs);                                // OBS_QC
-   at.set_entry(row, col++, ens_pd.mn_na[i_obs]);               // ENS_MEAN
-   at.set_entry(row, col++, bad_data_double);                   // CLIMO
-   at.set_entry(row, col++, square_root(ens_pd.var_na[i_obs])); // ENS_SPREAD
+   at.set_entry(row, col++, cs);                       // OBS_QC
+   at.set_entry(row, col++, ens_pd.mn_na[i_obs]);      // ENS_MEAN
+   at.set_entry(row, col++, bad_data_double);          // CLIMO
+   at.set_entry(row, col++, ens_pd.spread_na[i_obs]);  // ENS_SPREAD
 
    at.set_entry(row, col++, bad_data_double);          // ENS_MEAN_OERR
    at.set_entry(row, col++, bad_data_double);          // SPREAD_OERR
@@ -690,10 +695,10 @@ void write_orank_row_rad(AsciiTable &at, int row, int i_obs) {
       if(i==0) cs << d->obs_qc[i];
       else     cs << "," << d->obs_qc[i];
    }
-   at.set_entry(row, col++, cs);                                // OBS_QC
-   at.set_entry(row, col++, ens_pd.mn_na[i_obs]);               // ENS_MEAN
-   at.set_entry(row, col++, bad_data_double);                   // CLIMO
-   at.set_entry(row, col++, square_root(ens_pd.var_na[i_obs])); // ENS_SPREAD
+   at.set_entry(row, col++, cs);                       // OBS_QC
+   at.set_entry(row, col++, ens_pd.mn_na[i_obs]);      // ENS_MEAN
+   at.set_entry(row, col++, bad_data_double);          // CLIMO
+   at.set_entry(row, col++, ens_pd.spread_na[i_obs]);  // ENS_SPREAD
 
    at.set_entry(row, col++, bad_data_double);          // ENS_MEAN_OERR
    at.set_entry(row, col++, bad_data_double);          // SPREAD_OERR

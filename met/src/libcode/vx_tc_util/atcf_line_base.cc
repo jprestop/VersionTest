@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -16,17 +16,11 @@ using namespace std;
 #include <string.h>
 #include <cstdio>
 #include <cmath>
-#include <map>
 
 #include "vx_math.h"
 
 #include "atcf_line_base.h"
 #include "atcf_offsets.h"
-
-////////////////////////////////////////////////////////////////////////
-
-// Only print the AVN to GFS conversion message once
-static bool print_avn_to_gfs_message = true;
 
 ////////////////////////////////////////////////////////////////////////
 //
@@ -78,12 +72,6 @@ void ATCFLineBase::init_from_scratch() {
    // ATCF lines are comma-delimited
    set_delimiter(",");
 
-   // Initialize pointers
-   BasinMap      = (map<ConcatString,ConcatString> *) 0;
-   BestTechnique = (StringArray *) 0;
-   OperTechnique = (StringArray *) 0;
-   TechSuffix    = (ConcatString *) 0;
-
    clear();
 
    return;
@@ -97,16 +85,10 @@ void ATCFLineBase::assign(const ATCFLineBase &l) {
 
    DataLine::assign(l);
 
-   BasinMap      = l.BasinMap;
-   BestTechnique = l.BestTechnique;
-   OperTechnique = l.OperTechnique;
-   TechSuffix    = l.TechSuffix;
-
-   Type          = l.Type;
-   Basin         = l.Basin;
-   Technique     = l.Technique;
-   IsBestTrack   = l.IsBestTrack;
-   IsOperTrack   = l.IsOperTrack;
+   Type = l.Type;
+   Technique = l.Technique;
+   IsBestTrack = l.IsBestTrack;
+   IsOperTrack = l.IsOperTrack;
 
    return;
 }
@@ -119,7 +101,8 @@ void ATCFLineBase::dump(ostream &out, int indent_depth) const {
 
    out << prefix << "Line            = " << (*this) << "\n";
    out << prefix << "Type            = " << atcflinetype_to_string(Type) << "\n";
-   out << prefix << "Basin           = \"" << Basin.contents() << "\"\n";
+   cs = basin();
+   out << prefix << "Basin           = \"" << cs.contents() << "\"\n";
    cs = cyclone_number();
    out << prefix << "CycloneNumber   = \"" << cs.contents() << "\"\n";
    out << prefix << "WarningTime     = " << unix_to_yyyymmdd_hhmmss(warning_time()) << "\n";
@@ -128,8 +111,8 @@ void ATCFLineBase::dump(ostream &out, int indent_depth) const {
    out << prefix << "Valid           = " << unix_to_yyyymmdd_hhmmss(valid()) << "\n";
    cs = technique();
    out << prefix << "Technique       = \"" << cs.contents() << "\"\n";
-   out << prefix << "IsBestTrack     = \"" << bool_to_string(IsBestTrack) << "\"\n";
-   out << prefix << "IsOperTrack     = \"" << bool_to_string(IsOperTrack) << "\"\n";
+   out << prefix << "IsBestTrack     = \"" << (IsBestTrack ? "TRUE" : "FALSE") << "\"\n";
+   out << prefix << "IsOperTrack     = \"" << (IsOperTrack ? "TRUE" : "FALSE") << "\"\n";
    out << prefix << "Lat             = " << lat() << "\n";
    out << prefix << "Lon             = " << lon() << "\n";
 
@@ -142,12 +125,7 @@ void ATCFLineBase::dump(ostream &out, int indent_depth) const {
 
 void ATCFLineBase::clear() {
    DataLine::clear();
-
-   // Do not reset pointers:
-   // BasinMap, BestTechnique, OperTechnique, TechSuffix
-
    Type = NoATCFLineType;
-   Basin.clear();
    Technique.clear();
    IsBestTrack = false;
    IsOperTrack = false;
@@ -173,50 +151,22 @@ int ATCFLineBase::read_line(LineDataFile * ldf) {
    // Set the line type from the technique number column
    Type = string_to_atcflinetype(get_item(TechniqueNumberOffset).c_str());
 
-   // Set the basin
-   Basin = get_item(BasinOffset);
-
-   // Update the basin name, if specified
-   if(BasinMap) {
-      if(BasinMap->count(Basin) > 0) Basin = BasinMap->at(Basin);
-   }
-
-   // Check for BEST and Operational tracks, if specified
-   if(BestTechnique) IsBestTrack = BestTechnique->has(technique());
-   if(OperTechnique) IsOperTrack = OperTechnique->has(technique());
-
-   // Append the technique suffix, if specified
-   if(TechSuffix) {
-      if(TechSuffix->length() > 0) {
-         ConcatString cs;
-         cs << get_item(TechniqueOffset) << TechSuffix->c_str();
-         Technique = cs;
-      }
-   }
-
    return(1);
 }
 
 ////////////////////////////////////////////////////////////////////////
 
-bool ATCFLineBase::is_header() const {
-    if(basin().comparecase(0, 5, "BASIN") == 0) return(true);
-    else                                        return(false);
+int ATCFLineBase::is_header() const {
+  if(basin().comparecase(0, 5, "BASIN") == 0) return(1);
+   else                                  return(0);
 }
 
 ////////////////////////////////////////////////////////////////////////
 
 ConcatString ATCFLineBase::get_item(int i) const {
    ConcatString cs;
-   int i_col = i;
 
-   // For ATCFLineType_GenTrack:
-   //    Columns 1 and 2 are consistent, use offsets 0 and 1
-   //    Columns 4-20 are the same as columns 3-19 of ATCFLineType_Track
-   // Shift those column indices by 1.
-   if(Type == ATCFLineType_GenTrack && i >= 2 && i <= 18) i_col++;
-
-   cs = DataLine::get_item(i_col);
+   cs = DataLine::get_item(i);
 
    // Strip off any whitespace
    cs.ws_strip();
@@ -246,7 +196,7 @@ ATCFLineType ATCFLineBase::type() const {
 ////////////////////////////////////////////////////////////////////////
 
 ConcatString ATCFLineBase::basin() const {
-   return(Basin);
+   return(get_item(BasinOffset));
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -276,16 +226,7 @@ ConcatString ATCFLineBase::technique() const {
    else                     cs = get_item(TechniqueOffset);
 
    // Replace instances of AVN with GFS
-   if(strstr(cs.c_str(), "AVN") != NULL) {
-      if(print_avn_to_gfs_message) {
-         mlog << Debug(1)
-              << "When reading ATCF track data, all instances of "
-              << "\"AVN\" are automatically replaced with \"GFS\" "
-              << "(ATCF ID = " << cs << ").\n";
-         print_avn_to_gfs_message = false;
-      }
-      cs.replace("AVN", "GFS");
-   }
+   cs.replace("AVN", "GFS");
 
    return(cs);
 }
@@ -322,17 +263,11 @@ unixtime ATCFLineBase::valid() const {
    }
 
    // Add minutes for the BEST track
-   if(IsBestTrack && !is_bad_data(tn)) {
+   if(is_best_track() && !is_bad_data(tn)) {
       ut += sec_per_minute * tn;
    }
 
    return(ut);
-}
-
-////////////////////////////////////////////////////////////////////////
-
-int ATCFLineBase::valid_hour() const {
-   return(unix_to_sec_of_day(valid()));
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -342,7 +277,7 @@ int ATCFLineBase::lead() const {
    int    s  = bad_data_int;
 
    // Lead time for the BEST track is 0
-   if(IsBestTrack) {
+   if(is_best_track()) {
       s = 0;
    }
    else if(!is_bad_data(fp)) {
@@ -355,16 +290,10 @@ int ATCFLineBase::lead() const {
 ////////////////////////////////////////////////////////////////////////
 
 ConcatString ATCFLineBase::storm_id() const {
-   ConcatString cs;
 
-   if(Type == ATCFLineType_GenTrack) {
-       cs = get_item(GenStormIdOffset);
-   }
-   else {
-      unixtime ut = valid();
-      cs = define_storm_id(warning_time(), ut, ut, basin(),
-                           cyclone_number());
-   }
+   unixtime ut = valid();
+   ConcatString cs = define_storm_id(warning_time(), ut, ut,
+                                     basin(), cyclone_number());
 
    return(cs);
 }
@@ -442,26 +371,25 @@ double parse_lon(const char *s) {
 
 ////////////////////////////////////////////////////////////////////////
 
-int parse_int(const char *s, const int bad_data) {
+int parse_int(const char *s) {
    int v;
 
    if(strlen(s) > 0) v = atoi(s);
    else              v = bad_data_int;
 
-   // Check bad data value
-   if(v == bad_data) v = bad_data_int;
-
    return(v);
 }
 
 ////////////////////////////////////////////////////////////////////////
-//
-// Interpret values of 0 as bad data
-//
-////////////////////////////////////////////////////////////////////////
 
 int parse_int_check_zero(const char *s) {
-   return(parse_int(s, 0));
+
+   int v = parse_int(s);
+
+   // Interpret values of 0 as bad data
+   if(v == 0) v = bad_data_int;
+
+   return(v);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -470,8 +398,6 @@ ATCFLineType string_to_atcflinetype(const char *s) {
    ATCFLineType t;
 
         if(!s)                       t = NoATCFLineType;
-   // YYYYMMDDHH in the 4th column for Genesis Tracks
-   else if(is_yyyymmddhh(s))         t = ATCFLineType_GenTrack;
    else if(is_number(s))             t = ATCFLineType_Track;  // ADECK
    else if(strlen(s) == 0)           t = ATCFLineType_Track;  // BDECK
    else if(strcasecmp(s, "TR") == 0) t = ATCFLineType_ProbTR;
@@ -493,7 +419,6 @@ ConcatString atcflinetype_to_string(const ATCFLineType t) {
 
    switch(t) {
       case ATCFLineType_Track:    s = "Track";    break;
-      case ATCFLineType_GenTrack: s = "GenTrack"; break;
       case ATCFLineType_ProbTR:   s = "ProbTR";   break;
       case ATCFLineType_ProbIN:   s = "ProbIN";   break;
       case ATCFLineType_ProbRIRW: s = "ProbRIRW"; break;

@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -41,7 +41,7 @@ class TrackInfo {
 
       void init_from_scratch();
       void assign(const TrackInfo &);
-      void extend(int, bool exact = true);
+      void extend(int);
 
       bool         IsSet;
       bool         IsBestTrack;
@@ -130,11 +130,8 @@ class TrackInfo {
       int                  init_hour()        const;
       unixtime             valid_min()        const;
       unixtime             valid_max()        const;
-      int                  duration()         const;
       int                  valid_inc()        const;
       int                  n_points()         const;
-
-      StringArray          track_lines()      const;
 
          //
          //  do stuff
@@ -169,19 +166,18 @@ inline void TrackInfo::set_init(const unixtime u)      { InitTime = u;        }
 inline void TrackInfo::set_valid_min(const unixtime u) { MinValidTime = u;    }
 inline void TrackInfo::set_valid_max(const unixtime u) { MaxValidTime = u;    }
 
-inline const ConcatString & TrackInfo::storm_id()         const { return(StormId);                      }
-inline const ConcatString & TrackInfo::basin()            const { return(Basin);                        }
-inline const ConcatString & TrackInfo::cyclone()          const { return(Cyclone);                      }
-inline const ConcatString & TrackInfo::storm_name()       const { return(StormName);                    }
-inline int                  TrackInfo::technique_number() const { return(TechniqueNumber);              }
-inline const ConcatString & TrackInfo::technique()        const { return(Technique);                    }
-inline const ConcatString & TrackInfo::initials()         const { return(Initials);                     }
-inline unixtime             TrackInfo::init()             const { return(InitTime);                     }
-inline int                  TrackInfo::init_hour()        const { return(unix_to_sec_of_day(InitTime)); }
-inline unixtime             TrackInfo::valid_min()        const { return(MinValidTime);                 }
-inline unixtime             TrackInfo::valid_max()        const { return(MaxValidTime);                 }
-inline int                  TrackInfo::n_points()         const { return(NPoints);                      }
-inline StringArray          TrackInfo::track_lines()      const { return(TrackLines);                   }
+inline const ConcatString & TrackInfo::storm_id()         const { return(StormId);                 }
+inline const ConcatString & TrackInfo::basin()            const { return(Basin);                   }
+inline const ConcatString & TrackInfo::cyclone()          const { return(Cyclone);                 }
+inline const ConcatString & TrackInfo::storm_name()       const { return(StormName);               }
+inline int                  TrackInfo::technique_number() const { return(TechniqueNumber);         }
+inline const ConcatString & TrackInfo::technique()        const { return(Technique);               }
+inline const ConcatString & TrackInfo::initials()         const { return(Initials);                }
+inline unixtime             TrackInfo::init()             const { return(InitTime);                }
+inline int                  TrackInfo::init_hour()        const { return(InitTime % sec_per_hour); }
+inline unixtime             TrackInfo::valid_min()        const { return(MinValidTime);            }
+inline unixtime             TrackInfo::valid_max()        const { return(MaxValidTime);            }
+inline int                  TrackInfo::n_points()         const { return(NPoints);                 }
 
 ////////////////////////////////////////////////////////////////////////
 //
@@ -198,7 +194,7 @@ class TrackInfoArray {
 
       void init_from_scratch();
       void assign(const TrackInfoArray &);
-      void extend(int, bool exact = true);
+      void extend(int);
 
       TrackInfo     *Track;
       int            NTracks;
@@ -227,7 +223,6 @@ class TrackInfoArray {
 
       const TrackInfo & operator[](int) const;
       int n_tracks() const;
-      int n() const;
 
          //
          //  do stuff
@@ -243,7 +238,6 @@ class TrackInfoArray {
 ////////////////////////////////////////////////////////////////////////
 
 inline int TrackInfoArray::n_tracks() const { return(NTracks); }
-inline int TrackInfoArray::n()        const { return(NTracks); }
 
 ////////////////////////////////////////////////////////////////////////
 

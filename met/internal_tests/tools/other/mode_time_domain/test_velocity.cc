@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -98,7 +98,6 @@ SingleAtt3D att;
 double xcen, ycen;
 double u, v;
 const char model [] = "test";
-const int ptile = 99;
 int V[2];
 
    //
@@ -173,7 +172,7 @@ obj.write(output_filename.c_str());
 double dx, dy;
 double norm;
 
-att = calc_3d_single_atts(obj, raw, model, ptile);
+att = calc_3d_single_atts(obj, raw, model);
 
 dx = vx_target - att.Xvelocity;
 dy = vy_target - att.Yvelocity;

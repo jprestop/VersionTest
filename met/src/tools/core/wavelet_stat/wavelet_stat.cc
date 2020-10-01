@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -227,7 +227,8 @@ void process_command_line(int argc, char **argv) {
    conf_info.process_config(ftype, otype);
 
    // For python types read the first field to set the grid
-   if(is_python_grdfiletype(ftype)) {
+   if(ftype == FileType_Python_Numpy ||
+      ftype == FileType_Python_Xarray) {
       if(!fcst_mtddf->data_plane(*conf_info.fcst_info[0], dp)) {
          mlog << Error << "\nTrouble reading data from forecast file \""
               << fcst_file << "\"\n\n";
@@ -235,7 +236,8 @@ void process_command_line(int argc, char **argv) {
       }
    }
 
-   if(is_python_grdfiletype(otype)) {
+   if(otype == FileType_Python_Numpy ||
+      otype == FileType_Python_Xarray) {
       if(!obs_mtddf->data_plane(*conf_info.obs_info[0], dp)) {
          mlog << Error << "\nTrouble reading data from observation file \""
               << obs_file << "\"\n\n";
@@ -361,22 +363,22 @@ void process_scores() {
       shc.set_desc(conf_info.desc[i].c_str());
 
       // Store the forecast variable name
-      shc.set_fcst_var(conf_info.fcst_info[i]->name_attr());
+      shc.set_fcst_var(conf_info.fcst_info[i]->name());
 
       // Store the forecast variable units
-      shc.set_fcst_units(conf_info.fcst_info[i]->units_attr());
+      shc.set_fcst_units(conf_info.fcst_info[i]->units());
 
       // Set the forecast level name
-      shc.set_fcst_lev(conf_info.fcst_info[i]->level_attr().c_str());
+      shc.set_fcst_lev(conf_info.fcst_info[i]->level_name().c_str());
 
       // Store the observation variable name
-      shc.set_obs_var(conf_info.obs_info[i]->name_attr());
+      shc.set_obs_var(conf_info.obs_info[i]->name());
 
       // Store the observation variable units
-      shc.set_obs_units(conf_info.obs_info[i]->units_attr());
+      shc.set_obs_units(conf_info.obs_info[i]->units());
 
       // Set the observation level name
-      shc.set_obs_lev(conf_info.obs_info[i]->level_attr().c_str());
+      shc.set_obs_lev(conf_info.obs_info[i]->level_name().c_str());
 
       mlog << Debug(2) << "\n" << sep_str << "\n\n"
            << "Processing " << conf_info.fcst_info[i]->magic_str()
@@ -459,7 +461,7 @@ void process_scores() {
                shc.set_obs_thresh(conf_info.ocat_ta[i][k]);
 
                write_isc_row(shc, isc_info[j][k],
-                  conf_info.output_flag[i_isc],
+                  conf_info.output_flag[i_isc] == STATOutputType_Both,
                   stat_at, i_stat_row, isc_at, i_isc_row);
             } // end for k
          } // end if
@@ -481,7 +483,7 @@ void process_scores() {
             aggregate_isc_info(isc_info, i, j, isc_aggr);
 
             write_isc_row(shc, isc_aggr,
-               conf_info.output_flag[i_isc],
+               conf_info.output_flag[i_isc] == STATOutputType_Both,
                stat_at, i_stat_row, isc_at, i_isc_row);
          }
       }
@@ -1376,23 +1378,23 @@ void write_nc_raw(const WaveletStatNcOutInfo & nc_info, const double *fdata, con
 
    if ( nc_info.do_raw)  {
       fcst_var_name.format("FCST_%s_%s_%s_%s_RAW",
-              conf_info.fcst_info[i_vx]->name_attr().text(),
-              conf_info.fcst_info[i_vx]->level_attr().text(),
-              conf_info.obs_info[i_vx]->name_attr().text(),
-              conf_info.obs_info[i_vx]->level_attr().text());
+              conf_info.fcst_info[i_vx]->name().text(),
+              conf_info.fcst_info[i_vx]->level_name().text(),
+              conf_info.obs_info[i_vx]->name().text(),
+              conf_info.obs_info[i_vx]->level_name().text());
       obs_var_name.format("OBS_%s_%s_%s_%s_RAW",
-              conf_info.fcst_info[i_vx]->name_attr().text(),
-              conf_info.fcst_info[i_vx]->level_attr().text(),
-              conf_info.obs_info[i_vx]->name_attr().text(),
-              conf_info.obs_info[i_vx]->level_attr().text());
+              conf_info.fcst_info[i_vx]->name().text(),
+              conf_info.fcst_info[i_vx]->level_name().text(),
+              conf_info.obs_info[i_vx]->name().text(),
+              conf_info.obs_info[i_vx]->level_name().text());
    }
 
    if ( nc_info.do_diff )  {
       diff_var_name.format("DIFF_%s_%s_%s_%s_RAW",
-              conf_info.fcst_info[i_vx]->name_attr().text(),
-              conf_info.fcst_info[i_vx]->level_attr().text(),
-              conf_info.obs_info[i_vx]->name_attr().text(),
-              conf_info.obs_info[i_vx]->level_attr().text());
+              conf_info.fcst_info[i_vx]->name().text(),
+              conf_info.fcst_info[i_vx]->level_name().text(),
+              conf_info.obs_info[i_vx]->name().text(),
+              conf_info.obs_info[i_vx]->level_name().text());
 
    }
 
@@ -1416,11 +1418,11 @@ void write_nc_raw(const WaveletStatNcOutInfo & nc_info, const double *fdata, con
          add_var_att_local(&obs_var, "type", "Observation");
          add_var_att_local(&obs_var, "name", shc.get_obs_var().c_str());
          val.format("%s at %s",
-                 conf_info.obs_info[i_vx]->name_attr().text(),
-                 conf_info.obs_info[i_vx]->level_attr().text());
+                 conf_info.obs_info[i_vx]->name().text(),
+                 conf_info.obs_info[i_vx]->level_name().text());
          add_var_att_local(&obs_var, "long_name", val.c_str());
          add_var_att_local(&obs_var, "level", shc.get_obs_lev().c_str());
-         add_var_att_local(&obs_var, "units", conf_info.fcst_info[i_vx]->units_attr().text());
+         add_var_att_local(&obs_var, "units", conf_info.fcst_info[i_vx]->units().text());
          add_att(&obs_var, "_FillValue", bad_data_float);
          write_netcdf_var_times(&obs_var,
             shc.get_obs_valid_beg() - shc.get_obs_lead_sec(),
@@ -1431,11 +1433,11 @@ void write_nc_raw(const WaveletStatNcOutInfo & nc_info, const double *fdata, con
          add_var_att_local(&fcst_var, "type", "Forecast");
          add_var_att_local(&fcst_var, "name", shc.get_fcst_var().c_str());
          val.format("%s at %s",
-                 conf_info.fcst_info[i_vx]->name_attr().text(),
-                 conf_info.fcst_info[i_vx]->level_attr().text());
+                 conf_info.fcst_info[i_vx]->name().text(),
+                 conf_info.fcst_info[i_vx]->level_name().text());
          add_var_att_local(&fcst_var, "long_name", val.c_str());
          add_var_att_local(&fcst_var, "level", shc.get_fcst_lev().c_str());
-         add_var_att_local(&fcst_var, "units", conf_info.fcst_info[i_vx]->units_attr().text());
+         add_var_att_local(&fcst_var, "units", conf_info.fcst_info[i_vx]->units().text());
          add_att(&fcst_var, "_FillValue", bad_data_float);
          write_netcdf_var_times(&fcst_var,
             shc.get_fcst_valid_beg() - shc.get_fcst_lead_sec(),
@@ -1453,18 +1455,18 @@ void write_nc_raw(const WaveletStatNcOutInfo & nc_info, const double *fdata, con
                  shc.get_obs_var().text());
          add_var_att_local(&diff_var, "name", val.c_str());
          val.format("%s at %s and %s at %s",
-                 conf_info.fcst_info[i_vx]->name_attr().text(),
-                 conf_info.fcst_info[i_vx]->level_attr().text(),
-                 conf_info.obs_info[i_vx]->name_attr().text(),
-                 conf_info.obs_info[i_vx]->level_attr().text());
+                 conf_info.fcst_info[i_vx]->name().text(),
+                 conf_info.fcst_info[i_vx]->level_name().text(),
+                 conf_info.obs_info[i_vx]->name().text(),
+                 conf_info.obs_info[i_vx]->level_name().text());
          add_var_att_local(&diff_var, "long_name", val.c_str());
          val.format("%s and %s",
                  shc.get_fcst_lev().text(),
                  shc.get_obs_lev().text());
          add_var_att_local(&diff_var, "level", val.c_str());
          val.format("%s and %s",
-                 conf_info.fcst_info[i_vx]->units_attr().text(),
-                 conf_info.obs_info[i_vx]->units_attr().text());
+                 conf_info.fcst_info[i_vx]->units().text(),
+                 conf_info.obs_info[i_vx]->units().text());
          add_var_att_local(&diff_var, "units", val.c_str());
          add_att(&diff_var, "_FillValue", bad_data_float);
          write_netcdf_var_times(&diff_var,
@@ -1595,29 +1597,29 @@ void write_nc_wav(const WaveletStatNcOutInfo & nc_info, const double *fdata, con
 
       // Build the variable names
       fcst_var_name.format("FCST_%s_%s_%s_%s_%s_%s",
-              conf_info.fcst_info[i_vx]->name_attr().text(),
-              conf_info.fcst_info[i_vx]->level_attr().text(),
+              conf_info.fcst_info[i_vx]->name().text(),
+              conf_info.fcst_info[i_vx]->level_name().text(),
               fcst_thresh_str.text(),
-              conf_info.obs_info[i_vx]->name_attr().text(),
-              conf_info.obs_info[i_vx]->level_attr().text(),
+              conf_info.obs_info[i_vx]->name().text(),
+              conf_info.obs_info[i_vx]->level_name().text(),
               obs_thresh_str.text());
       obs_var_name.format("OBS_%s_%s_%s_%s_%s_%s",
-              conf_info.fcst_info[i_vx]->name_attr().text(),
-              conf_info.fcst_info[i_vx]->level_attr().text(),
+              conf_info.fcst_info[i_vx]->name().text(),
+              conf_info.fcst_info[i_vx]->level_name().text(),
               fcst_thresh_str.text(),
-              conf_info.obs_info[i_vx]->name_attr().text(),
-              conf_info.obs_info[i_vx]->level_attr().text(),
+              conf_info.obs_info[i_vx]->name().text(),
+              conf_info.obs_info[i_vx]->level_name().text(),
               obs_thresh_str.text());
    }
 
    if ( nc_info.do_diff )  {
 
       diff_var_name.format("DIFF_%s_%s_%s_%s_%s_%s",
-              conf_info.fcst_info[i_vx]->name_attr().text(),
-              conf_info.fcst_info[i_vx]->level_attr().text(),
+              conf_info.fcst_info[i_vx]->name().text(),
+              conf_info.fcst_info[i_vx]->level_name().text(),
               fcst_thresh_str.text(),
-              conf_info.obs_info[i_vx]->name_attr().text(),
-              conf_info.obs_info[i_vx]->level_attr().text(),
+              conf_info.obs_info[i_vx]->name().text(),
+              conf_info.obs_info[i_vx]->level_name().text(),
               obs_thresh_str.text());
 
    }
@@ -1646,11 +1648,11 @@ void write_nc_wav(const WaveletStatNcOutInfo & nc_info, const double *fdata, con
          add_var_att_local(&obs_var, "type", "Observation");
          add_var_att_local(&obs_var, "name", shc.get_obs_var().c_str());
          val.format("%s at %s",
-                 conf_info.obs_info[i_vx]->name_attr().text(),
-                 conf_info.obs_info[i_vx]->level_attr().text());
+                 conf_info.obs_info[i_vx]->name().text(),
+                 conf_info.obs_info[i_vx]->level_name().text());
          add_var_att_local(&obs_var, "long_name", val.c_str());
          add_var_att_local(&obs_var, "level", shc.get_obs_lev().c_str());
-         add_var_att_local(&obs_var, "units", conf_info.fcst_info[i_vx]->units_attr().text());
+         add_var_att_local(&obs_var, "units", conf_info.fcst_info[i_vx]->units().text());
          add_var_att_local(&obs_var, "threshold", fcst_thresh_str.c_str());
          add_var_att_local(&obs_var, "scale_0", "binary");
          add_var_att_local(&obs_var, "scale_n", "scale 2^(n-1)");
@@ -1664,11 +1666,11 @@ void write_nc_wav(const WaveletStatNcOutInfo & nc_info, const double *fdata, con
          add_var_att_local(&fcst_var, "type", "Forecast");
          add_var_att_local(&fcst_var, "name", shc.get_fcst_var().c_str());
          val.format("%s at %s",
-                 conf_info.fcst_info[i_vx]->name_attr().text(),
-                 conf_info.fcst_info[i_vx]->level_attr().text());
+                 conf_info.fcst_info[i_vx]->name().text(),
+                 conf_info.fcst_info[i_vx]->level_name().text());
          add_var_att_local(&fcst_var, "long_name", val.c_str());
          add_var_att_local(&fcst_var, "level", shc.get_fcst_lev().c_str());
-         add_var_att_local(&fcst_var, "units", conf_info.fcst_info[i_vx]->units_attr().text());
+         add_var_att_local(&fcst_var, "units", conf_info.fcst_info[i_vx]->units().text());
          add_var_att_local(&fcst_var, "threshold", fcst_thresh_str.c_str());
          add_var_att_local(&fcst_var, "scale_0", "binary");
          add_var_att_local(&fcst_var, "scale_n", "scale 2^(n-1)");
@@ -1689,18 +1691,18 @@ void write_nc_wav(const WaveletStatNcOutInfo & nc_info, const double *fdata, con
                  shc.get_obs_var().text());
          add_var_att_local(&diff_var, "name", val.c_str());
          val.format("%s at %s and %s at %s",
-                 conf_info.fcst_info[i_vx]->name_attr().text(),
-                 conf_info.fcst_info[i_vx]->level_attr().text(),
-                 conf_info.obs_info[i_vx]->name_attr().text(),
-                 conf_info.obs_info[i_vx]->level_attr().text());
+                 conf_info.fcst_info[i_vx]->name().text(),
+                 conf_info.fcst_info[i_vx]->level_name().text(),
+                 conf_info.obs_info[i_vx]->name().text(),
+                 conf_info.obs_info[i_vx]->level_name().text());
          add_var_att_local(&diff_var, "long_name", val.c_str());
          val.format("%s and %s",
                  shc.get_fcst_lev().text(),
                  shc.get_obs_lev().text());
          add_var_att_local(&diff_var, "level", val.c_str());
          val.format("%s and %s",
-                 conf_info.fcst_info[i_vx]->units_attr().text(),
-                 conf_info.obs_info[i_vx]->units_attr().text());
+                 conf_info.fcst_info[i_vx]->units().text(),
+                 conf_info.obs_info[i_vx]->units().text());
          add_var_att_local(&diff_var, "units", val.c_str());
          val.format("%s and %s",
                  fcst_thresh_str.text(),
@@ -2260,6 +2262,7 @@ void plot_ps_raw(const DataPlane &fcst_dp,
    label = wavelettype_to_string(conf_info.wvlt_type);
    label << "(" << conf_info.wvlt_member << ")";
    ps_out->write_centered_text(1, 1, h_tab_b, v_tab, 0.0, 0.5, label.c_str());
+   v_tab -= plot_text_sep;
 
    ps_out->showpage();
    n_page++;
@@ -2458,6 +2461,7 @@ void plot_ps_wvlt(const double *diff, int n, int i_vx, int i_tile,
    }
    ps_out->write_centered_text(1, 1, h_tab_d, v_tab, 0.0, 0.5,
                                label.c_str());
+   v_tab -= plot_text_sep;
 
    //
    // If we just filled in the bottom panel or this is the last scale
@@ -2752,7 +2756,7 @@ void draw_tiles(PSfile *p, Box &dim,
          page_y = (tile_bb.y_ll() + tile_bb.y_ur())/2.0,
 
          p->choose_font(28, 20.0);
-         snprintf(label, sizeof(label), "%i", i+1);
+         sprintf(label, "%i", i+1);
          p->write_centered_text(2, 1, page_x, page_y, 0.5, 0.5, label);
 
          // Draw outline in black

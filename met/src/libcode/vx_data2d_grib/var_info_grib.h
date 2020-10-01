@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -46,18 +46,17 @@ class VarInfoGrib : public VarInfo
          //   http://www.nco.ncep.noaa.gov/pmb/docs/on388
          //
 
-      int PTV;       // Parameter table version number
-      int Code;      // Parameter number from 0 to 255
-      int LvlType;   // Level type from 0 to 201
+      int PTV;      // Parameter table version number
+      int Code;     // Parameter number from 0 to 255
+      int LvlType;  // Level type from 0 to 201
 
-      int PCode;     // Parameter number for probability from 0 to 255
+      int PCode;    // Parameter number for probability from 0 to 255
 
       int Center;    // Identification of center
-      int Subcenter; // Identification of subcenter
+      int Subcenter; // Identification of subsenter
 
       int FieldRec;
 
-      int TRI;       // Time range indicator (Table 5)
 
       void init_from_scratch();
       void assign(const VarInfoGrib &);
@@ -81,9 +80,8 @@ class VarInfoGrib : public VarInfo
       int         lvl_type()  const;
       int         p_code()    const;
       int         center()    const;
-      int         subcenter() const;
-      int         field_rec() const;
-      int         tri()       const;
+      int         subcenter()    const;
+      int         field_rec()    const;
 
          //
          // set stuff
@@ -100,7 +98,6 @@ class VarInfoGrib : public VarInfo
       void set_center(int);
       void set_subcenter(int);
       void set_field_rec(int);
-      void set_tri(int);
 
          //
          // do stuff
@@ -121,10 +118,9 @@ inline int         VarInfoGrib::ptv()       const { return(PTV);          }
 inline int         VarInfoGrib::code()      const { return(Code);         }
 inline int         VarInfoGrib::lvl_type()  const { return(LvlType);      }
 inline int         VarInfoGrib::p_code()    const { return(PCode);        }
-inline int         VarInfoGrib::center()    const { return(Center);       }
-inline int         VarInfoGrib::subcenter() const { return(Subcenter);    }
-inline int         VarInfoGrib::field_rec() const { return(FieldRec);     }
-inline int         VarInfoGrib::tri()       const { return(TRI);          }
+inline int         VarInfoGrib::center()    const { return(Center);        }
+inline int         VarInfoGrib::subcenter()    const { return(Subcenter);        }
+inline int         VarInfoGrib::field_rec()    const { return(FieldRec);        }
 
 ///////////////////////////////////////////////////////////////////////////////
 

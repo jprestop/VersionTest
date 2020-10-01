@@ -20,10 +20,9 @@ test_read_nc_met_LDADD = -lvx_data2d_nc_met \
 	-lvx_data2d \
 	-lvx_grid \
 	-lvx_config \
-	-lvx_gsl_prob \
 	-lvx_util \
 	-lvx_math \
-	-lvx_color \
 	-lvx_cal \
 	-lvx_log \
-	-lnetcdf_c++4 -lnetcdf -lgsl -lgslcblas
+	-lnetcdf_c++4 -lnetcdf
+

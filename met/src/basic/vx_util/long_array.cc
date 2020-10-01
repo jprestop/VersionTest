@@ -1,7 +1,7 @@
 
 
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -151,17 +151,13 @@ return;
 ////////////////////////////////////////////////////////////////////////
 
 
-void LongArray::extend(int n, bool exact)
+void LongArray::extend(int n)
 
 {
 
 if ( n <= Nalloc )  return;
 
-if ( ! exact )  {
-
-   n = AllocInc*( (n + AllocInc - 1)/AllocInc );
-
-}
+n = AllocInc*( (n + AllocInc - 1)/AllocInc );
 
 int j;
 long * u = (long *) 0;
@@ -170,8 +166,7 @@ u = new long [n];
 
 if ( !u )  {
 
-   mlog << Error << "\nLongArray::extend(int, bool) -> "
-        << "memory allocation error\n\n";
+   mlog << Error << "\nLongArray::extend(int) -> memory allocation error\n\n";
 
    exit ( 1 );
 
@@ -236,8 +231,7 @@ void LongArray::set_alloc_inc(int n)
 
 if ( n < 0 )  {
 
-   mlog << Error << "\nLongArray::set_alloc_int(int) -> "
-        << "bad value ... " << n << "\n\n";
+   mlog << Error << "\nLongArray::set_alloc_int(int) -> bad value ... " << n << "\n\n";
 
    exit ( 1 );
 
@@ -258,7 +252,7 @@ void LongArray::add(const long & a)
 
 {
 
-extend(Nelements + 1, false);
+extend(Nelements + 1);
 
 e[Nelements++] = a;
 
@@ -318,8 +312,7 @@ long & LongArray::operator[](int n) const
 
 if ( (n < 0) || (n >= Nelements) )  {
 
-   mlog << Error << "\nLongArray::operator[](int) -> "
-        << "range check error ... " << n << "\n\n";
+   mlog << Error << "\nLongArray::operator[](int) -> range check error ... " << n << "\n\n";
 
    exit ( 1 );
 }

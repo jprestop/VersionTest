@@ -18,10 +18,6 @@
 
 SUBDIRS	= tc_dland \
 	tc_pairs \
-	tc_stat \
-	tc_gen \
-	tc_rmw \
-	rmw_analysis \
 	tc_stat
 
 MAINTAINERCLEANFILES 	= Makefile.in

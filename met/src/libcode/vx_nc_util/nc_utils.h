@@ -1,10 +1,11 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
 // ** P.O.Box 3000, Boulder, Colorado, 80307-3000, USA
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
+
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -22,7 +23,6 @@ using namespace std;
 using namespace netCDF;
 #ifndef ncbyte
 typedef signed char ncbyte; // from ncvalues.h
-typedef unsigned char uchar;
 #endif   /*  ncbyte  */
 
 #include "concat_string.h"
@@ -32,11 +32,6 @@ typedef unsigned char uchar;
 
 ////////////////////////////////////////////////////////////////////////
 
-static const string C_unknown_str = string("unknown");
-
-#define IS_VALID_NC(ncObj)          (!ncObj.isNull())
-#define IS_VALID_NC_P(ncObjPtr)     (!(ncObjPtr == 0 || ncObjPtr->isNull()))
-
 #define IS_INVALID_NC(ncObj)        ncObj.isNull()
 #define IS_INVALID_NC_P(ncObjPtr)   (ncObjPtr == 0 || ncObjPtr->isNull())
 
@@ -45,9 +40,6 @@ static const string C_unknown_str = string("unknown");
 
 #define GET_NC_SIZE(ncObj)          ncObj.getSize()
 #define GET_NC_SIZE_P(ncObjPtr)     ncObjPtr->getSize()
-
-#define GET_SAFE_NC_NAME(ncObj)         (ncObj.isNull() ? C_unknown_str : ncObj.getName())
-#define GET_SAFE_NC_NAME_P(ncObjPtr)    (IS_INVALID_NC_P(ncObjPtr) ? C_unknown_str : ncObjPtr->getName())
 
 #define GET_NC_TYPE_ID(ncObj)           ncObj.getType().getId()
 #define GET_NC_TYPE_ID_P(ncObjPtr)      ncObjPtr->getType().getId()
@@ -64,6 +56,7 @@ static const string C_unknown_str = string("unknown");
 #define GET_NC_VARS_P(ncObjPtr)         ncObjPtr->getVars()
 
 ////////////////////////////////////////////////////////////////////////
+
 
 #define DEF_DEFLATE_LEVEL   (0)
 
@@ -125,7 +118,7 @@ static const char nc_var_unit[]         = "obs_unit";
 static const string nc_att_use_var_id   = "use_var_id";
 static const char nc_att_obs_version[]  = "MET_Obs_version";
 
-static const char nc_time_unit_exp[]    = "^[a-z|A-Z]* since [0-9]\\{1,4\\}-[0-9]\\{1,2\\}-[0-9]\\{1,2\\}";
+static const char nc_time_unit_exp[]    = "^[a-z|A-Z]* since [0-9]\\{4\\}";
 
 static const char MET_NC_Obs_ver_1_2[]  = "1.02";
 static const char MET_NC_Obs_version[]  = "1.02";
@@ -135,6 +128,7 @@ static const int exit_code_no_dim      = 1;
 static const int exit_code_no_hdr_vars = 2;
 static const int exit_code_no_loc_vars = 3;
 static const int exit_code_no_obs_vars = 4;
+
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -232,14 +226,13 @@ extern ConcatString* get_string_val(NcFile *, const char * var_name, const int i
 
 extern ConcatString* get_string_val(NcVar *var, const int index, const int len, ConcatString &tmp_cs);
 
+
 extern bool get_nc_data(NcVar *, int    *data);
 extern bool get_nc_data(NcVar *, char   *data);
-extern bool get_nc_data(NcVar *, uchar  *data);
 extern bool get_nc_data(NcVar *, float  *data);
 extern bool get_nc_data(NcVar *, double *data);
 extern bool get_nc_data(NcVar *, time_t *data);
 extern bool get_nc_data(NcVar *, ncbyte *data);
-extern bool get_nc_data(NcVar *, unsigned short *data);
 
 extern bool get_nc_data(NcVar *, int    *data, const long *cur);
 extern bool get_nc_data(NcVar *, char   *data, const long *cur);
@@ -305,8 +298,8 @@ extern bool put_nc_data_with_dims(NcVar *, const double *data, const int len0,
 extern bool put_nc_data_with_dims(NcVar *, const double *data, const long len0,
                                   const long len1=0, const long len2=0);
 
-extern NcVar    get_var(NcFile *, const char * var_name);   // exit if not exists
-extern NcVar get_nc_var(NcFile *, const char * var_name, bool as_error=false, bool show_warning=true);   // continue even though not exists
+extern NcVar    get_var(NcFile *, const char * var_name);
+extern NcVar get_nc_var(NcFile *, const char * var_name);
 extern NcVar *copy_nc_var(NcFile *,  NcVar *, const int deflate_level=DEF_DEFLATE_LEVEL, const bool all_attrs=true);
 extern void   copy_nc_att(NcFile *, NcVar *, const ConcatString attr_name);
 extern void   copy_nc_att( NcVar *,  NcVar *, const ConcatString attr_name);

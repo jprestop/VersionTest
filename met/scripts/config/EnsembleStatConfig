@@ -83,33 +83,6 @@ ens = {
 ////////////////////////////////////////////////////////////////////////////////
 
 //
-// Neighborhood ensemble probabilities
-//
-nbrhd_prob = {
-   width      = [ 5 ];
-   shape      = CIRCLE;
-   vld_thresh = 0.0;
-}
-
-//
-// NMEP smoothing methods
-//
-nmep_smooth = {
-   vld_thresh      = 0.0;
-   shape           = CIRCLE;
-   gaussian_dx     = 81.27;
-   gaussian_radius = 120;
-   type = [
-      {
-         method = GAUSSIAN;
-         width  = 1;
-      }
-   ];
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-//
 // Forecast and observation fields to be verified
 //
 fcst = {
@@ -121,7 +94,6 @@ fcst = {
          level = [ "A24" ];
          ens_ssvar_bin_size = 0.1;
          ens_phist_bin_size = 0.05;
-         prob_cat_thresh = [ >0, >0.1, >0.25, >0.5, >1.0, >1.5, >2.0 ];
       }
    ];
 }
@@ -133,7 +105,6 @@ obs = fcst;
 // Point observation filtering options
 // May be set separately in each "obs.field" entry
 //
-sid_inc        = [];
 sid_exc        = [];
 obs_thresh     = [ NA ];
 obs_quality    = [];
@@ -162,12 +133,6 @@ obs_error = {
 ens_ssvar_bin_size = 1.0;
 ens_phist_bin_size = 0.05;
 
-//
-// Categorical thresholds to define ensemble probabilities
-// May be set separately in each "fcst.field" entry
-//
-prob_cat_thresh = [];
-
 ////////////////////////////////////////////////////////////////////////////////
 
 //
@@ -185,22 +150,9 @@ climo_mean = {
    }
 
    time_interp_method = DW_MEAN;
-   day_interval       = 31;
-   hour_interval      = 6;
-}
-
-climo_stdev = climo_mean;
-climo_stdev = {
-   file_name = [];
-}
-
-//
-// May be set separately in each "obs.field" entry
-//
-climo_cdf = {
-   cdf_bins    = 1;
-   center_bins = FALSE;
-   write_bins  = TRUE;
+   match_month        = TRUE;
+   match_day          = FALSE;
+   time_step          = 21600;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -260,7 +212,6 @@ interp = {
 //
 output_flag = {
    ecnt  = BOTH;
-   rps   = BOTH;
    rhist = BOTH;
    phist = BOTH;
    orank = BOTH;
@@ -283,8 +234,6 @@ ensemble_flag = {
    range     = TRUE;
    vld_count = TRUE;
    frequency = TRUE;
-   nep       = TRUE;
-   nmep      = TRUE;
    rank      = TRUE;
    weight    = FALSE;
 }
@@ -303,6 +252,6 @@ rng = {
 
 grid_weight_flag = NONE;
 output_prefix    = "";
-version          = "V9.1";
+version          = "V8.1";
 
 ////////////////////////////////////////////////////////////////////////////////

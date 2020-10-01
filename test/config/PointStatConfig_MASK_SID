@@ -32,7 +32,7 @@ wind_logic  = UNION;
 eclv_points = 0.05;
 
 fcst = {
-   sid_inc = [];
+
    sid_exc = [];
 
    field = [
@@ -93,12 +93,10 @@ interp = {
 ////////////////////////////////////////////////////////////////////////////////
 
 hira = {
-   flag            = FALSE;
-   width           = [ 2, 3, 4, 5 ];
-   vld_thresh      = 1.0;
-   cov_thresh      = [ ==0.25 ];
-   shape           = SQUARE;
-   prob_cat_thresh = [];
+   flag       = FALSE;
+   width      = [ 2, 3, 4, 5 ];
+   vld_thresh = 1.0;
+   cov_thresh = [ ==0.25 ];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -120,7 +118,6 @@ output_flag = {
    pjc    = NONE;
    prc    = NONE;
    ecnt   = NONE;
-   rps    = NONE;
    eclv   = BOTH;
    mpr    = BOTH;
 }
@@ -131,6 +128,6 @@ duplicate_flag = NONE;
 rank_corr_flag = TRUE;
 tmp_dir        = "/tmp";
 output_prefix  = "${OUTPUT_PREFIX}";
-version        = "V9.1";
+version        = "V8.1";
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -17,18 +17,17 @@
 ## MA 02110-1301, USA.
 
 SUBDIRS	= vx_grid \
-	vx_data2d \
 	vx_nc_util \
+	vx_data2d \
 	vx_data2d_grib \
 	vx_data2d_nc_met \
 	vx_data2d_nccf \
 	vx_data2d_nc_pinterp
 
 if ENABLE_PYTHON
-  SUBDIRS += vx_python3_utils
+  SUBDIRS += vx_python_utils
   SUBDIRS += vx_data2d_python
 endif
-
 
 if ENABLE_GRIB2
   SUBDIRS += vx_data2d_grib2
@@ -54,10 +53,9 @@ SUBDIRS += vx_data2d_factory \
 	vx_tc_util \
 	vx_summary \
 	vx_time_series \
-	vx_physics \
-	vx_series_data \
 	vx_regrid \
 	vx_nc_obs \
 	vx_solar
+
 
 MAINTAINERCLEANFILES 	= Makefile.in

@@ -39,17 +39,14 @@ regrid = {
 //
 // May be set separately in each "field" entry
 //
-censor_thresh       = [];
-censor_val          = [];
-cat_thresh          = [];
-cnt_thresh          = [ NA ];
-cnt_logic           = UNION;
-wind_thresh         = [ NA ];
-wind_logic          = UNION;
-eclv_points         = 0.05;
-nc_pairs_var_name   = "";
-nc_pairs_var_suffix = "";
-rank_corr_flag      = FALSE;
+censor_thresh = [];
+censor_val    = [];
+cat_thresh    = [];
+cnt_thresh  = [ NA ];
+cnt_logic   = UNION;
+wind_thresh = [ NA ];
+wind_logic  = UNION;
+eclv_points = 0.05;
 
 tmp_field = [ { name = "TMP"; level = [ "P500" ]; } ];
 
@@ -76,8 +73,9 @@ climo_mean = {
    }
 
    time_interp_method = DW_MEAN;
-   day_interval       = 31;
-   hour_interval      = 6;
+   match_month        = TRUE;
+   match_day          = FALSE;
+   time_step          = 21600;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -159,19 +157,6 @@ gradient = {
 ////////////////////////////////////////////////////////////////////////////////
 
 //
-// Distance Map statistics
-// May be set separately in each "obs.field" entry
-//
-distance_map = {
-   baddeley_p        = 2;
-   baddeley_max_dist = NA;
-   fom_alpha         = 0.1;
-   zhu_weight        = 0.5;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-//
 // Statistical output types
 //
 output_flag = {
@@ -195,31 +180,29 @@ output_flag = {
    nbrcts = NONE;
    nbrcnt = NONE;
    grad   = NONE;
-   dmap   = NONE;
 }
 
 //
 // NetCDF matched pairs output file
 //
-nc_pairs_flag = {
-   latlon       = FALSE;
-   raw          = TRUE;
-   diff         = FALSE;
-   climo        = TRUE;
-   climo_cdp    = FALSE;
-   weight       = TRUE;
-   nbrhd        = FALSE;
-   fourier      = FALSE;
-   gradient     = FALSE;
-   distance_map = FALSE;
-   apply_mask   = TRUE;
+nc_pairs_flag   = {
+   latlon     = FALSE;
+   raw        = TRUE;
+   diff       = FALSE;
+   climo      = TRUE;
+   weight     = TRUE;
+   nbrhd      = FALSE;
+   fourier    = FALSE;
+   gradient   = FALSE;
+   apply_mask = TRUE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 grid_weight_flag = ${GRID_WEIGHT};
+rank_corr_flag   = FALSE;
 tmp_dir          = "/tmp";
 output_prefix    = "${OUTPUT_PREFIX}";
-version          = "V9.1";
+version          = "V8.1";
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -23,14 +23,6 @@ using namespace std;
 #include "vx_log.h"
 
 #include "file_fxns.h"
-
-////////////////////////////////////////////////////////////////////////
-
-bool is_regular_file(const char *path) {
-   struct stat path_stat;
-   stat(path, &path_stat);
-   return(S_ISREG(path_stat.st_mode));
-}
 
 ////////////////////////////////////////////////////////////////////////
 //
@@ -101,21 +93,31 @@ DIR *met_opendir(const char *path) {
 
 ////////////////////////////////////////////////////////////////////////
 
-void met_closedir(DIR * & dp) {
 
-   int status = ::closedir(dp);
-   dp = 0;
+void met_closedir(DIR * & dp)
 
-   if(status < 0) {
+{
 
-      mlog << Error << "\nmet_closedir(DIR *) -> "
-           << "trouble closing directory ... " << strerror(errno)
-           << "\n\n";
+int status = ::closedir(dp);
 
-      exit(1);
-   }
+dp = 0;
 
-   return;
+if ( status < 0 )  {
+
+   mlog << Error
+        << "\n\n  met_closedir(DIR *) -> trouble closing directory ... "
+        << strerror(errno) << "\n\n";
+
+   exit ( 1 );
+
 }
 
+return;
+
+}
+
+
 ////////////////////////////////////////////////////////////////////////
+
+
+

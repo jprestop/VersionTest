@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -56,10 +56,7 @@ class MtdFloatFile : public MtdFileBase {
       float DataMin;
       float DataMax;
 
-      int Spatial_Radius;   //  = -1 if not a convolved file
-
-      int TimeBeg;
-      int TimeEnd;
+      int Radius;   //  = -1 if not a convolved file
 
    public:
 
@@ -80,9 +77,7 @@ class MtdFloatFile : public MtdFileBase {
 
       void set_data_minmax(double _data_min, double _data_max);
 
-      void set_spatial_radius(int);
-
-      void set_time_window(int, int);
+      void set_radius(int);
 
          //
          //  get stuff
@@ -93,11 +88,7 @@ class MtdFloatFile : public MtdFileBase {
 
       float operator()(int _x, int _y, int _t) const;
 
-      int spatial_radius() const;
-
-      int time_beg() const;
-
-      int time_end() const;
+      int radius() const;
 
       const float * data() const;
 
@@ -123,7 +114,7 @@ class MtdFloatFile : public MtdFileBase {
 
       MtdFloatFile const_t_slice(int t) const;
 
-      MtdFloatFile convolve(const int spatial_r, const int time_beg, const int time_end) const;
+      MtdFloatFile convolve(const int r) const;
 
       void calc_data_minmax();
 
@@ -137,10 +128,7 @@ class MtdFloatFile : public MtdFileBase {
 ////////////////////////////////////////////////////////////////////////
 
 
-inline int MtdFloatFile::spatial_radius() const { return ( Spatial_Radius ); }
-
-inline int MtdFloatFile::time_beg() const { return ( TimeBeg ); }
-inline int MtdFloatFile::time_end() const { return ( TimeEnd ); }
+inline int MtdFloatFile::radius() const { return ( Radius ); }
 
 inline float MtdFloatFile::data_min() const { return ( DataMin ); }
 inline float MtdFloatFile::data_max() const { return ( DataMax ); }

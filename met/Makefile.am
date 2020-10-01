@@ -32,6 +32,7 @@ MAINTAINERCLEANFILES 	= \
 
 # Cleanup for the distribution
 #   - Remove any SVN files
+#   - Remove the lyx documentation source files
 #   - Remove lex/yacc source files
 #   - Run the check for copyright utility
 
@@ -39,6 +40,7 @@ dist-hook:
 	-rm -rf `find ${distdir} -name .svn`
 	-rm -rf `find ${distdir} -name "*.ll"`
 	-rm -rf `find ${distdir} -name "*.yy"`
+	-rm -rf ${distdir}/doc/MET_Users_Guide
 	${top_srcdir}/src/tools/dev_utils/chk4copyright -dir ${distdir} -notice ${top_srcdir}/data/copyright_notice.txt
 	-rm -rf ${distdir}/internal_tests
 	-rm -rf ${distdir}/src/tools/dev_utils
@@ -55,7 +57,7 @@ test:
 # in the distribution
 
 EXTRA_DIST = \
-	docs \
+	doc \
 	out \
 	scripts \
 	Make-include

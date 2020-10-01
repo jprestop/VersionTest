@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -224,11 +224,10 @@ public:
 
     char time_string[80];
 
-    snprintf(time_string, sizeof(time_string), 
-             "%04d%02d%02d_%02d%02d%02d",
-             time_struct->tm_year + 1900, time_struct->tm_mon + 1,
-             time_struct->tm_mday,
-             time_struct->tm_hour, time_struct->tm_min, time_struct->tm_sec);
+    sprintf(time_string, "%04d%02d%02d_%02d%02d%02d",
+       time_struct->tm_year + 1900, time_struct->tm_mon + 1,
+       time_struct->tm_mday,
+       time_struct->tm_hour, time_struct->tm_min, time_struct->tm_sec);
 
     return time_string;
   }

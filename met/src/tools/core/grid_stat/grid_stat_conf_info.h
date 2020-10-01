@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -57,9 +57,7 @@ static const int i_grad   = 18;
 
 static const int i_vcnt   = 19;
 
-static const int i_dmap   = 20;
-
-static const int n_txt    = 21;
+static const int n_txt    = 20;
 
 // Text file type
 static const STATLineType txt_file_type[n_txt] = {
@@ -90,7 +88,6 @@ static const STATLineType txt_file_type[n_txt] = {
 
    stat_grad,       //  18
    stat_vcnt,       //  19
-   stat_dmap        //  20
 
 };
 
@@ -102,12 +99,10 @@ struct GridStatNcOutInfo {
    bool do_raw;
    bool do_diff;
    bool do_climo;
-   bool do_climo_cdp;
    bool do_weight;
    bool do_nbrhd;
    bool do_fourier;
    bool do_gradient;
-   bool do_distance_map;
    bool do_apply_mask;
 
       //////////////////////////////////////////////////////////////////
@@ -141,9 +136,7 @@ class GridStatVxOpt {
       VarInfo *        obs_info;         // obs VarInfo pointer (allocated)
 
       ConcatString     desc;             // Description string
-      ConcatString     var_name;         // nc_pairs_var_name string
-      ConcatString     var_suffix;       // nc_pairs_var_suffix string
-                                         // nc_pairs_var_str is deprecated
+      ConcatString     var_str;          // nc_pairs_var_str string
 
       ThreshArray      fcat_ta;          // fcst categorical thresholds
       ThreshArray      ocat_ta;          // obs categorical thresholds
@@ -163,7 +156,7 @@ class GridStatVxOpt {
 
       NumArray         eclv_points;      // ECLV points
 
-      ClimoCDFInfo     cdf_info;         // Climo CDF info
+      ThreshArray      climo_cdf_ta;     // Climo CDF thresh array
 
       NumArray         ci_alpha;         // Alpha value for confidence intervals
 
@@ -178,12 +171,6 @@ class GridStatVxOpt {
       // Gradient Options
       IntArray         grad_dx;          // Gradient step size in the X direction
       IntArray         grad_dy;          // Gradient step size in the Y direction
-
-      // Distance Map Options
-      int              baddeley_p;        // Exponent for lp-norm
-      double           baddeley_max_dist; // Maximum distance constant
-      double           fom_alpha;         // FOM Alpha
-      double           zhu_weight;        // Zhu Weight 
 
       bool             rank_corr_flag;   // Flag for computing rank correlations
 
@@ -200,7 +187,7 @@ class GridStatVxOpt {
       void parse_nc_info(Dictionary &);
       bool is_uv_match(const GridStatVxOpt &) const;
 
-      void set_perc_thresh(const PairDataPoint &);
+      void set_perc_thresh(const NumArray &, const NumArray &, const NumArray &);
 
       // Compute the number of output lines for this task
       int n_txt_row(int i)     const;
@@ -229,7 +216,7 @@ class GridStatVxOpt {
 inline int  GridStatVxOpt::get_n_mask()        const { return(mask_name.n_elements());         }
 inline int  GridStatVxOpt::get_n_interp()      const { return(interp_info.n_interp);           }
 inline int  GridStatVxOpt::get_n_eclv_points() const { return(eclv_points.n_elements());       }
-inline int  GridStatVxOpt::get_n_cdf_bin()     const { return(cdf_info.n_bin);                 }
+inline int  GridStatVxOpt::get_n_cdf_bin()     const { return(climo_cdf_ta.n_elements() - 1);  }
 inline int  GridStatVxOpt::get_n_nbrhd_wdth()  const { return(nbrhd_info.width.n_elements());  }
 inline int  GridStatVxOpt::get_n_cov_thresh()  const { return(nbrhd_info.cov_ta.n_elements()); }
 inline int  GridStatVxOpt::get_n_wave_1d()     const { return(wave_1d_beg.n_elements());       }

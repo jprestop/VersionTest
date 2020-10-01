@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -158,6 +158,8 @@ if ( t.s != "" )  {
 
 }
 
+
+
 return;
 
 }
@@ -229,13 +231,15 @@ double AfmToken::as_double() const
 
 double x;
 
+
 switch ( type )  {
+
 
    case afm_token_integer:  x = (double) i;   break;
    case afm_token_number:   x = d;            break;
 
+
    default:
-      x = 0.0;
       mlog << Error << "\nAfmToken::as_double() const -> bad token type!\n\n";
       dump(cerr);
       exit ( 1 );
@@ -243,10 +247,16 @@ switch ( type )  {
 
 };
 
+
 return ( x );
 
 }
 
 
 ////////////////////////////////////////////////////////////////////////
+
+
+
+
+
 

@@ -4,7 +4,7 @@
 
 
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -144,7 +144,10 @@ void Identifier::set(const char * text)
 
 clear();
 
+int n;
+
 name.assign(text);
+
 
 return;
 
@@ -388,8 +391,6 @@ IdentifierArray::~IdentifierArray()
 
 clear();
 
-if (i) delete [] i;
-
 }
 
 
@@ -473,8 +474,6 @@ void IdentifierArray::assign(const IdentifierArray & a)
 clear();
 
 int j;
-
-if (a.Nelements > Nalloc) extend(a.Nelements);
 
 Nelements = a.Nelements;
 

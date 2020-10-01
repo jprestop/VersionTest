@@ -1,6 +1,5 @@
-
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -28,7 +27,6 @@
 #include "conversions.h"
 #include "data_line.h"
 #include "data_plane.h"
-#include "data_cube.h"
 #include "data_plane_util.h"
 #include "file_exists.h"
 #include "file_size.h"
@@ -58,7 +56,6 @@
 #include "polyline.h"
 #include "mask_poly.h"
 #include "read_fortran_binary.h"
-#include "stat_column_defs.h"
 
 
 ////////////////////////////////////////////////////////////////////////

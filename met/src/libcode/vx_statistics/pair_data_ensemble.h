@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -17,6 +17,7 @@
 
 #include "pair_base.h"
 #include "obs_error.h"
+#include "met_stats.h"
 
 #include "vx_util.h"
 #include "vx_grid.h"
@@ -25,12 +26,6 @@
 #include "vx_gsl_prob.h"
 
 using namespace std;
-
-////////////////////////////////////////////////////////////////////////
-
-class SSVARInfo; // forward reference
-
-////////////////////////////////////////////////////////////////////////
 
 // Structures to store the spread/skill point information
 struct ens_ssvar_pt {
@@ -94,9 +89,9 @@ class PairDataEnsemble : public PairBase {
       double     phist_bin_size;  // Ensemble PIT histogram bin width
       NumArray   phist_na;        // PIT Histogram [n_phist_bin]
 
-      NumArray   var_na;           // Variance of unperturbed members [n_obs]
-      NumArray   var_oerr_na;      // Variance of perturbed members [n_obs]
-      NumArray   var_plus_oerr_na; // Unperturbed variance plus observation error variance [n_obs]
+      NumArray   spread_na;           // Spread of unperturbed members [n_obs]
+      NumArray   spread_oerr_na;      // Spread of perturbed members [n_obs]
+      NumArray   spread_plus_oerr_na; // Unperturbed ensemble spread plus observation error [n_obs]
 
       NumArray   esum_na;         // Sum of unperturbed ensemble values [n_obs]
       NumArray   esumsq_na;       // Sum of unperturbed ensemble squared values [n_obs]
@@ -117,7 +112,7 @@ class PairDataEnsemble : public PairBase {
 
       void clear();
 
-      void extend(int, bool exact = true);
+      void extend(int);
 
       bool has_obs_error() const;
 
@@ -129,6 +124,7 @@ class PairDataEnsemble : public PairBase {
 
       void compute_pair_vals(const gsl_rng *);
 
+      void compute_stats();
       void compute_rhist();
       void compute_relp();
       void compute_phist();
@@ -195,7 +191,6 @@ class VxPairDataEnsemble {
 
       //////////////////////////////////////////////////////////////////
 
-      StringArray sid_inc_filt;  // Station ID inclusion list
       StringArray sid_exc_filt;  // Station ID exclusion list
       StringArray obs_qty_filt;  // Observation quality markers
 
@@ -239,7 +234,6 @@ class VxPairDataEnsemble {
       void set_beg_ut(const unixtime);
       void set_end_ut(const unixtime);
 
-      void set_sid_inc_filt(const StringArray);
       void set_sid_exc_filt(const StringArray);
       void set_obs_qty_filt(const StringArray);
 
@@ -263,9 +257,9 @@ class VxPairDataEnsemble {
       void set_ssvar_bin_size(double);
       void set_phist_bin_size(double);
 
-      void add_point_obs(float *, int *, const char *, const char *,
-                         unixtime, const char *, float *, Grid &,
-                         const char * = 0, const DataPlane * = 0);
+      void add_obs(float *, int *, const char *, const char *, unixtime,
+                   const char *, float *, Grid &, const char * = 0,
+                   const DataPlane * = 0);
 
       void add_ens(int, bool mn);
 
@@ -290,12 +284,8 @@ class VxPairDataEnsemble {
 //
 ////////////////////////////////////////////////////////////////////////
 
-extern void compute_crps_ign_pit(double, const NumArray &, double &,
-                           double &, double &);
-
-// Subset pairs for a specific climatology CDF bin
-extern PairDataEnsemble subset_climo_cdf_bin(const PairDataEnsemble &,
-                           const ThreshArray &, int i_bin);
+extern void compute_crps_ign_pit(double, const NumArray &,
+                                 double &, double &, double &);
 
 ////////////////////////////////////////////////////////////////////////
 

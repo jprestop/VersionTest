@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// TC-Stat configuration file.
+// Default TCStat configuration file
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -186,4 +186,4 @@ jobs = [
 // Indicate a version number for the contents of this configuration file.
 // The value should generally not be modified.
 //
-version = "V9.1";
+version = "V8.1";

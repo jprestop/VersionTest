@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -239,19 +239,17 @@ void VarInfoNcPinterp::set_dict(Dictionary & dict) {
              dict.lookup_string("level"));
    set_req_name( dict.lookup_string("name").c_str() );
 
-   return;
+   // Check for a probability boolean setting
+   if(dict.lookup_bool(conf_key_prob, false)) {
+      set_p_flag(true);
+      return;
+   }
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 bool VarInfoNcPinterp::is_precipitation() const {
-
-   //
-   // Check set_attrs entry
-   //
-   if(!is_bad_data(SetAttrIsPrecipitation)) {
-      return(SetAttrIsPrecipitation != 0);
-   }
 
    //
    // Check to see if the VarInfo name matches any of expected Pinterp
@@ -267,13 +265,6 @@ bool VarInfoNcPinterp::is_precipitation() const {
 bool VarInfoNcPinterp::is_specific_humidity() const {
 
    //
-   // Check set_attrs entry
-   //
-   if(!is_bad_data(SetAttrIsSpecificHumidity)) {
-      return(SetAttrIsSpecificHumidity != 0);
-   }
-
-   //
    // Check to see if the VarInfo name matches any of expected Pinterp
    // specific humidity variables.
    //
@@ -285,13 +276,6 @@ bool VarInfoNcPinterp::is_specific_humidity() const {
 ///////////////////////////////////////////////////////////////////////////////
 
 bool VarInfoNcPinterp::is_u_wind() const {
-
-   //
-   // Check set_attrs entry
-   //
-   if(!is_bad_data(SetAttrIsUWind)) {
-      return(SetAttrIsUWind != 0);
-   }
 
    //
    // Check to see if the VarInfo name matches any of expected Pinterp
@@ -307,13 +291,6 @@ bool VarInfoNcPinterp::is_u_wind() const {
 bool VarInfoNcPinterp::is_v_wind() const {
 
    //
-   // Check set_attrs entry
-   //
-   if(!is_bad_data(SetAttrIsVWind)) {
-      return(SetAttrIsVWind != 0);
-   }
-
-   //
    // Check to see if the VarInfo name matches any of expected Pinterp
    // V-component of wind variables.
    //
@@ -327,13 +304,6 @@ bool VarInfoNcPinterp::is_v_wind() const {
 bool VarInfoNcPinterp::is_wind_speed() const {
 
    //
-   // Check set_attrs entry
-   //
-   if(!is_bad_data(SetAttrIsWindSpeed)) {
-      return(SetAttrIsWindSpeed != 0);
-   }
-
-   //
    // Check to see if the VarInfo name matches any of expected Pinterp
    // wind speed variables.
    //
@@ -345,14 +315,6 @@ bool VarInfoNcPinterp::is_wind_speed() const {
 ///////////////////////////////////////////////////////////////////////////////
 
 bool VarInfoNcPinterp::is_wind_direction() const {
-
-   //
-   // Check set_attrs entry
-   //
-   if(!is_bad_data(SetAttrIsWindDirection)) {
-      return(SetAttrIsWindDirection != 0);
-   }
-
    return(false);
 }
 

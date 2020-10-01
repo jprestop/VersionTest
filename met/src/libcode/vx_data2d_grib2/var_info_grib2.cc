@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -370,18 +370,25 @@ void VarInfoGrib2::set_dict(Dictionary & dict) {
    //  call the parent to set the level information
    set_level_info_grib(dict);
 
+   //  check for a probability boolean setting
+   if( dict.lookup_bool(conf_key_prob, false) ){
+      set_p_flag( true );
+      return;
+   }
+
    //  if the level type is a record number, set the data member
-   set_record(Level.type() == LevelType_RecNumber ? nint(Level.lower()) : -1);
+   set_record( Level.type() == LevelType_RecNumber ?
+               nint(Level.lower()) : -1 );
 
    //  if the field is not probabilistic, work is done
-   if(field_name != "PROB") return;
+   if( field_name != "PROB" ) return;
 
    //  check for a probability dictionary setting
    Dictionary* dict_prob;
-   if(NULL == (dict_prob = dict.lookup_dictionary(conf_key_prob, false))){
+   if( NULL == (dict_prob = dict.lookup_dictionary(conf_key_prob, false)) ){
       mlog << Error << "\nVarInfoGrib2::set_dict() -> "
-           << "if the field name is set to \"PROB\", then a prob dictionary "
-           << "must be defined\n\n";
+           << "if the field name is set to \"PROB\", then a prob information "
+           << "section must be present\n\n";
       exit(1);
    }
 
@@ -394,8 +401,8 @@ void VarInfoGrib2::set_dict(Dictionary & dict) {
    double thresh_hi = dict_prob->lookup_double(conf_key_thresh_hi,      false);
 
    //  look up the probability field abbreviation
-   if(!GribTable.lookup_grib2(prob_name.c_str(), field_disc, field_parm_cat,
-                              field_parm, mtab, cntr, ltab, tab, tab_match)){
+   if( !GribTable.lookup_grib2(prob_name.c_str(), field_disc, field_parm_cat, field_parm, mtab, cntr, ltab,
+                               tab, tab_match) ){
       mlog << Error << "\nVarInfoGrib2::set_dict() -> "
            << "unrecognized GRIB2 probability field abbreviation '"
            << prob_name << "'\n\n";
@@ -406,8 +413,8 @@ void VarInfoGrib2::set_dict(Dictionary & dict) {
    set_parm_cat   ( tab.index_b );
    set_parm       ( tab.index_c );
    set_p_flag     ( true        );
-   set_p_units    ( tab.units.c_str() );
-   set_units      ( "%" );
+   set_p_units    ( tab.units.c_str()   );
+   set_units      ( tab.units.c_str()   );
 
    set_prob_info_grib(prob_name, thresh_lo, thresh_hi);
 
@@ -416,14 +423,6 @@ void VarInfoGrib2::set_dict(Dictionary & dict) {
 ///////////////////////////////////////////////////////////////////////////////
 
 bool VarInfoGrib2::is_precipitation() const {
-
-   //
-   // Check set_attrs entry
-   //
-   if(!is_bad_data(SetAttrIsPrecipitation)) {
-      return(SetAttrIsPrecipitation != 0);
-   }
-
    return Discipline == 0 &&
           ParmCat    == 1 &&
           (
@@ -438,14 +437,6 @@ bool VarInfoGrib2::is_precipitation() const {
 ///////////////////////////////////////////////////////////////////////////////
 
 bool VarInfoGrib2::is_specific_humidity() const {
-
-   //
-   // Check set_attrs entry
-   //
-   if(!is_bad_data(SetAttrIsSpecificHumidity)) {
-      return(SetAttrIsSpecificHumidity != 0);
-   }
-
    return Discipline == 0 &&
           ParmCat    == 1 &&
           Parm       == 0;
@@ -454,14 +445,6 @@ bool VarInfoGrib2::is_specific_humidity() const {
 ///////////////////////////////////////////////////////////////////////////////
 
 bool VarInfoGrib2::is_u_wind() const {
-
-   //
-   // Check set_attrs entry
-   //
-   if(!is_bad_data(SetAttrIsUWind)) {
-      return(SetAttrIsUWind != 0);
-   }
-
    return(ReqName == ugrd_abbr_str ||
           (Discipline == 0 &&
            ParmCat    == 2 &&
@@ -471,14 +454,6 @@ bool VarInfoGrib2::is_u_wind() const {
 ///////////////////////////////////////////////////////////////////////////////
 
 bool VarInfoGrib2::is_v_wind() const {
-
-   //
-   // Check set_attrs entry
-   //
-   if(!is_bad_data(SetAttrIsVWind)) {
-      return(SetAttrIsVWind != 0);
-   }
-
    return(ReqName == vgrd_abbr_str ||
           (Discipline == 0 &&
            ParmCat    == 2 &&
@@ -488,14 +463,6 @@ bool VarInfoGrib2::is_v_wind() const {
 ///////////////////////////////////////////////////////////////////////////////
 
 bool VarInfoGrib2::is_wind_speed() const {
-
-   //
-   // Check set_attrs entry
-   //
-   if(!is_bad_data(SetAttrIsWindSpeed)) {
-      return(SetAttrIsWindSpeed != 0);
-   }
-
    return(ReqName == wind_abbr_str ||
           (Discipline == 0 &&
            ParmCat    == 2 &&
@@ -505,14 +472,6 @@ bool VarInfoGrib2::is_wind_speed() const {
 ///////////////////////////////////////////////////////////////////////////////
 
 bool VarInfoGrib2::is_wind_direction() const {
-
-   //
-   // Check set_attrs entry
-   //
-   if(!is_bad_data(SetAttrIsWindDirection)) {
-      return(SetAttrIsWindDirection != 0);
-   }
-
    return(ReqName == wdir_abbr_str ||
           (Discipline == 0 &&
            ParmCat    == 2 &&

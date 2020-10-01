@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -88,10 +88,8 @@ class ConcatString {
      ~ConcatString();
       ConcatString(const ConcatString &);
       ConcatString(const std::string &);
-      ConcatString(const char *);
       ConcatString & operator=(const ConcatString &);
       ConcatString & operator=(const std::string &);
-      ConcatString & operator=(const char *);
       bool operator==(const ConcatString &) const;
       bool operator==(const char *) const;
 
@@ -143,8 +141,6 @@ class ConcatString {
 
       void add(const std::string &);
 
-      void add(const char *);
-
       void chomp();   //  removes possible trailing newline
 
       void chomp(const char);   //  removes trailing char, if possible
@@ -163,10 +159,6 @@ class ConcatString {
       void strip_paren();   //  strip contents of trailing parenthesis, if any
 
       StringArray split(const char * delim) const;
-
-      ConcatString dirname() const;
-
-      ConcatString basename() const;
 
       void set_repeat(char, int count);
 
@@ -189,8 +181,6 @@ class ConcatString {
       int find(int c);
       int compare(size_t pos, size_t len, std::string str);
       int comparecase(size_t pos, size_t len, std::string str);
-      int comparecase(const char *);
-
 };
 
 
@@ -239,17 +229,16 @@ extern std::ostream & operator<<(std::ostream &, const ConcatString &);
    //
 
 
-extern ConcatString & operator<< (ConcatString &, const char);
-extern ConcatString & operator<< (ConcatString &, const char *);
-extern ConcatString & operator<< (ConcatString &, const std::string&);
-extern ConcatString & operator<< (ConcatString &, const ConcatString &);
-extern ConcatString & operator<< (ConcatString &, int);
-extern ConcatString & operator<< (ConcatString &, unsigned int);
-extern ConcatString & operator<< (ConcatString &, long long);
-extern ConcatString & operator<< (ConcatString &, double);
+extern ConcatString & operator << (ConcatString &, const char);
+extern ConcatString & operator << (ConcatString &, const std::string&);
+extern ConcatString & operator << (ConcatString &, const ConcatString &);
+extern ConcatString & operator << (ConcatString &, int);
+extern ConcatString & operator << (ConcatString &, unsigned int);
+extern ConcatString & operator << (ConcatString &, long long);
+extern ConcatString & operator << (ConcatString &, double);
 
-extern ConcatString & operator<< (ConcatString &, CSInlineCommand);
-extern ConcatString & operator<< (ConcatString &, const Indent &);
+extern ConcatString & operator << (ConcatString &, CSInlineCommand);
+extern ConcatString & operator << (ConcatString &, const Indent &);
 
 
    //

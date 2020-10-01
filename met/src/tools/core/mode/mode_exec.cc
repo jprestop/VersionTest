@@ -1,7 +1,9 @@
 
 
 ///////////////////////////////////////////////////////////////////////
-// ** Copyright UCAR (c) 1992 - 2020
+
+
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -308,12 +310,12 @@ void ModeExecutive::setup_fcst_obs_data()
 
    mlog << Debug(1)
         << "Forecast Field: "
-        << engine.conf_info.fcst_info->name_attr() << " at "
-        << engine.conf_info.fcst_info->level_attr()
+        << engine.conf_info.fcst_info->name() << " at "
+        << engine.conf_info.fcst_info->level_name()
         << "\n"
         << "Observation Field: "
-        << engine.conf_info.obs_info->name_attr() << " at "
-        << engine.conf_info.obs_info->level_attr()
+        << engine.conf_info.obs_info->name() << " at "
+        << engine.conf_info.obs_info->level_name()
         << "\n";
 
       // Mask out the missing data between fields
@@ -988,14 +990,14 @@ if ( info.all_false() )  return;
       //  fcst and obs values for variable, level and units
       //
 
-   nc_add_string(f_out, engine.conf_info.fcst_info->name_attr().c_str(),  "fcst_variable", "fcst_variable_length");
-   nc_add_string(f_out, engine.conf_info.obs_info->name_attr().c_str(),    "obs_variable",  "obs_variable_length");
+   nc_add_string(f_out, engine.conf_info.fcst_info->name().c_str(),       "fcst_variable", "fcst_variable_length");
+   nc_add_string(f_out, engine.conf_info.obs_info->name().c_str(),         "obs_variable",  "obs_variable_length");
 
-   nc_add_string(f_out, engine.conf_info.fcst_info->level_attr().c_str(), "fcst_level",    "fcst_level_length");
-   nc_add_string(f_out, engine.conf_info.obs_info->level_attr().c_str(),   "obs_level",     "obs_level_length");
+   nc_add_string(f_out, engine.conf_info.fcst_info->level_name().c_str(), "fcst_level",    "fcst_level_length");
+   nc_add_string(f_out, engine.conf_info.obs_info->level_name().c_str(),   "obs_level",     "obs_level_length");
 
-   nc_add_string(f_out, engine.conf_info.fcst_info->units_attr().c_str(), "fcst_units",    "fcst_units_length");
-   nc_add_string(f_out, engine.conf_info.obs_info->units_attr().c_str(),   "obs_units",     "obs_units_length");
+   nc_add_string(f_out, engine.conf_info.fcst_info->units().c_str(),      "fcst_units",    "fcst_units_length");
+   nc_add_string(f_out, engine.conf_info.obs_info->units().c_str(),        "obs_units",     "obs_units_length");
 
 
 

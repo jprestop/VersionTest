@@ -1,7 +1,7 @@
 
 
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -139,7 +139,7 @@ if ( read(fd, buf, read_size) != read_size )  {
    //  close file
    //
 
-close(fd);
+close(fd);  fd = -1;
 
    //
    //  search buffer for grib magic cookie

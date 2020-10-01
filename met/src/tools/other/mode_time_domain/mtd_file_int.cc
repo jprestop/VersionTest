@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -136,10 +136,6 @@ DataMin = DataMax = 0;
 
 Radius = -1;
 
-TimeBeg = bad_data_int;
-
-TimeEnd = bad_data_int;
-
 Threshold = -1.0;
 
 Nobjects = 0;
@@ -171,10 +167,6 @@ DataMin = f.DataMin;
 DataMax = f.DataMax;
 
 Radius = f.Radius;
-
-TimeBeg = f.TimeBeg;
-
-TimeEnd = f.TimeEnd;
 
 Threshold = f.Threshold;
 
@@ -223,10 +215,6 @@ Indent prefix(depth);
 MtdFileBase::dump(out, depth);
 
 out << prefix << "Radius = " << Radius << '\n';
-
-out << prefix << "TimeBeg = " << TimeBeg << '\n';
-
-out << prefix << "TimeEnd = " << TimeEnd << '\n';
 
 out << prefix << "Threshold = " << Threshold << '\n';
 
@@ -308,31 +296,6 @@ if ( r < 0 )  {
 }
 
 Radius = r;
-
-return;
-
-}
-
-
-
-////////////////////////////////////////////////////////////////////////
-
-
-void MtdIntFile::set_time_window(int beg, int end)
-
-{
-
-    if ( end < beg )  {
-
-   mlog << Error << "\n\n  MtdIntFile::set_time_window(int) -> bad values ... " << beg << " and " << end << "\n\n";
-
-   exit ( 1 );
-
-}
-
-TimeBeg = beg;
-
-TimeEnd = end;
 
 return;
 
@@ -550,11 +513,6 @@ add_att(&f, max_value_att_name, junk);
 
 add_att(&f, radius_att_name, Radius);
 
-   //  TimeBeg, TimeEnd
-
-add_att(&f, time_beg_att_name, TimeBeg);
-add_att(&f, time_end_att_name, TimeEnd);
-
    //  Threshold
 
 add_att(&f, threshold_att_name, Threshold);
@@ -691,10 +649,6 @@ f.StartValidTime = StartValidTime + t*DeltaT;
 
 f.Radius = Radius;
 
-f.TimeBeg = TimeBeg;
-
-f.TimeEnd = TimeEnd;
-
 f.Data = new int [Nx*Ny];
 
 n = mtd_three_to_one(Nx, Ny, Nt, 0, 0, t);
@@ -758,9 +712,6 @@ f.DeltaT = 0;
 f.StartValidTime = StartValidTime + t*DeltaT;
 
 f.Radius = Radius;
-
-f.TimeBeg = TimeBeg;
-f.TimeEnd = TimeEnd;
 
 f.DataMin = 0;
 f.DataMax = 1;

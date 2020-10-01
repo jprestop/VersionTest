@@ -62,7 +62,6 @@ test_velocity_LDADD = \
 	-lvx_regrid \
 	-lvx_grid \
 	-lvx_config \
-	-lvx_gsl_prob \
 	-lvx_cal \
 	-lvx_util \
 	-lvx_math \

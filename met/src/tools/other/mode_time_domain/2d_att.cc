@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2020
+// ** Copyright UCAR (c) 1992 - 2019
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -138,9 +138,6 @@ Ptile_50 = 0.0;
 Ptile_75 = 0.0;
 Ptile_90 = 0.0;
 
-Ptile_Value = 0;
-Ptile_User  = 0.0;
-
 TimeIndex = -1;
 
 IsFcst = true;
@@ -181,9 +178,6 @@ Ptile_25 = a.Ptile_25;
 Ptile_50 = a.Ptile_50;
 Ptile_75 = a.Ptile_75;
 Ptile_90 = a.Ptile_90;
-
-Ptile_Value = a.Ptile_Value;
-Ptile_User  = a.Ptile_User;
 
 TimeIndex = a.TimeIndex;
 
@@ -237,8 +231,6 @@ out << prefix << "Ptile_25      = " << Ptile_25      << "\n";
 out << prefix << "Ptile_50      = " << Ptile_50      << "\n";
 out << prefix << "Ptile_75      = " << Ptile_75      << "\n";
 out << prefix << "Ptile_90      = " << Ptile_90      << "\n";
-out << prefix << "Ptile_Value   = " << Ptile_Value   << "\n";
-out << prefix << "Ptile_User    = " << Ptile_User    << "\n";
 out << prefix << "ValidTime     = " << ValidTime     << "\n";
 out << prefix << "LeadTime      = " << Lead_Time     << "\n";
 
@@ -383,7 +375,7 @@ return;
 ////////////////////////////////////////////////////////////////////////
 
 
-SingleAtt2D calc_2d_single_atts(const MtdIntFile & mask_2d, const DataPlane & raw_2d, const int obj_number, const int ptile_value)   //  zero-based
+SingleAtt2D calc_2d_single_atts(const MtdIntFile & mask_2d, const DataPlane & raw_2d, const int obj_number)   //  zero-based
 
 {
 
@@ -460,10 +452,6 @@ a.Ptile_25 = percentile_f(values, n, 0.25);
 a.Ptile_50 = percentile_f(values, n, 0.50);
 a.Ptile_75 = percentile_f(values, n, 0.75);
 a.Ptile_90 = percentile_f(values, n, 0.90);
-
-a.Ptile_Value = ptile_value;
-
-a.Ptile_User = percentile_f(values, n, (double) (a.Ptile_Value/100.0));
 
 
    //
@@ -606,13 +594,6 @@ snprintf(junk, sizeof(junk), format, Ptile_90);
 
    table.set_entry(row, c++, junk);
 
-   //
-   //  custom intensity value
-   //
-
-snprintf(junk, sizeof(junk), format, Ptile_User);
-
-   table.set_entry(row, c++, junk);
 
    //
    //  done

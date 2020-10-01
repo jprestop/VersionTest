@@ -32,7 +32,6 @@ wind_logic  = UNION;
 eclv_points = 0.05;
 
 cat_thresh   = [ >0.254, >2.540 ];
-sid_inc      = [];
 sid_exc      = [];
 
 fcst = {
@@ -88,19 +87,17 @@ interp = {
 ////////////////////////////////////////////////////////////////////////////////
 
 hira = {
-   flag            = TRUE;
-   width           = [ 5, 10, 20 ];
-   vld_thresh      = 1.0;
-   cov_thresh      = [ ==0.10 ];
-   shape           = SQUARE;
-   prob_cat_thresh = [ ${HIRA_PROB_CAT_THRESH} ];
+   flag       = TRUE;
+   width      = [ 5, 10, 20 ];
+   vld_thresh = 1.0;
+   cov_thresh = [ ==0.10 ];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 output_flag = {
    fho    = NONE;
-   ctc    = STAT;
+   ctc    = BOTH;
    cts    = NONE;
    mctc   = NONE;
    mcts   = NONE;
@@ -110,14 +107,13 @@ output_flag = {
    vl1l2  = NONE;
    val1l2 = NONE;
    vcnt   = NONE;
-   pct    = STAT;
-   pstd   = STAT;
-   pjc    = STAT;
-   prc    = STAT;
-   ecnt   = STAT;
-   rps    = STAT;
-   eclv   = STAT;
-   mpr    = STAT;
+   pct    = BOTH;
+   pstd   = BOTH;
+   pjc    = BOTH;
+   prc    = BOTH;
+   ecnt   = BOTH;
+   eclv   = BOTH;
+   mpr    = BOTH;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -126,6 +122,6 @@ duplicate_flag = NONE;
 rank_corr_flag = FALSE;
 tmp_dir        = "/tmp";
 output_prefix  = "${OUTPUT_PREFIX}";
-version        = "V9.1";
+version        = "V8.1";
 
 ////////////////////////////////////////////////////////////////////////////////
