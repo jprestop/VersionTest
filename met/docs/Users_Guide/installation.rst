@@ -18,7 +18,7 @@ The MET tools run on a single processor. Therefore, none of the utilities necess
 Programming languages
 _____________________
 
-The MET package, including MET-TC, is written primarily in C/C++ in order to be compatible with an extensive verification code base in C/C++ already in existence. In addition, the object-based MODE and MODE-TD verification tools relies heavily on the object-oriented aspects of C++. Knowledge of C/C++ is not necessary to use the MET package. The MET package has been designed to be highly configurable through the use of ASCII configuration files, enabling a great deal of flexibility without the need for source code modifications.
+The MET package, including MET-TC, is written primarily in C/C++ in order to be compatible with an extensive verification code base in C/C++ already in existence. In addition, the object-based MODE and MODE-TD verification tools rely heavily on the object-oriented aspects of C++. Knowledge of C/C++ is not necessary to use the MET package. The MET package has been designed to be highly configurable through the use of ASCII configuration files, enabling a great deal of flexibility without the need for source code modifications.
 
 NCEP's BUFRLIB is written entirely in Fortran. The portion of MET that handles the interface to the BUFRLIB for reading PrepBUFR point observation files is also written in Fortran.
 
@@ -48,7 +48,7 @@ Three external libraries are required for compiling/building MET and should be d
 
 3. The GNU Scientific Library (GSL) is used by MET when computing confidence intervals. GSL is distributed and supported by the GNU Software Foundation and is freely available for download from the `GNU website <http://www.gnu.org/software/gsl>`_. 
 
-4. The Zlib is used by MET for compression when writing postscript image files from tools (e.g. MODE, Wavelet-Stat, Plot-Data-Plane, and Plot-Point-Obs). Zlib is distributed and supported Zlib.org and is freely available for download from the `Zlib website <http://www.zlib.net>`_. 
+4. The Zlib is used by MET for compression when writing postscript image files from tools (e.g. MODE, Wavelet-Stat, Plot-Data-Plane, and Plot-Point-Obs). Zlib is distributed, supported and is freely available for download from the `Zlib website <http://www.zlib.net>`_. 
 
 Two additional utilities are strongly recommended for use with MET:
 
@@ -64,7 +64,7 @@ __________________________________
 As described in :numref:`Install_Required-libraries-and`, some external libraries are required for building the MET:
 
 1.
-NCEP's BUFRLIB is used by the MET to decode point-based observation datasets in PrepBUFR format. Once you have downloaded and unpacked the BUFRLIB tarball, refer to the README_BUFRLIB file. When compiling the library using the GNU C and Fortran compilers, users are strongly encouraged to use the -DUNDERSCORE and -fno-second-underscore options. Compiling the BUFRLIB verison 11.3.0 (recommended version) using the GNU compilers consists of the following three steps:
+NCEP's BUFRLIB is used by the MET to decode point-based observation datasets in PrepBUFR format. Once you have downloaded and unpacked the BUFRLIB tarball, refer to the README_BUFRLIB file. When compiling the library using the GNU C and Fortran compilers, users are strongly encouraged to use the -DUNDERSCORE and -fno-second-underscore options. Compiling the BUFRLIB version 11.3.0 (recommended version) using the GNU compilers consists of the following three steps:
 
 .. code-block:: none
 		
@@ -121,7 +121,7 @@ _______________________
 
 The top-level MET directory consists of a README file, Makefiles, configuration files, and several subdirectories. The top-level Makefile and configuration files control how the entire toolkit is built. Instructions for using these files to build MET can be found in :numref:`Install_Building-the-MET`.
 
-When MET has been successfully built and installed, the installation directory contains two subdirectories. The bin/ directory contains executables for each module of MET as well as several plotting utilities. The share/met/ directory contains many subdirectories with data required at runtime and a subdirectory of sample R scripts utilities. The colortables/, map/, and ps/ subdirectories contain data used in creating PostScript plots for several MET tools. The poly/ subdirectory contains predefined lat/lon polyline regions for use in selecting regions over which to verify. The polylines defined correspond to verification regions used by NCEP as described in Appendix B. The config/ directory contains default configuration files for the MET tools. The python/ subdirectory contains sample scripts used in Python embedding (:numref:`appendixF`). The table_files/ and tc_data/ subdirectories contain GRIB table definitions and tropical cyclone data, respectively. The Rscripts/ subdirectory contains a handful of plotting graphic utilities for MET-TC. These are the same Rscripts that reside under the top-level MET scripts/Rscripts directory, other than it is the installed location. The wrappers/ subdirectory contains code used in Python embedding (:numref:`appendixF`).
+When MET has been successfully built and installed, the installation directory contains two subdirectories. The bin/ directory contains executables for each module of MET as well as several plotting utilities. The share/met/ directory contains many subdirectories with data required at runtime and a subdirectory of sample R scripts utilities. The colortables/, map/, and ps/ subdirectories contain data used in creating PostScript plots for several MET tools. The poly/ subdirectory contains predefined lat/lon polyline regions for use in selecting regions over which to verify. The polylines defined correspond to verification regions used by NCEP as described in :numref:`Appendix B, Section %s <appendixB>`. The config/ directory contains default configuration files for the MET tools. The python/ subdirectory contains sample scripts used in Python embedding (:numref:`Appendix F, Section %s <appendixF>`). The table_files/ and tc_data/ subdirectories contain GRIB table definitions and tropical cyclone data, respectively. The Rscripts/ subdirectory contains a handful of plotting graphic utilities for MET-TC. These are the same Rscripts that reside under the top-level MET scripts/Rscripts directory, other than it is the installed location. The wrappers/ subdirectory contains code used in Python embedding (:numref:`Appendix F, Section %s <appendixF>`).
 
 The data/ directory contains several configuration and static data files used by MET. The sample_fcst/ and sample_obs/ subdirectories contain sample data used by the test scripts provided in the scripts/ directory. 
 
@@ -133,7 +133,7 @@ The src/ directory contains the source code for each of the tools in MET.
 
 The scripts/ directory contains test scripts that are run by make test after MET has been successfully built, and a directory of sample configuration files used in those tests located in the scripts/config/ subdirectory. The output from the test scripts in this directory will be written to the out/ directory. Users are encouraged to copy sample configuration files to another location and modify them for their own use.
 
-The share/met/Rscripts directory contains a handful of sample R scripts, include plot_tcmpr.R, which provides graphic utilities for MET-TC. For more information on the graphics capabilities, see :numref:`TC-Stat-tool-example` of this User's Guide.
+The share/met/Rscripts directory contains a handful of sample R scripts, including plot_tcmpr.R, which provides graphic utilities for MET-TC. For more information on the graphics capabilities, see :numref:`TC-Stat-tool-example` of this User's Guide.
 
 .. _Install_Building-the-MET:
 
@@ -147,7 +147,7 @@ ______________________________
 
 • Please refer to :numref:`Installation-of-required` and :numref:`Installation-of-optional` on how to install the required and optional libraries.
 
-• If installing the required and optional libraries in a non-standard location, the user may need to tell MET where to find them. This can be done by setting or adding to the LD_LIBRARY PATH to included the path to the library files.
+• If installing the required and optional libraries in a non-standard location, the user may need to tell MET where to find them. This can be done by setting or adding to the LD_LIBRARY PATH to include the path to the library files.
 
 Set Environment Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -176,7 +176,7 @@ MET_PYTHON_CC='-I/usr/include/python3.6'
 
 MET_PYTHON_LD='-L/usr/lib/python3.6/config-x86_64-linux-gnu -lpython3.6m'
 
-For more information about Python support in MET, please refer to :numref:`appendixF`.
+For more information about Python support in MET, please refer to :numref:`Appendix F, Section %s <appendixF>`.
 
    \- If compiling MODIS-Regrid and/or lidar2nc, set $MET_HDF to point to the main HDF4 directory, or set $MET_HDFINC to point to the directory with the HDF4 include files and set $MET_HDFLIB to point to the directory with the HDF4 library files. Also, set $MET_HDFEOS to point to the main HDF EOS directory, or set $MET_HDFEOSINC to point to the directory with the HDF EOS include files and set $MET_HDFEOSLIB to point to the directory with the HDF EOS library files.
 
@@ -197,7 +197,7 @@ Example: To configure MET to install all of the available tools in the "bin" sub
                  --enable-modis --enable-mode_graphics --enable-lidar2nc
   2. Type 'make install >& make_install.log &'
   3. Type 'tail -f make_install.log' to view the execution of the make.
-  4. When make is finished, type 'CNTRL-C' to quit the tail.
+  4. When make is finished, type 'CTRL-C' to quit the tail.
 
 If all tools are enabled and the build is successful, the "<prefix>/bin" directory (where <prefix> is the prefix you specified on your configure command line) will contain 36 executables:
 
@@ -240,7 +240,7 @@ If all tools are enabled and the build is successful, the "<prefix>/bin" directo
    - wwmca_plot
    - wwmca_regrid
 
-NOTE: Several compilation warnings may occur which are expected. If any errors occur, please refer to the appendix on troubleshooting (:numref:`Troubleshooting`) for common problems. 
+NOTE: Several compilation warnings may occur which are expected. If any errors occur, please refer to :numref:`Appendix A, Section %s <Troubleshooting>` on troubleshooting for common problems. 
 
 **-help** and **-version** command line options are available for all of the MET tools. Typing the name of the tool with no command line options also produces the usage statement.
 
@@ -304,6 +304,6 @@ Once the MET package has been built successfully, the user is encouraged to run 
 
 2. Type 'tail -f make_test.log' to view the execution of the test script.
 
-3. When the test script is finished, type 'CNTRL-C' to quit the tail. Look in "out" to find the output files for these tests. Each tool has a separate, appropriately named subdirectory for its output files. 
+3. When the test script is finished, type 'CTRL-C' to quit the tail. Look in "out" to find the output files for these tests. Each tool has a separate, appropriately named subdirectory for its output files. 
 
 4. In particular, check that the PB2NC tool ran without error. If there was an error, run "make clean" then rerun your configure command adding "--disable-block4" to your configure command line and rebuild MET.

@@ -5,7 +5,7 @@ GSI Tools
 
 Gridpoint Statistical Interpolation (GSI) diagnostic files are binary files written out from the data assimilation code before the first and after each outer loop. The files contain useful information about how a single observation was used in the analysis by providing details such as the innovation (O-B), observation values, observation error, adjusted observation error, and quality control information.
 
-For more detail on generating GSI diagnostic files and their contents, see the GSI User's Guide: http://www.dtcenter.org/com-GSI/users/docs/index.php
+For more detail on generating GSI diagnostic files and their contents, see the `GSI User's Guide. <http://www.dtcenter.org/com-GSI/users/docs/index.php>`_
 
 When MET reads GSI diagnostic files, the innovation (O-B; generated prior to the first outer loop) or analysis increment (O-A; generated after the final outer loop) is split into separate values for the observation (OBS) and the forecast (FCST), where the forecast value corresponds to the background (O-B) or analysis (O-A).
 
@@ -245,7 +245,7 @@ In this example, the Stat-Analysis tool will read MPR lines from the input file 
 GSIDENS2ORANK tool
 __________________
 
-This section describes how to run the tool gsidens2orank tool. The gsidens2orank tool processes an ensemble of GSI diagnostic files and reformats them into the MET observation rank (ORANK) line type, similar to the output of the Ensemble-Stat tool. The ORANK line type contains ensemble matched pair information and is analogous to the MPR line type for a deterministic model. The output ORANK data may be passed to the Stat-Analysis tool to compute ensemble statistics.
+This section describes how to run the gsidens2orank tool. The gsidens2orank tool processes an ensemble of GSI diagnostic files and reformats them into the MET observation rank (ORANK) line type, similar to the output of the Ensemble-Stat tool. The ORANK line type contains ensemble matched pair information and is analogous to the MPR line type for a deterministic model. The output ORANK data may be passed to the Stat-Analysis tool to compute ensemble statistics.
 
 gsidens2orank usage
 ~~~~~~~~~~~~~~~~~~~
