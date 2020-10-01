@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2019
+// ** Copyright UCAR (c) 1992 - 2020
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -97,5 +97,19 @@ return ( s );
 
 }
 
+////////////////////////////////////////////////////////////////////////
+
+long unix_to_long_yyyymmddhh(unixtime u) {
+
+int mon, day, yr, hr, min, sec;
+long yyyymmddhh;
+
+unix_to_mdyhms(u, mon, day, yr, hr, min, sec);
+
+yyyymmddhh = 1000000 * yr + 10000 * mon + 100 * day + hr;
+
+return ( yyyymmddhh );
+
+}
 
 ////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2019
+// ** Copyright UCAR (c) 1992 - 2020
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -28,7 +28,7 @@
 
 #include "vx_util.h"
 #include "vx_math.h"
-#include "vx_grid.h"
+// #include "vx_grid.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 

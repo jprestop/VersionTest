@@ -1,7 +1,7 @@
 
 
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2019
+// ** Copyright UCAR (c) 1992 - 2020
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -71,6 +71,24 @@ struct RotatedLatLonData {
    void dump() const;   //  doesn't work if verbosity level < 4
 
    void dump(ostream &, int depth) const;
+
+};
+
+
+////////////////////////////////////////////////////////////////////////
+
+
+struct TcrmwData {
+
+   const char * name;   //  not allocated
+
+   int range_n;
+   int azimuth_n;
+
+   double range_max_km;
+
+   double lat_center;
+   double lon_center;
 
 };
 

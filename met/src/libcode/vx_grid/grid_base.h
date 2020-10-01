@@ -1,7 +1,7 @@
 
 
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2019
+// ** Copyright UCAR (c) 1992 - 2020
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -71,6 +71,7 @@ class GridInfo {
       void set(const MercatorData       &);
       void set(const GaussianData       &);
       void set(const GoesImagerData     &);
+      void set(const TcrmwData          &);
 
       void create_grid(Grid &) const;
 
@@ -85,6 +86,7 @@ class GridInfo {
       const MercatorData      * m;    //  allocated
       const GaussianData      * g;    //  allocated
       const GoesImagerData    * gi;   //  allocated
+      const TcrmwData         * tc;   //  allocated
 
 };
 
@@ -202,6 +204,7 @@ class Grid : public GridInterface {
       Grid(const MercatorData      &);
       Grid(const GaussianData      &);
       Grid(const GoesImagerData    &);
+      Grid(const TcrmwData         &);
       virtual ~Grid();
       Grid(const Grid &);
       Grid & operator=(const Grid &);
@@ -218,6 +221,7 @@ class Grid : public GridInterface {
       void set (const MercatorData      &);
       void set (const GaussianData      &);
       void set (const GoesImagerData    &);
+      void set (const TcrmwData         &);
 
       void set_swap_to_north(bool swap_to_north);
       bool get_swap_to_north() const;
@@ -230,6 +234,7 @@ class Grid : public GridInterface {
 
       int nx() const;
       int ny() const;
+      int nxy() const;
 
       double scale_km() const;   //  returns -1.0 if scale is unknown or inapplicable
 
@@ -268,6 +273,7 @@ extern bool is_eq(const StereographicData *, const StereographicData *);
 extern bool is_eq(const LatLonData *,        const LatLonData *);
 extern bool is_eq(const RotatedLatLonData *, const RotatedLatLonData *);
 extern bool is_eq(const MercatorData *,      const MercatorData *);
+extern bool is_eq(const GaussianData *,      const GaussianData *);
 extern bool is_eq(const GoesImagerData *,    const GoesImagerData *);
 
 

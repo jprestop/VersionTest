@@ -3,16 +3,25 @@
 ## @end 1
 
 MAINTAINERCLEANFILES	= Makefile.in
+AUTOMAKE_OPTIONS	= subdir-objects
 
 # Include the project definitions
 
 include ${top_srcdir}/Make-include
 
-#SUBDIRS	=shapefiles
+# Check for BUFRLIB_NAME
+
+if BUFRLIB_NAME_SET
+BLIB_NAME = ${BUFRLIB_NAME}
+else
+BLIB_NAME = -lbufr
+endif
+
+SUBDIRS	= shapefiles
 
 # The programs
 
-bin_PROGRAMS    = chk4copyright \
+bin_PROGRAMS = chk4copyright \
 	reformat_map_data \
 	reformat_county_data \
 	pbtime  \
@@ -50,7 +59,7 @@ pbtime_LDADD = -lvx_pb_util \
 	-lvx_util \
 	-lvx_cal \
 	-lvx_log \
-	-lbufr \
+	$(BLIB_NAME) \
 	$(FLIBS)
 
 gribtab_dat_to_flat_SOURCES = gribtab.dat_to_flat.cc \
@@ -63,7 +72,7 @@ gribtab_dat_to_flat_LDADD = -lvx_pb_util \
 	-lvx_util \
 	-lvx_cal \
 	-lvx_log \
-	-lbufr \
+	$(BLIB_NAME) \
 	$(FLIBS)
 
 nceptab_to_flat_SOURCES = nceptab_to_flat.cc \
@@ -76,7 +85,7 @@ nceptab_to_flat_LDADD = -lvx_pb_util \
 	-lvx_util \
 	-lvx_cal \
 	-lvx_log \
-	-lbufr \
+	$(BLIB_NAME) \
 	$(FLIBS)
 
 insitu_nc_to_ascii_SOURCES = insitu_nc_to_ascii.cc \

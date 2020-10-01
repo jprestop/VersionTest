@@ -1,7 +1,7 @@
 
 
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2019
+// ** Copyright UCAR (c) 1992 - 2020
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -21,12 +21,14 @@
 ////////////////////////////////////////////////////////////////////////
 
 
-#include "grid_base.h"
+// #include "grid_base.h"
 
 #include "st_grid.h"
 #include "lc_grid.h"
 #include "latlon_grid.h"
 #include "merc_grid.h"
+#include "gaussian_grid.h"
+#include "tcrmw_grid.h"
 
 #include "find_grid_by_name.h"
 

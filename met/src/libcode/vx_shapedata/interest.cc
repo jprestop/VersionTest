@@ -1,5 +1,5 @@
 // *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
-// ** Copyright UCAR (c) 1992 - 2019
+// ** Copyright UCAR (c) 1992 - 2020
 // ** University Corporation for Atmospheric Research (UCAR)
 // ** National Center for Atmospheric Research (NCAR)
 // ** Research Applications Lab (RAL)
@@ -198,20 +198,12 @@ void SingleFeature::set(const ShapeData &raw, const ShapeData &thresh,
 
    int i;
    ShapeData split_wd, obj_wd;
-   
 
    clear();
 
    Raw    = &raw;
    Thresh = &thresh;
    Mask   = &mask;
-
-   //
-   // Length and Width
-   //
-   Mask->calc_length_width(length, width);
-
-const bool bad = ( is_eq(length, 0.0) || (is_eq(width, 0.0)) );
 
    //
    // Centroid
@@ -221,13 +213,17 @@ const bool bad = ( is_eq(length, 0.0) || (is_eq(width, 0.0)) );
    //
    // Axis angle
    //
-   axis_ang = ( bad ? bad_data_double : Mask->angle_degrees() );
+   axis_ang = Mask->angle_degrees();
 
+   //
+   // Length and Width
+   //
+   Mask->calc_length_width(length, width);
 
    //
    // Aspect ratio
    //
-   aspect_ratio = ( bad ? bad_data_double : (width/length) );
+   aspect_ratio = width/length;
 
    //
    // Object area
@@ -243,8 +239,7 @@ const bool bad = ( is_eq(length, 0.0) || (is_eq(width, 0.0)) );
    //
    // Curvature, Curvature_x, Curvature_y
    //
-   if ( bad )  { curvature = curvature_x = curvature_y = bad_data_double; }
-   else          curvature = Mask->curvature(curvature_x, curvature_y);
+   curvature = Mask->curvature(curvature_x, curvature_y);
 
    //
    // Complexity
@@ -449,16 +444,12 @@ void PairFeature::set(const SingleFeature &fcst,
    //
    a1 = Obs->axis_ang;
    a2 = Fcst->axis_ang;
-   if ( is_bad_data(a1) || is_bad_data(a2) )  angle_diff = bad_data_double;
-   else                                       angle_diff = angle_between(a1, a2);
+   angle_diff = angle_between(a1, a2);
 
    //
    // Aspect ratio diff
    //
-   a1 = Fcst->aspect_ratio;
-   a2 = Obs->aspect_ratio;
-   if ( is_bad_data(a1) || is_bad_data(a2) )  aspect_diff = bad_data_double;
-   else                                       aspect_diff = fabs(Fcst->aspect_ratio - Obs->aspect_ratio);
+   aspect_diff = fabs(Fcst->aspect_ratio - Obs->aspect_ratio);
 
    //
    // Area ratio
@@ -493,10 +484,8 @@ void PairFeature::set(const SingleFeature &fcst,
    //
    // Curvature ratio
    //
-   a1 = Obs->curvature;
-   a2 = Fcst->curvature;
-   if ( is_bad_data(a1) || is_bad_data(a2) )  curvature_ratio = bad_data_double;
-   else                                       curvature_ratio = min( a1/a2, a2/a1 );
+   curvature_ratio = min( (Obs->curvature)/(Fcst->curvature),
+                          (Fcst->curvature)/(Obs->curvature) );
 
    //
    // Complexity Ratio

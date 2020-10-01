@@ -24,6 +24,7 @@ config_DATA = \
 	Ascii2NcConfig_default \
 	EnsembleStatConfig_default \
 	GridStatConfig_default \
+	GridDiagConfig_default \
 	Madis2NcConfig_default \
 	MODEAnalysisConfig_default \
 	MODEConfig_default \
@@ -34,10 +35,14 @@ config_DATA = \
 	STATAnalysisConfig_default \
 	STATAnalysisConfig_GO_Index \
 	TCPairsConfig_default \
+	TCRMWConfig_default \
+	RMWAnalysisConfig_default \
 	TCStatConfig_default \
+	TCGenConfig_default \
 	WaveletStatConfig_default \
 	WWMCARegridConfig_default \
 	PlotModeFieldConfig_default \
+	Point2GridConfig_default \
 	README \
 	README_TC
 
