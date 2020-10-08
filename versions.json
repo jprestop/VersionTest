@@ -1,0 +1,4 @@
+{"versions":["latest","develop","v9.1","v8.1"],
+ "latest": "v9.1",
+ "prereleases": ["v10.0"]
+}
