@@ -15,7 +15,7 @@
   
   
   
-    <link rel="canonical" href="https://ncar.github.io/METplus/latest/Users_Guide/reformat_point.html"/>
+    <link rel="canonical" href="https://jprestop.github.io/VersionTest/latest/Users_Guide/reformat_point.html"/>
   
 
   
@@ -237,7 +237,7 @@
             
   <div class="section" id="re-formatting-of-point-observations">
 <span id="reformat-point"></span><h1><span class="section-number">4. </span>Re-Formatting of Point Observations<a class="headerlink" href="#re-formatting-of-point-observations" title="Permalink to this headline">¶</a></h1>
-<p>There are several formats of point observations that may be preprocessed using the suite of reformatting tools in MET. These include PrepBUFR data from NCEP, SURFRAD data from NOAA, AERONET data from NASA, MADIS data from NOAA, little_r from WRF simulations, and user-defined data in a generic ASCII format. These steps are represented by the first columns in the MET flowchart depicted in <a class="reference internal" href="overview.html#overview"><span class="std std-numref">Section 1</span></a>. The software tools used to reformat point data are described in this section.</p>
+<p>There are several formats of point observations that may preprocessed using the suite of reformatting tools in MET. These include PrepBUFR data from NCEP, SURFRAD data from NOAA, AERONET data from NASA, MADIS data from NOAA, little_r from WRF simulations, and user-defined data in a generic ASCII format. These steps are represented by the first columns in the MET flowchart depicted in <a class="reference internal" href="overview.html#overview"><span class="std std-numref">Section 1</span></a>. The software tools used to reformat point data are described in this section.</p>
 <div class="section" id="pb2nc-tool">
 <span id="id1"></span><h2><span class="section-number">4.1. </span>PB2NC tool<a class="headerlink" href="#pb2nc-tool" title="Permalink to this headline">¶</a></h2>
 <p>This section describes how to configure and run the PB2NC tool. The PB2NC tool is used to stratify the contents of an input PrepBUFR point observation file and reformat it into NetCDF format for use by other MET tools. The PB2NC tool must be run on the input PrepBUFR point observation file prior to performing verification with the MET statistics tools.</p>
@@ -300,7 +300,7 @@ PB2NCConfig
 </div>
 <div class="section" id="pb2nc-configuration-file">
 <span id="id3"></span><h3><span class="section-number">4.1.2. </span>pb2nc configuration file<a class="headerlink" href="#pb2nc-configuration-file" title="Permalink to this headline">¶</a></h3>
-<p>The default configuration file for the PB2NC tool named <strong>PB2NCConfig_default</strong> can be found in the installed <em>share/met/config</em> directory. The version used for the example run in <a class="reference internal" href="installation.html#sample-test-cases"><span class="std std-numref">Section 2.11</span></a> is available in <em>scripts/config</em>. It is recommended that users make a copy of configuration files prior to modifying their contents.</p>
+<p>The default configuration file for the PB2NC tool named <strong>PB2NCConfig_default</strong> can be found in the installed share/met/config directory. The version used for the example run in <a class="reference internal" href="installation.html#sample-test-cases"><span class="std std-numref">Section 2.11</span></a> is available in <strong>scripts/config</strong>. It is recommended that users make a copy of configuration files prior to modifying their contents.</p>
 <p>When editing configuration files, environment variables may be used for setting the configurable parameters if convenient. The configuration file parser expands any environment variables to their full value before proceeding. Within the configuration file, environment variables must be specified in the form: <strong>${VAR_NAME}</strong>.</p>
 <p>For example, using an environment variable to set the <strong>message_type</strong> (see below) parameter to use ADPUPA and ADPSFC message types might consist of the following:</p>
 <p>* In a C-Shell: <strong>setenv MSG_TYP ‘ “ADPUPA”, “ADPSFC” ‘</strong></p>
@@ -320,7 +320,7 @@ version    = &quot;VN.N&quot;;
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>message_type = [];
 </pre></div>
 </div>
-<p>Each PrepBUFR message is tagged with one of eighteen message types as listed in the <em>share/met/config/README</em> file. The <strong>message_type</strong> refers to the type of observation from which the observation value (or ‘report’) was derived. The user may specify a comma-separated list of message types to be retained. Providing an empty list indicates that all message types should be retained.</p>
+<p>Each PrepBUFR message is tagged with one of eighteen message types as listed in the share/met/config/README file. The ‘message_type’ refers to the type of observation from which the observation value (or ‘report’) was derived. The user may specify a comma-separated list of message types to be retained. Providing an empty list indicates that all message types should be retained.</p>
 <hr class="docutils" />
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>message_type_map = [ { key = “AIRCAR”; val = “AIRCAR_PROFILES”; } ];
 </pre></div>
@@ -354,8 +354,8 @@ instrument_type = [];
 </pre></div>
 </div>
 <p>The <strong>pb_report_type, in_report_type</strong>, and <strong>instrument_type</strong> variables are used to specify comma-separated lists of PrepBUFR report types, input report types, and instrument types to be retained, respectively. If left empty, all PrepBUFR report types, input report types, and instrument types will be retained. See the following for more details:</p>
-<p><a class="reference external" href="https://www.emc.ncep.noaa.gov/mmb/data_processing/prepbufr.doc/table_4.htm">Code table for PrepBUFR report types used by Regional NAM GSI analyses.</a></p>
-<p><a class="reference external" href="https://www.emc.ncep.noaa.gov/mmb/data_processing/prepbufr.doc/table_6.htm">PrepBUFR Code table for input report types.</a></p>
+<p><a class="reference external" href="https://www.emc.ncep.noaa.gov/mmb/data_processing/prepbufr.doc/table_4.htm">https://www.emc.ncep.noaa.gov/mmb/data_processing/prepbufr.doc/table_4.htm</a></p>
+<p><a class="reference external" href="https://www.emc.ncep.noaa.gov/mmb/data_processing/prepbufr.doc/table_6.htm">https://www.emc.ncep.noaa.gov/mmb/data_processing/prepbufr.doc/table_6.htm</a></p>
 <hr class="docutils" />
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>level_range    = { beg = 1; end = 255; }
 level_category = [];
@@ -363,7 +363,7 @@ level_category = [];
 </div>
 <p>The <strong>beg</strong> and <strong>end</strong> variables are used to stratify the model level of observations to be retained. The range shown above is 1 to 255.</p>
 <p>The <strong>level_category</strong> variable is used to specify a comma-separated list of PrepBUFR data level categories to retain. An empty string indicates that all level categories should be retained. Accepted values and their meanings are described in <a class="reference internal" href="#table-reform-point-pb2nc-level-category"><span class="std std-numref">Table 4.1</span></a>. See the following for more details:</p>
-<p><a class="reference external" href="https://www.emc.ncep.noaa.gov/mmb/data_processing/prepbufr.doc/table_1.htm">PrepBUFR mnemonic table.</a></p>
+<p><a class="reference external" href="https://www.emc.ncep.noaa.gov/mmb/data_processing/prepbufr.doc/table_1.htm">https://www.emc.ncep.noaa.gov/mmb/data_processing/prepbufr.doc/table_1.htm</a></p>
 <span id="table-reform-point-pb2nc-level-category"></span><table class="colwidths-auto docutils align-default" id="id5">
 <caption><span class="caption-number">Table 4.1 </span><span class="caption-text">Values for the level_category option.</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
 <thead>
@@ -596,8 +596,8 @@ vld_thresh = 0.0;
 </div>
 <div class="section" id="ascii2nc-tool">
 <h2><span class="section-number">4.2. </span>ASCII2NC tool<a class="headerlink" href="#ascii2nc-tool" title="Permalink to this headline">¶</a></h2>
-<p>This section describes how to run the ASCII2NC tool. The ASCII2NC tool is used to reformat ASCII point observations into the NetCDF format expected by the Point-Stat tool. For those users wishing to verify against point observations that are not available in PrepBUFR format, the ASCII2NC tool provides a way of incorporating those observations into MET. If the ASCII2NC tool is used to perform a reformatting step, no configuration file is needed. However, for more complex processing, such as summarizing time series observations, a configuration file may be specified. For details on the configuration file options, see the <em>share/met/config/README</em> file and example configuration files distributed with the MET code.</p>
-<p>Initial versions of the ASCII2NC tool supported only a simple 11 column ASCII point observation format. It currently supports point observation data in the following formats: the default 11 column format, little_r format, <a class="reference external" href="http://www.esrl.noaa.gov/gmd/grad/surfrad/">SURFace RADiation (SURFRAD)</a> and Integrated Surface Irradiance Study (ISIS) formats, the Western Wind and Solar Integration Study (WWSIS) format, and the <a class="reference external" href="http://aeronet.gsfc.nasa.gov/">AErosol RObotic NEtwork (AERONET) versions 2 and 3 format.</a>  WWSIS data are available by request from National Renewable Energy Laboratory (NREL) in Boulder, CO.</p>
+<p>This section describes how to run the ASCII2NC tool. The ASCII2NC tool is used to reformat ASCII point observations into the NetCDF format expected by the Point-Stat tool. For those users wishing to verify against point observations that are not available in PrepBUFR format, the ASCII2NC tool provides a way of incorporating those observations into MET. If the ASCII2NC tool is used to perform a reformatting step, no configuration file is needed. However, for more complex processing, such as summarizing time series observations, a configuration file may be specified. For details on the configuration file options, see the share/met/config/README file and example configuration files distributed with the MET code.</p>
+<p>Initial versions of the ASCII2NC tool supported only a simple 11 column ASCII point observation format. It currently supports point observation data in the following formats: the default 11 column format, little_r format, SURFace RADiation (SURFRAD) and Integrated Surface Irradiance Study (ISIS) formats (found at <a class="reference external" href="http://www.esrl.noaa.gov/gmd/grad/surfrad/">http://www.esrl.noaa.gov/gmd/grad/surfrad/</a>), the Western Wind and Solar Integration Study (WWSIS) format, and the AErosol RObotic NEtwork (AERONET) versions 2 and 3 format (found at <a class="reference external" href="http://aeronet.gsfc.nasa.gov/">http://aeronet.gsfc.nasa.gov/</a>). WWSIS data are available by request from National Renewable Energy Laboratory (NREL) in Boulder, CO.</p>
 <p>MET version 9.0 adds support for the passing observations to ascii2nc using a Python script with the “-format python” option. An example of running ASCII2NC with Python embedding is included below.</p>
 <p>The default ASCII point observation format consists of one row of data per observation value. Each row of data consists of 11 columns as shown in <a class="reference internal" href="#table-reform-point-ascii2nc-format"><span class="std std-numref">Table 4.4</span></a>.</p>
 <span id="table-reform-point-ascii2nc-format"></span><table class="colwidths-auto docutils align-default" id="id8">
@@ -679,7 +679,7 @@ vld_thresh = 0.0;
 <div class="section" id="required-arguments-for-ascii2nc">
 <h4><span class="section-number">4.2.1.1. </span>Required arguments for ascii2nc<a class="headerlink" href="#required-arguments-for-ascii2nc" title="Permalink to this headline">¶</a></h4>
 <ol class="arabic simple">
-<li><p>The <strong>ascii_file</strong> argument is the ASCII point observation file(s) to be processed. If using Python embedding with “-format python” provides a quoted string containing the Python script to be run followed by any command line arguments that script takes.</p></li>
+<li><p>The <strong>ascii_file</strong> argument is the ASCII point observation file(s) to be processed. If using Python embedding with “-format python” provide a quoted string containing the Python script to be run followed by any command line arguments that script takes.</p></li>
 <li><p>The <strong>netcdf_file</strong> argument is the NetCDF output file to be written.</p></li>
 </ol>
 </div>
@@ -695,7 +695,7 @@ vld_thresh = 0.0;
 <li><p>The <strong>-v level</strong> option indicates the desired level of verbosity. The value of “level” will override the default setting of 2. Setting the verbosity to 0 will make the tool run with no log messages, while increasing the verbosity above 1 will increase the amount of logging.</p></li>
 <li><p>The <strong>-compress level</strong> option indicates the desired level of compression (deflate level) for NetCDF variables. The valid level is between 0 and 9. The value of “level” will override the default setting of 0 from the configuration file or the environment variable MET_NC_COMPRESS. Setting the compression level to 0 will make no compression for the NetCDF output. Lower number is for fast compression and higher number is for better compression.</p></li>
 </ol>
-<p>An example of the ascii2nc calling sequence is shown below:</p>
+<p>An example of the <strong>ascii2nc</strong> calling sequence is shown below:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ascii2nc sample_ascii_obs.txt \
 sample_ascii_obs.nc
 </pre></div>
@@ -710,12 +710,12 @@ sample_ascii_obs.nc
 sample_ascii_obs_python.nc
 </pre></div>
 </div>
-<p>Please refer to <a class="reference internal" href="appendixF.html#appendixf"><span class="std std-numref">Appendix F, Section 32</span></a> for more details about Python embedding in MET.</p>
+<p>Please refer to <a class="reference internal" href="appendixF.html#appendixf"><span class="std std-numref">Section 32</span></a> for more details about Python embedding in MET.</p>
 </div>
 </div>
 <div class="section" id="ascii2nc-configuration-file">
 <h3><span class="section-number">4.2.2. </span>ascii2nc configuration file<a class="headerlink" href="#ascii2nc-configuration-file" title="Permalink to this headline">¶</a></h3>
-<p>The default configuration file for the ASCII2NC tool named <strong>Ascii2NcConfig_default</strong> can be found in the installed <em>share/met/config</em> directory. It is recommended that users make a copy of this file prior to modifying its contents.</p>
+<p>The default configuration file for the ASCII2NC tool named <strong>Ascii2NcConfig_default</strong> can be found in the installed share/met/config directory. It is recommended that users make a copy of this file prior to modifying its contents.</p>
 <p>The ASCII2NC configuration file is optional and only necessary when defining time summaries or message type mapping for little_r data. The contents of the default ASCII2NC configuration file are described below.</p>
 <hr class="docutils" />
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>version = &quot;VN.N&quot;;
@@ -751,7 +751,7 @@ sample_ascii_obs_python.nc
 </div>
 <div class="section" id="madis2nc-tool">
 <h2><span class="section-number">4.3. </span>MADIS2NC tool<a class="headerlink" href="#madis2nc-tool" title="Permalink to this headline">¶</a></h2>
-<p>This section describes how to run the MADIS2NC tool. The MADIS2NC tool is used to reformat <a class="reference external" href="http://madis.noaa.gov">Meteorological Assimilation Data Ingest System (MADIS)</a> point observations into the NetCDF format expected by the MET statistics tools. Since the MADIS2NC tool simply performs a reformatting step, no configuration file is needed. The MADIS2NC tool supports many of the MADIS data types, as listed in the usage statement below. Support for additional MADIS data types may be added in the future based on user feedback.</p>
+<p>This section describes how to run the MADIS2NC tool. The MADIS2NC tool is used to reformat Meteorological Assimilation Data Ingest System (MADIS) point observations into the NetCDF format expected by the MET statistics tools. More information about MADIS data and formatting is available at <a class="reference external" href="http://madis.noaa.gov">http://madis.noaa.gov</a>. Since the MADIS2NC tool simply performs a reformatting step, no configuration file is needed. The MADIS2NC tool supports many of the MADIS data types, as listed in the usage statement below. Support for additional MADIS data types may be added in the future based on user feedback.</p>
 <div class="section" id="madis2nc-usage">
 <h3><span class="section-number">4.3.1. </span>madis2nc usage<a class="headerlink" href="#madis2nc-usage" title="Permalink to this headline">¶</a></h3>
 <p>The usage statement for MADIS2NC tool is shown below:</p>
@@ -778,7 +778,7 @@ sample_ascii_obs_python.nc
 <ol class="arabic simple">
 <li><p>The <strong>madis_file</strong> argument is one or more input MADIS point observation files to be processed.</p></li>
 <li><p>The <strong>netcdf_file</strong> argument is the NetCDF output file to be written.</p></li>
-<li><p>The argument <strong>-type str</strong> is a type of MADIS observations (metar, raob, profiler, maritime, mesonet or acarsProfiles).</p></li>
+<li><p>The argument <strong>-type str</strong> is type of MADIS observations (metar, raob, profiler, maritime, mesonet or acarsProfiles).</p></li>
 </ol>
 </div>
 <div class="section" id="optional-arguments-for-madis2nc">
@@ -805,7 +805,7 @@ sample_madis_obs_met.nc -log madis.log -v 3
 </div>
 <div class="section" id="madis2nc-configuration-file">
 <h3><span class="section-number">4.3.2. </span>madis2nc configuration file<a class="headerlink" href="#madis2nc-configuration-file" title="Permalink to this headline">¶</a></h3>
-<p>The default configuration file for the MADIS2NC tool named <strong>Madis2NcConfig_default</strong> can be found in the installed <em>share/met/config</em> directory. It is recommended that users make a copy of this file prior to modifying its contents.</p>
+<p>The default configuration file for the MADIS2NC tool named <strong>Madis2NcConfig_default</strong> can be found in the installed share/met/config directory. It is recommended that users make a copy of this file prior to modifying its contents.</p>
 <p>The MADIS2NC configuration file is optional and only necessary when defining time summaries. The contents of the default MADIS2NC configuration file are described below.</p>
 <hr class="docutils" />
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>version = &quot;VN.N&quot;;
@@ -963,9 +963,9 @@ sample_madis_obs_met.nc -log madis.log -v 3
 <h4><span class="section-number">4.5.1.1. </span>Required arguments for point2grid<a class="headerlink" href="#required-arguments-for-point2grid" title="Permalink to this headline">¶</a></h4>
 <ol class="arabic simple">
 <li><p>The <strong>input_filename</strong> argument indicates the name of the input NetCDF file to be processed. Currently, only NetCDF files produced from the ascii2nc, madis2nc, pb2nc, and lidar2nc are supported. And AOD dataset from GOES16/17 are supported, too. Support for additional file types will be added in future releases.</p></li>
-<li><p>The <strong>to_grid</strong> argument defines the output grid as: (1) a named grid, (2) the path to a gridded data file, or (3) an explicit grid specification string.</p></li>
-<li><p>The <strong>output_filename</strong> argument is the name of the output NetCDF file to be written.</p></li>
-<li><p>The <strong>-field string</strong> argument is a string that defines the data to be regridded. It may be used multiple times. If <strong>-adp</strong> option is given (for AOD data from GOES16/17), the name consists with the variable name from the input data file and the variable name from ADP data file (for example, “AOD_Smoke” or “AOD_Dust”: getting AOD variable from the input data and applying smoke or dust variable from ADP data file).</p></li>
+<li><p>The to_grid argument defines the output grid as: (1) a named grid, (2) the path to a gridded data file, or (3) an explicit grid specification string.</p></li>
+<li><p>The output_filename argument is the name of the output NetCDF file to be written.</p></li>
+<li><p>The -field string argument is a string that defines the data to be regridded. It may be used multiple times. If -adp option is given (for AOD data from GOES16/17), the name consists with the variable name from the input data file and the variable name from ADP data file (for example, “AOD_Smoke” or “AOD_Dust”: getting AOD variable from the input data and applying smoke or dust variable from ADP data file).</p></li>
 </ol>
 </div>
 <div class="section" id="optional-arguments-for-point2grid">
@@ -973,7 +973,7 @@ sample_madis_obs_met.nc -log madis.log -v 3
 <ol class="arabic simple" start="5">
 <li><p>The <strong>-config</strong> file option is the configuration file to be used.</p></li>
 <li><p>The <strong>-qc</strong> flags option specifies a comma-separated list of quality control (QC) flags, for example “0,1”. This should only be applied if grid_mapping is set to “goes_imager_projection” and the QC variable exists.</p></li>
-<li><p>The <strong>-adp adp_file_name</strong> option provides an additional Aerosol Detection Product (ADP) information on aerosols, dust, and smoke. This option is ignored if the requested variable is not AOD (“AOD_Dust” or “AOD_Smoke”) from GOES16/17. The gridded data is filtered by the presence of dust/smoke. If -qc options are given, it’s applied to QC of dust/smoke, too (First filtering with AOD QC values and the second filtering with dust/smoke QC values).</p></li>
+<li><p>The <strong>-adp adp_file_name</strong> option provides an additional Aerosol Detection Product (ADP) information on aerosols, dust, and smoke. This option is ignored if the requested variable is not AOD (“AOD_Dust” or “AOD_Smoke”) from GOES16/17. The gridded data is filtered by the presence of dust/smoke. If -qc options is given, it’s applied to QC of dust/smoke, too (First filtering with AOD QC values and the second filtering with dust/smoke QC values).</p></li>
 <li><p>The <strong>-method type</strong> option specifies the regridding method. The default method is UW_MEAN.</p></li>
 <li><p>The <strong>-gaussian_dx n</strong> option defines the distance interval for Gaussian smoothing. The default is 81.271 km. Ignored if the method is not GAUSSIAN or MAXGAUSS.</p></li>
 <li><p>The <strong>-gaussian_radius</strong> n option defines the radius of influence for Gaussian interpolation. The default is 120. Ignored if the method is not GAUSSIAN or MAXGAUSS.</p></li>
@@ -1006,10 +1006,10 @@ regrid_data_plane_GOES-16_AOD_TO_G212.nc \
 <ol class="arabic simple">
 <li><p>Latitude</p></li>
 <li><p>Longitude</p></li>
-<li><p>The variable specified in the -field string regridded to the grid defined in the <strong>to_grid</strong> argument.</p></li>
+<li><p>The variable specified in the -field string regridded to the grid defined in the to_grid argument.</p></li>
 <li><p>The count field which represents the number of point observations that were included calculating the value of the variable at that grid cell.</p></li>
 <li><p>The mask field which is a binary field representing the presence or lack thereof of point observations at that grid cell. A value of “1” indicates that there was at least one point observation within the bounds of that grid cell and a value of “0” indicates the lack of point observations at that grid cell.</p></li>
-<li><p>The probability field which is the probability of the event defined by the <strong>-prob_cat_thresh</strong> command line option. The output variable name includes the threshold used to define the probability. Ranges from 0 to 1.</p></li>
+<li><p>The probability field which is the probability of the event defined by the -prob_cat_thresh command line option. The output variable name includes the threshold used to define the probability. Ranges from 0 to 1.</p></li>
 <li><p>The probability mask field which is a binary field that represents whether or not there is probability data at that grid point. Can be either “0” or “1” with “0” meaning the probability value does not exist and a value of “1” meaning that the probability value does exist.</p></li>
 </ol>
 </div>

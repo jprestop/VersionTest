@@ -15,7 +15,7 @@
   
   
   
-    <link rel="canonical" href="https://ncar.github.io/METplus/latest/Users_Guide/appendixC.html"/>
+    <link rel="canonical" href="https://jprestop.github.io/VersionTest/latest/Users_Guide/appendixC.html"/>
   
 
   
@@ -174,7 +174,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#standard-deviation-of-the-error">29.3.13. Standard deviation of the error</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#bias-corrected-mse">29.3.14. Bias-Corrected MSE</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mean-absolute-error-mae">29.3.15. Mean Absolute Error (MAE)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#interquartile-range-of-the-errors-iqr">29.3.16. InterQuartile Range of the Errors (IQR)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#inter-quartile-range-of-the-errors-iqr">29.3.16. Inter Quartile Range of the Errors (IQR)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#median-absolute-deviation-mad">29.3.17. Median Absolute Deviation (MAD)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mean-squared-error-skill-score">29.3.18. Mean Squared Error Skill Score</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#root-mean-squared-forecast-anomaly">29.3.19. Root-mean-squared Forecast Anomaly</a></li>
@@ -315,7 +315,7 @@
 <table class="colwidths-auto docutils align-default" id="id3">
 <caption><span class="caption-number">Table 29.1 </span><span class="caption-text">Statistics in MET and other names they have been published under.</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
 <thead>
-<tr class="row-odd"><th class="head"><p>Statistics in MET</p></th>
+<tr class="row-odd"><th class="head"><p>Statitistic in MET</p></th>
 <th class="head"><p>Other names for the same statistic</p></th>
 </tr>
 </thead>
@@ -354,10 +354,10 @@
 <td><p>Murphy’s MSESS</p></td>
 </tr>
 <tr class="row-odd"><td><p>Pearson Correlation</p></td>
-<td><p>Anomalous Pattern Correlation</p></td>
+<td><p>Anomolous Pattern Correlation</p></td>
 </tr>
-<tr class="row-even"><td><p>Anomaly Correlation</p></td>
-<td><p>Anomalous Correction</p></td>
+<tr class="row-even"><td><p>Anomoly Correlation</p></td>
+<td><p>Anomolous Correction</p></td>
 </tr>
 <tr class="row-odd"><td><p>Rank Histogram</p></td>
 <td><p>Talagrand Diagram</p></td>
@@ -534,7 +534,7 @@
 <p>ORSS is a skill score based on the odds ratio. ORSS is defined as</p>
 <div class="math notranslate nohighlight">
 \[\text{ORSS } = \frac{OR - 1}{OR + 1}.\]</div>
-<p>ORSS is sometimes also referred to as Yule’s Q. (<a class="reference internal" href="refs.html#stephenson-2000"><span class="std std-ref">Stephenson 2000</span></a>).</p>
+<p>ORSS is sometime also referred to as Yule’s Q. (<a class="reference internal" href="refs.html#stephenson-2000"><span class="std std-ref">Stephenson 2000</span></a>).</p>
 </div>
 <div class="section" id="extreme-dependency-score-eds">
 <h3><span class="section-number">29.2.17. </span>Extreme Dependency Score (EDS)<a class="headerlink" href="#extreme-dependency-score-eds" title="Permalink to this headline">¶</a></h3>
@@ -692,10 +692,10 @@
 <p>The Mean Absolute Error (MAE) is defined as <span class="math notranslate nohighlight">\(\text{MAE} = \frac{1}{n} \sum|f_{i} - o_{i}|\)</span>.</p>
 <p>MAE is less influenced by large errors and also does not depend on the mean error. A perfect forecast would have MAE = 0.</p>
 </div>
-<div class="section" id="interquartile-range-of-the-errors-iqr">
-<h3><span class="section-number">29.3.16. </span>InterQuartile Range of the Errors (IQR)<a class="headerlink" href="#interquartile-range-of-the-errors-iqr" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="inter-quartile-range-of-the-errors-iqr">
+<h3><span class="section-number">29.3.16. </span>Inter Quartile Range of the Errors (IQR)<a class="headerlink" href="#inter-quartile-range-of-the-errors-iqr" title="Permalink to this headline">¶</a></h3>
 <p>Called “IQR” in CNT output <a class="reference internal" href="point-stat.html#table-ps-format-info-cnt"><span class="std std-numref">Table 7.6</span></a></p>
-<p>The InterQuartile Range of the Errors (IQR) is the difference between the 75th and 25th percentiles of the errors. It is defined as <span class="math notranslate nohighlight">\(\text{IQR} = p_{75} (f_i - o_i) - p_{25} (f_i - o_i)\)</span>.</p>
+<p>The Inter Quartile Range of the Errors (IQR) is the difference between the 75th and 25th percentiles of the errors. It is defined as <span class="math notranslate nohighlight">\(\text{IQR} = p_{75} (f_i - o_i) - p_{25} (f_i - o_i)\)</span>.</p>
 <p>IQR is another estimate of spread, similar to standard error, but is less influenced by large errors and also does not depend on the mean error. A perfect forecast would have IQR = 0.</p>
 </div>
 <div class="section" id="median-absolute-deviation-mad">
@@ -790,7 +790,7 @@
 </div>
 <div class="section" id="met-verification-measures-for-probabilistic-forecasts">
 <h2><span class="section-number">29.4. </span>MET verification measures for probabilistic forecasts<a class="headerlink" href="#met-verification-measures-for-probabilistic-forecasts" title="Permalink to this headline">¶</a></h2>
-<p>The results of the probabilistic verification methods that are included in the Point-Stat, Grid-Stat, and Stat-Analysis tools are summarized using a variety of measures. MET treats probabilistic forecasts as categorical, divided into bins by user-defined thresholds between zero and one. For the categorical measures, if a forecast probability is specified in a formula, the midpoint value of the bin is used. These measures include the Brier Score (BS) with confidence bounds (<a class="reference internal" href="refs.html#bradley-2008"><span class="std std-ref">Bradley, 2008</span></a>); the joint distribution, calibration-refinement, likelihood-base rate (<a class="reference internal" href="refs.html#wilks-2011"><span class="std std-ref">Wilks, 2011</span></a>); and receiver operating characteristic information. Using these statistics, reliability and discrimination diagrams can be produced.</p>
+<p>The results of the probabilistic verification methods that are included in the Point-Stat, Grid-Stat, and Stat-Analysis tools are summarized using a variety of measures. MET treats probabilistic forecasts as categorical, divided into bins by user-defined thresholds between zero and one. For the categorical measures, if a forecast probability is specified in a formula, the mid-point value of the bin is used. These measures include the Brier Score (BS) with confidence bounds (<a class="reference internal" href="refs.html#bradley-2008"><span class="std std-ref">Bradley, 2008</span></a>); the joint distribution, calibration-refinement, likelihood-base rate (<a class="reference internal" href="refs.html#wilks-2011"><span class="std std-ref">Wilks, 2011</span></a>); and receiver operating characteristic information. Using these statistics, reliability and discrimination diagrams can be produced.</p>
 <p>The verification statistics for probabilistic forecasts of dichotomous variables are formulated using a contingency table such as the one shown in <a class="reference internal" href="#table-cont-table-counts"><span class="std std-numref">Table 29.3</span></a>. In this table f represents the forecasts and o represents the observations; the two possible forecast and observation values are represented by the values 0 and 1. The values in <a class="reference internal" href="#table-cont-table-counts"><span class="std std-numref">Table 29.3</span></a> are counts of the number of occurrences of all possible combinations of forecasts and observations.</p>
 <span id="table-cont-table-counts"></span><table class="colwidths-auto docutils align-default" id="id5">
 <caption><span class="caption-number">Table 29.3 </span><span class="caption-text">2x2 contingency table in terms of counts. The <span class="math notranslate nohighlight">\(\mathbf{n_{ij}}\)</span> values in the table represent the counts in each forecast-observation category, where <strong>i</strong> represents the forecast and <strong>j</strong> represents the observations. The “.” symbols in the total cells represent sums across categories.</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
@@ -983,7 +983,7 @@
 <div class="section" id="rank">
 <h3><span class="section-number">29.5.5. </span>RANK<a class="headerlink" href="#rank" title="Permalink to this headline">¶</a></h3>
 <p>Called “RANK” in ORANK output <a class="reference internal" href="ensemble-stat.html#table-es-header-info-es-out-orank"><span class="std std-numref">Table 9.7</span></a></p>
-<p>The rank of an observation, compared to all members of an ensemble forecast, is a measure of dispersion of the forecasts (<a class="reference internal" href="refs.html#hamill-2001"><span class="std std-ref">Hamill, 2001</span></a>). When ensemble forecasts possess the same amount of variability as the corresponding observations, then the rank of the observation will follow a discrete uniform distribution. Thus, a rank histogram will be approximately flat.</p>
+<p>The rank of an observation, compared to all members of an ensemble forecast, is a measure of dispersion of the forecasts (<a class="reference internal" href="refs.html#hamill-2001"><span class="std std-ref">Hamill, 2001</span></a>). When ensemble forecasts possesses the same amount of variability as the corresponding observations, then the rank of the observation will follow a discrete uniform distribution. Thus, a rank histogram will be approximately flat.</p>
 <p>The rank histogram does not provide information about the accuracy of ensemble forecasts. Further, examination of “rank” only makes sense for ensembles of a fixed size. Thus, if ensemble members are occasionally unavailable, the rank histogram should not be used. The PIT may be used instead.</p>
 </div>
 <div class="section" id="spread">

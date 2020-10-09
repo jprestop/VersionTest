@@ -15,7 +15,7 @@
   
   
   
-    <link rel="canonical" href="https://ncar.github.io/METplus/latest/Users_Guide/tc-stat.html"/>
+    <link rel="canonical" href="https://jprestop.github.io/VersionTest/latest/Users_Guide/tc-stat.html"/>
   
 
   
@@ -224,7 +224,7 @@
 <span id="tc-stat"></span><h1><span class="section-number">21. </span>TC-Stat Tool<a class="headerlink" href="#tc-stat-tool" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="introduction">
 <h2><span class="section-number">21.1. </span>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p>The TC-Stat tool ties together results from the TC-Pairs tool by providing summary statistics and filtering jobs on TCST output files. The TC-Stat tool requires TCST output from the TC-Pairs tool. See <a class="reference internal" href="#tc-stat-output"><span class="std std-numref">Section 21.3.2</span></a> of this user’s guide for information on the TCST output format of the TC-Pairs tool. The TC-Stat tool supports several analysis job types. The <strong>filter</strong> job stratifies the TCST data using various conditions and thresholds described in <a class="reference internal" href="#tc-stat-configuration-file"><span class="std std-numref">Section 21.3.1.3</span></a>. The <strong>summary</strong> job produces summary statistics including frequency of superior performance, time-series independence calculations, and confidence intervals on the mean. The <strong>rirw</strong> job processes TCMPR lines, identifies adeck and bdeck rapid intensification or weakening events, populates a 2x2 contingency table, and derives contingency table statistics. The <strong>probrirw job</strong> processes PROBRIRW lines, populates an Nx2 probabilistic contingency table, and derives probabilistic statistics. The statistical aspects are described in <a class="reference internal" href="#statistical-aspects"><span class="std std-numref">Section 21.2</span></a>, and practical use information for the TC-Stat tool is described in <a class="reference internal" href="#practical-information-1"><span class="std std-numref">Section 21.3</span></a>.</p>
+<p>The TC-Stat tool ties together results from the TC-Pairs tool by providing summary statistics and filtering jobs on TCST output files. The TC-Stat tool requires TCST output from the TC-Pairs tool. See <a class="reference internal" href="#tc-stat-output"><span class="std std-numref">Section 21.3.2</span></a> of this users guide for information on the TCST output format of the TC-Pairs tool. The TC-Stat tool supports several analysis job types. The <strong>filter</strong> job stratifies the TCST data using various conditions and thresholds described in <a class="reference internal" href="#tc-stat-configuration-file"><span class="std std-numref">Section 21.3.1.3</span></a>. The <strong>summary</strong> job produces summary statistics including frequency of superior performance, time-series independence calculations, and confidence intervals on the mean. The <strong>rirw</strong> job processes TCMPR lines, identifies adeck and bdeck rapid intensification or weakening events, populates a 2x2 contingency table, and derives contingency table statistics. The <strong>probrirw job</strong> processes PROBRIRW lines, populates an Nx2 probabilistic contingency table, and derives probabilistic statistics. The statistical aspects are described in <a class="reference internal" href="#statistical-aspects"><span class="std std-numref">Section 21.2</span></a>, and practical use information for the TC-Stat tool is described in <a class="reference internal" href="#practical-information-1"><span class="std std-numref">Section 21.3</span></a>.</p>
 </div>
 <div class="section" id="statistical-aspects">
 <span id="id1"></span><h2><span class="section-number">21.2. </span>Statistical aspects<a class="headerlink" href="#statistical-aspects" title="Permalink to this headline">¶</a></h2>
@@ -269,7 +269,7 @@
 <p>The following sections describe the usage statement, required arguments, and optional arguments for <strong>tc_stat</strong>.</p>
 <div class="section" id="tc-stat-usage">
 <h3><span class="section-number">21.3.1. </span>tc_stat usage<a class="headerlink" href="#tc-stat-usage" title="Permalink to this headline">¶</a></h3>
-<p>The usage statement for <strong>tc_stat</strong> is shown below:</p>
+<p>The usage statement for tc_stat is shown below:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Usage: tc_stat
        -lookin source
        [-out file]
@@ -299,7 +299,7 @@
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>tc_stat -lookin /home/tc_pairs/*al092010.tcst -config TCStatConfig
 </pre></div>
 </div>
-<p>In this example, the TC-Stat tool uses any TCST file (output from <strong>tc_pairs</strong>) in the listed directory for the 9th Atlantic Basin storm in 2010. Filtering options and aggregated statistics are generated following configuration options specified in the <strong>TCStatConfig</strong> file. Further, using flags (e.g. <strong>-basin, -column, -storm_name,</strong> etc…) option within the job command lines may further refine these selections. See <a class="reference internal" href="#tc-stat-configuration-file"><span class="std std-numref">Section 21.3.1.3</span></a> for options available for the job command line and <a class="reference internal" href="data_io.html#data-io-met-tc-configuration-file-options"><span class="std std-numref">Section 3.5.2</span></a> for how to use them.</p>
+<p>In this example, the TC-Stat tool uses any TCST file (output from <strong>tc_pairs</strong>) in the listed directory for the 9th Atlantic Basin storm in 2010. Filtering options and aggregated statistics are generated following configuration options specified in the <strong>TCStatConfig</strong> file. Further, using flags (e.g. <strong>-basin, -column, -storm_name,</strong> etc…) option within the job command lines may further refine these selections. See <a class="reference internal" href="#tc-stat-configuration-file"><span class="std std-numref">Section 21.3.1.3</span></a> for options available for job command line and <a class="reference internal" href="data_io.html#data-io-met-tc-configuration-file-options"><span class="std std-numref">Section 3.5.2</span></a> for how to use them.</p>
 </div>
 <div class="section" id="tc-stat-configuration-file">
 <span id="id2"></span><h4><span class="section-number">21.3.1.3. </span>tc_stat configuration file<a class="headerlink" href="#tc-stat-configuration-file" title="Permalink to this headline">¶</a></h4>
@@ -382,7 +382,7 @@ init_str_val = [&quot;NA&quot;];
 column_str_val = [&quot;NA&quot;];
 </pre></div>
 </div>
-<p>Further information on the <strong>column_str</strong> and <strong>init_str</strong> fields are described below. Listing a comma-separated list of watch/warning types in the <strong>column_str_val</strong> field will be stratified by a single or multiple types of warnings.</p>
+<p>Further information on the <strong>column_str</strong> and <strong>init_str</strong> fields is described below. Listing a comma-separated list of watch/warning types in the <strong>column_str_val</strong> field will stratify by a single or multiple types of warnings.</p>
 <hr class="docutils" />
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>column_thresh_name = [];
 column_thresh_val  = [];
@@ -543,7 +543,7 @@ e.g.: -job filter  -line_type TCMPR  -amodel HWFI   -dump_row ./tc_filter_job.tc
 <p>The RIRW job produces contingency table counts and statistics defined by identifying rapid intensification or weakening events in the adeck and bdeck track. Users may specify several job command options to configure the behavior of this job:</p>
 <ul class="simple">
 <li><p>The <strong>-rirw_time HH[MMSS]</strong> option (or <strong>-rirw_time_adeck</strong> and <strong>-rirw_time_bdeck</strong> to specify different settings) defines the time window of interest. The default is 24 hours.</p></li>
-<li><p>The <strong>-rirw_exact bool</strong> option (or <strong>-rirw_exact_adeck</strong> and <strong>-rirw_exact_bdeck</strong> to specify different settings) is a boolean defining whether the exact intensity change or maximum intensity change over that time window should be used. For rapid intensification, the maximum increase is computed. For rapid weakening, the maximum decrease is used. The default is true.</p></li>
+<li><p>The <strong>-rirw_exact bool</strong> option (or <strong>-rirw_exact_adeck</strong> and <strong>-rirw_exact_bdeck</strong> to specify different settings) is a boolean defining whether the exact intensity change or maximum intensity change over that time window should be used. For rapid intensification, the maximum increase in computed. For rapid weakening, the maximum decrease is used. The default is true.</p></li>
 <li><p>The <strong>-rirw_thresh threshold</strong> option (or <strong>-rirw_thresh_adeck</strong> and <strong>-rirw_thresh_bdeck</strong> to specify different settings) defines the intensity change event threshold. The default is greater than or equal to 30 kts.</p></li>
 <li><p>The <strong>-rirw_window</strong> option may be passed one or two arguments in HH[MMSS] format to define how close adeck and bdeck events must be to be considered hits or correct negatives. One time string defines a symmetric time window while two time strings define an asymmetric time window. The default is 0, requiring an exact match in time.</p></li>
 <li><p>The <strong>-out_line_type</strong> option defines the output data that should be written. This job can write contingency table counts (CTC), contingency table statistics (CTS), and RIRW matched pairs (MPR). The default is CTC and CTS, but the MPR output provides a great amount of detail.</p></li>
@@ -558,8 +558,8 @@ e.g.: -job filter  -line_type TCMPR  -amodel HWFI   -dump_row ./tc_filter_job.tc
 <li><p>The <strong>-probri_prob_thresh threshold_list</strong> option defines the probability thresholds used to create the output Nx2 contingency table. The default is probability bins of width 0.1. These probabilities may be specified as a list (&gt;0.00,&gt;0.25,&gt;0.50,&gt;0.75,&gt;1.00) or using shorthand notation (==0.25) for bins of equal width.</p></li>
 <li><p>The <strong>-out_line_type</strong> option defines the output data that should be written. This job can write PCT, PSTD, PJC, and PRC output line types. The default is PCT and PSTD.  Please see <a class="reference internal" href="point-stat.html#table-ps-format-info-pct"><span class="std std-numref">Table 7.10</span></a> through <a class="reference internal" href="point-stat.html#table-ps-format-info-prc"><span class="std std-numref">Table 7.13</span></a> for more details.</p></li>
 </ul>
-<p>Users may also specify the <strong>-out_alpha</strong> option to define the alpha value for the confidence intervals in the PSTD output line type. Multiple values in the <strong>RI_WINDOW</strong> column cannot be combined in a single PROBRIRW job since the BEST track intensity threshold should change for each. Using the <strong>-by RI_WINDOW</strong> option or <strong>-column_thresh RI_WINDOW ==24</strong> option provide convenient ways avoiding this problem.</p>
-<p>Users should note that for the PROBRIRW line type, <strong>PROBRI_PROB</strong> is a derived column name. The -probri_thresh option defines the probabilities of interest (e.g. <strong>-probri_thresh 30</strong>) and the <strong>PROBRI_PROB</strong> column name refers to those probability values, regardless of their column number. For example, the job command options <strong>-probri_thresh 30 -column_thresh PROBRI_PROB &gt;0</strong> select 30 kt probabilities and match probability values greater than 0.</p>
+<p>Users may also specify the <strong>-out_alpha</strong> option to define the alpha value for the confidence intervals in the PSTD output line type. Multiple values in the <strong>RI_WINDOW</strong> column cannot be combined in a single PROBRIRW job since BEST track intensity threshold should change for each. Using the <strong>-by RI_WINDOW</strong> option or -column_thresh <strong>RI_WINDOW ==24</strong> option provide convenient ways avoiding this problem.</p>
+<p>Users should note that for the PROBRIRW line type, <strong>PROBRI_PROB</strong> is a derived column name. The -probri_thresh option defines the probabilities of interest (e.g. <strong>-probri_thresh 30</strong>) and the <strong>PROBRI_PROB</strong> column name refers those probability values, regardless of their column number. For example, the job command options <strong>-probri_thresh 30 -column_thresh PROBRI_PROB &gt;0</strong> select 30 kt probabilities and match probability values greater than 0.</p>
 </div>
 </div>
 </div>

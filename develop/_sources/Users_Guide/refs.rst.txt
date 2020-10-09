@@ -71,7 +71,7 @@ Gilleland, E., 2019: Bootstrap methods for statistical inference. Part II: Extre
 
 .. _Gneiting-2004:
 
-Gneiting, T., A. Westveld, A. Raferty, and T. Goldman, 2004: *Calibrated Probabilistic Forecasting Using Ensemble Model Output Statistics and Minimum CRPS Estimation*. Technical Report no. 449, Department of Statistics, University of Washington. Available at http://www.stat.washington.edu/www/research/reports/ 
+Gneiting, T., A. Westveld, A. Raferty, and T. Goldman, 2004: *Calibrated Probabilistic Forecasting Using Ensemble Model Output Statistics and Minimum CRPS Estimation*. Technical Report no. 449, Department of Statistics, University of Washington. [Available online at http://www.stat.washington.edu/www/research/reports/ ]
 
 .. _Hamill-2001:
 
@@ -111,7 +111,7 @@ Roberts, N.M., and H.W. Lean, 2008: Scale-selective verification of rainfall acc
 
 .. _Saetra-2004:
 
-Saetra O., H. Hersbach, J-R Bidlot, D. Richardson, 2004: Effects of observation errors on the statistics for ensemble spread and reliability. *Monthly Weather Review* 132: 1487–1501.
+Saetra O., H. Hersbach, J-R Bidlot, D. Richardson, 2004: Effects of observation errors on the statistics for ensemble spread and reliability. *Monthy Weather Review* 132: 1487–1501.
 
 .. _Santos-2012:
 

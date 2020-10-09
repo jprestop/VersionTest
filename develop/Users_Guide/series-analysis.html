@@ -15,7 +15,7 @@
   
   
   
-    <link rel="canonical" href="https://ncar.github.io/METplus/latest/Users_Guide/series-analysis.html"/>
+    <link rel="canonical" href="https://jprestop.github.io/VersionTest/latest/Users_Guide/series-analysis.html"/>
   
 
   
@@ -222,7 +222,7 @@
 </div>
 <div class="section" id="practical-information">
 <h2><span class="section-number">13.2. </span>Practical Information<a class="headerlink" href="#practical-information" title="Permalink to this headline">¶</a></h2>
-<p>This Series-Analysis tool performs verification of gridded model fields using matching gridded observation fields. It computes a variety of user-selected statistics. These statistics are a subset of those produced by the Grid-Stat tool, with options for statistic types, thresholds, and conditional verification options as discussed in <a class="reference internal" href="grid-stat.html#grid-stat"><span class="std std-numref">Section 8</span></a>. However, these statistics are computed separately for each grid location and accumulated over some series such as time or height, rather than accumulated over the whole domain for a single time or height as is done by Grid-Stat.</p>
+<p>This Series-Analysis tool performs verification of gridded model fields using matching gridded observation fields. It computes a variety of user-selected statistics. These statistics are a subset of those produced by the Grid-Stat tool, with options for statistic types, thresholds, and conditional verification options as discussed in the <a class="reference internal" href="grid-stat.html#grid-stat"><span class="std std-numref">Section 8</span></a>. However, these statistics are computed separately for each grid location and accumulated over some series such as time or height, rather than accumulated over the whole domain for a single time or height as is done by Grid-Stat.</p>
 <p>This tool computes statistics for exactly one series each time it is run. Multiple series may be processed by running the tool multiple times. The length of the series to be processed is determined by the first of the following that is greater than one: the number of forecast fields in the configuration file, the number of observation fields in the configuration file, the number of input forecast files, the number of input observation files. Several examples of defining series are described below.</p>
 <p>To define a time series of forecasts where the valid time changes for each time step, set the forecast and observation fields in the configuration file to single values and pass the tool multiple forecast and observation files. The tool will loop over the forecast files, extract the specified field from each, and then search the observation files for a matching record with the same valid time.</p>
 <p>To define a time series of forecasts that all have the same valid time, set the forecast and observation fields in the configuration file to single values. Pass the tool multiple forecast files and a single observation file containing the verifying observations. The tool will loop over the forecast files, extract the specified field from each, and then retrieve the verifying observations.</p>
