@@ -25,6 +25,7 @@ release = f'{version}'
 release_year = '2020'
 release_date = f'{release_year}0810'
 copyright = f'{release_year}, {author}'
+verinfo = '9.1'
 
 # -- General configuration ---------------------------------------------------
 
@@ -52,6 +53,12 @@ suppress_warnings = ['ref.citation']
 html_theme = 'sphinx_rtd_theme'
 html_css_files = ['theme_override.css']
 
+# Theme options are theme-specific and customize the look and feel of a theme
+# further.  For a list of options available for each theme, see the
+# documentation.
+html_theme_options = {'canonical_url': 'https://jprestop.github.io/VersionTest/latest/'}
+if 'sphinx_rtd_theme' in vars() and sphinx_rtd_theme.__version__ == '0.2.5b1.post1':
+        html_theme_options['versions'] = {'latest': '../latest', 'develop': '../develop'}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -61,6 +68,8 @@ html_static_path = ['_static']
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
 html_logo = os.path.join('_static','met_logo_2019_09.png')
+
+html_js_files = ['pop_ver.js']
 
 # -- Intersphinx control -----------------------------------------------------
 intersphinx_mapping = {'numpy':("https://docs.scipy.org/doc/numpy/", None)}
