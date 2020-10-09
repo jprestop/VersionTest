@@ -58,7 +58,7 @@ html_css_files = ['theme_override.css']
 # documentation.
 html_theme_options = {'canonical_url': 'https://jprestop.github.io/VersionTest/latest/'}
 if 'sphinx_rtd_theme' in vars() and sphinx_rtd_theme.__version__ == '0.2.5b1.post1':
-        html_theme_options['versions'] = {'latest': '../latest', 'develop': '../develop'}
+    html_theme_options['versions'] = {'latest': '../latest', 'develop': '../develop'}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
