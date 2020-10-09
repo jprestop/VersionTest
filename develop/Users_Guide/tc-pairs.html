@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>20. TC-Pairs Tool &mdash; MET 9.1 documentation</title>
+  <title>20. TC-Pairs Tool &mdash; MET develop documentation</title>
   
 
   
@@ -39,7 +39,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="MET 9.1 documentation" href="../index.html"/>
+    <link rel="top" title="MET develop documentation" href="../index.html"/>
         <link rel="up" title="User’s Guide" href="index.html"/>
         <link rel="next" title="21. TC-Stat Tool" href="tc-stat.html"/>
         <link rel="prev" title="19. TC-Dland Tool" href="tc-dland.html"/> 
@@ -75,7 +75,7 @@
             
               <div class="version">
                 
-                  9.1
+                  develop
                 
               </div>
             
@@ -225,7 +225,7 @@
 <p>This section describes how to configure and run the TC-Pairs tool. The TC-Pairs tool is used to match a tropical cyclone model forecast to a corresponding reference dataset. Both tropical cyclone forecast/reference data must be in ATCF format. Output from the TC-dland tool (NetCDF gridded distance file) is also a required input for the TC-Pairs tool. It is recommended to run <strong>tc_pairs</strong> on a storm-by-storm basis, rather than over multiple storms or seasons to avoid memory issues.</p>
 <div class="section" id="tc-pairs-usage">
 <h3><span class="section-number">20.2.1. </span>tc_pairs usage<a class="headerlink" href="#tc-pairs-usage" title="Permalink to this headline">¶</a></h3>
-<p>The usage statement for tc_pairs is shown below:</p>
+<p>The usage statement for <strong>tc_pairs</strong> is shown below:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Usage: tc_pairs
        -adeck source and/or -edeck source
        -bdeck source
@@ -235,7 +235,7 @@
        [-v level]
 </pre></div>
 </div>
-<p>tc_pairs has required arguments and can accept several optional arguments.</p>
+<p><strong>tc_pairs</strong> has required arguments and can accept several optional arguments.</p>
 <div class="section" id="required-arguments-for-tc-pairs">
 <h4><span class="section-number">20.2.1.1. </span>Required arguments for tc_pairs<a class="headerlink" href="#required-arguments-for-tc-pairs" title="Permalink to this headline">¶</a></h4>
 <ol class="arabic simple">
@@ -253,7 +253,7 @@
 <li><p>The <strong>-v level</strong> option indicates the desired level of verbosity. The contents of “level” will override the default setting of 2. Setting the verbosity to 0 will make the tool run with no log messages, while increasing the verbosity above 1 will increase the amount of logging.</p></li>
 </ol>
 <p>This tool currently only supports the rapid intensification (<strong>RI</strong>) edeck probability type but support for additional edeck probability types will be added in future releases. At least one <strong>-adeck</strong> or <strong>-edeck</strong> option must be specified. The <strong>-adeck, -edeck</strong>, and <strong>-bdeck</strong> options may optionally be followed with <strong>suffix=string</strong> to append that string to all model names found within that data source. This option may be useful when processing track data from two different sources which reuse the same model names.</p>
-<p>An example of the tc_pairs calling sequence is shown below:</p>
+<p>An example of the <strong>tc_pairs</strong> calling sequence is shown below:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>tc_pairs -adeck aal092010.dat -bdeck bal092010.dat -config TCPairsConfig
 </pre></div>
 </div>
@@ -368,7 +368,7 @@ oper_baseline  = [ &quot;OCLP&quot;, &quot;OCS5&quot;, &quot;OCD5&quot; ];
  }
 </pre></div>
 </div>
-<p>The <strong>watch_warn</strong> field specifies the file name and time applied offset to the <strong>watch_warn</strong> flag. The <strong>file_name</strong> string specifies the path of the watch/warning file to be used to determine when a watch or warning is in affect during the forecast initialization and verification times. The default file is named <strong>wwpts_us.txt</strong>, which is found in the installed <strong>share/met/tc_data/</strong> directory within the MET build. The <strong>time_offset</strong> string is the time window (in seconds) assigned to the watch/warning. Due to the non-uniform time watches and warnings are issued, a time window is assigned for which watch/warnings are included in the verification for each valid time. The default watch/warn file is static, and therefore may not include warned storms beyond the current MET code release date; therefore users may wish to contact <a class="reference external" href="mailto:met_help&#37;&#52;&#48;ucar&#46;edu">met_help<span>&#64;</span>ucar<span>&#46;</span>edu</a> to obtain the most recent watch/warning file if the static file does not contain storms of interest.</p>
+<p>The <strong>watch_warn</strong> field specifies the file name and time applied offset to the <strong>watch_warn</strong> flag. The <strong>file_name</strong> string specifies the path of the watch/warning file to be used to determine when a watch or warning is in effect during the forecast initialization and verification times. The default file is named <strong>wwpts_us.txt</strong>, which is found in the installed <strong>share/met/tc_data/</strong> directory within the MET build. The <strong>time_offset</strong> string is the time window (in seconds) assigned to the watch/warning. Due to the non-uniform time watches and warnings are issued, a time window is assigned for which watch/warnings are included in the verification for each valid time. The default watch/warn file is static, and therefore may not include warned storms beyond the current MET code release date; therefore users may wish to contact <a class="reference external" href="mailto:met_help&#37;&#52;&#48;ucar&#46;edu">met_help<span>&#64;</span>ucar<span>&#46;</span>edu</a> to obtain the most recent watch/warning file if the static file does not contain storms of interest.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>basin_map = [
    { key = &quot;SI&quot;; val = &quot;SH&quot;; },
    { key = &quot;SP&quot;; val = &quot;SH&quot;; },
@@ -822,7 +822,7 @@ parameter will result in missed matches.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'9.1',
+            VERSION:'develop',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

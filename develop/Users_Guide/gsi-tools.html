@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>11. GSI Tools &mdash; MET 9.1 documentation</title>
+  <title>11. GSI Tools &mdash; MET develop documentation</title>
   
 
   
@@ -39,7 +39,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="MET 9.1 documentation" href="../index.html"/>
+    <link rel="top" title="MET develop documentation" href="../index.html"/>
         <link rel="up" title="User’s Guide" href="index.html"/>
         <link rel="next" title="12. Stat-Analysis Tool" href="stat-analysis.html"/>
         <link rel="prev" title="10. Wavelet-Stat Tool" href="wavelet-stat.html"/> 
@@ -75,7 +75,7 @@
             
               <div class="version">
                 
-                  9.1
+                  develop
                 
               </div>
             
@@ -220,7 +220,7 @@
   <div class="section" id="gsi-tools">
 <span id="id1"></span><h1><span class="section-number">11. </span>GSI Tools<a class="headerlink" href="#gsi-tools" title="Permalink to this headline">¶</a></h1>
 <p>Gridpoint Statistical Interpolation (GSI) diagnostic files are binary files written out from the data assimilation code before the first and after each outer loop. The files contain useful information about how a single observation was used in the analysis by providing details such as the innovation (O-B), observation values, observation error, adjusted observation error, and quality control information.</p>
-<p>For more detail on generating GSI diagnostic files and their contents, see the GSI User’s Guide: <a class="reference external" href="http://www.dtcenter.org/com-GSI/users/docs/index.php">http://www.dtcenter.org/com-GSI/users/docs/index.php</a></p>
+<p>For more detail on generating GSI diagnostic files and their contents, see the <a class="reference external" href="http://www.dtcenter.org/com-GSI/users/docs/index.php">GSI User’s Guide.</a></p>
 <p>When MET reads GSI diagnostic files, the innovation (O-B; generated prior to the first outer loop) or analysis increment (O-A; generated after the final outer loop) is split into separate values for the observation (OBS) and the forecast (FCST), where the forecast value corresponds to the background (O-B) or analysis (O-A).</p>
 <p>MET includes two tools for processing GSI diagnostic files. The gsid2mpr tool reformats individual GSI diagnostic files into the MET matched pair (MPR) format, similar to the output of the Point-Stat tool. The gsidens2orank tool processes an ensemble of GSI diagnostic files and reformats them into the MET observation rank (ORANK) line type, similar to the output of the Ensemble-Stat tool. The output of both tools may be passed to the Stat-Analysis tool to compute a wide variety of continuous, categorical, and ensemble statistics.</p>
 <div class="section" id="gsid2mpr-tool">
@@ -483,7 +483,7 @@
 </div>
 <div class="section" id="gsidens2orank-tool">
 <h2><span class="section-number">11.2. </span>GSIDENS2ORANK tool<a class="headerlink" href="#gsidens2orank-tool" title="Permalink to this headline">¶</a></h2>
-<p>This section describes how to run the tool gsidens2orank tool. The gsidens2orank tool processes an ensemble of GSI diagnostic files and reformats them into the MET observation rank (ORANK) line type, similar to the output of the Ensemble-Stat tool. The ORANK line type contains ensemble matched pair information and is analogous to the MPR line type for a deterministic model. The output ORANK data may be passed to the Stat-Analysis tool to compute ensemble statistics.</p>
+<p>This section describes how to run the gsidens2orank tool. The gsidens2orank tool processes an ensemble of GSI diagnostic files and reformats them into the MET observation rank (ORANK) line type, similar to the output of the Ensemble-Stat tool. The ORANK line type contains ensemble matched pair information and is analogous to the MPR line type for a deterministic model. The output ORANK data may be passed to the Stat-Analysis tool to compute ensemble statistics.</p>
 <div class="section" id="gsidens2orank-usage">
 <h3><span class="section-number">11.2.1. </span>gsidens2orank usage<a class="headerlink" href="#gsidens2orank-usage" title="Permalink to this headline">¶</a></h3>
 <p>The usage statement for the gsidens2orank tool is shown below:</p>
@@ -742,7 +742,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'9.1',
+            VERSION:'develop',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

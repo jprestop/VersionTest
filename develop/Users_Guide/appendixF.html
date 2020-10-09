@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>32. Appendix F Python Embedding &mdash; MET 9.1 documentation</title>
+  <title>32. Appendix F Python Embedding &mdash; MET develop documentation</title>
   
 
   
@@ -39,7 +39,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="MET 9.1 documentation" href="../index.html"/>
+    <link rel="top" title="MET develop documentation" href="../index.html"/>
         <link rel="up" title="User’s Guide" href="index.html"/>
         <link rel="next" title="33. Appendix G Vectors and Vector Statistics" href="appendixG.html"/>
         <link rel="prev" title="31. Appendix E WWMCA Tools" href="appendixE.html"/> 
@@ -75,7 +75,7 @@
             
               <div class="version">
                 
-                  9.1
+                  develop
                 
               </div>
             
@@ -217,12 +217,12 @@
 <span id="appendixf"></span><h1><span class="section-number">32. </span>Appendix F Python Embedding<a class="headerlink" href="#appendix-f-python-embedding" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="introduction">
 <h2><span class="section-number">32.1. </span>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p>MET includes the ability to embed Python to a limited degree. Users may use Python scripts and whatever associated Python packages they wish in order to prepare 2D gridded data fields, point observations, and matched pairs as input to the MET tools. We fully expect that this degree of embedding will increase in the future. In addition, plans are in place to extend Python with MET in upcoming releases, allowing users to invoke MET tools directly from their Python script. While MET version 8.0 was built on Python 2.x, MET version 9.0 is build on Python 3.6+.</p>
+<p>MET includes the ability to embed Python to a limited degree. Users may use Python scripts and whatever associated Python packages they wish in order to prepare 2D gridded data fields, point observations, and matched pairs as input to the MET tools. We fully expect that this degree of embedding will increase in the future. In addition, plans are in place to extend Python with MET in upcoming releases, allowing users to invoke MET tools directly from their Python script. While MET version 8.0 was built on Python 2.x, MET version 9.0 is built on Python 3.6+.</p>
 </div>
 <div class="section" id="compiling-python-support">
 <h2><span class="section-number">32.2. </span>Compiling Python Support<a class="headerlink" href="#compiling-python-support" title="Permalink to this headline">¶</a></h2>
 <p>In order to use Python embedding, the user’s local Python installation must have the C-language Python header files and libraries. Sometimes when Python is installed locally, these header files and libraries are deleted at the end of the installation process, leaving only the binary executable and run-time shared object files. But the Python header files and libraries must be present to compile support in MET for Python embedding. Assuming the requisite Python files are present, and that Python embedding is enabled when building MET (which is done by passing the <strong>–enable-python</strong> option to the <strong>configure</strong> command line), the MET C++ code will use these in the compilation process to link directly to the Python libraries.</p>
-<p>In addition to the <strong>configure</strong> option mentioned above, two variables, <strong>MET_PYTHON_CC</strong> and <strong>MET_PYTHON_LD</strong>, must also be set for the configuration process. These may either be set as environment variables or as command line options to <strong>configure</strong>. These constants as passed as compiler command line options when building MET to enable the compiler to find the requisite Python header files and libraries in the user’s local filesystem. Fortunately, Python provides a way to set these variables properly. This frees the user from the necessity of having any expert knowledge of the compiling and linking process. Along with the <strong>Python</strong> executable, there should be another executable called <strong>python-config</strong>, whose output can be used to set these environment variables as follows:</p>
+<p>In addition to the <strong>configure</strong> option mentioned above, two variables, <strong>MET_PYTHON_CC</strong> and <strong>MET_PYTHON_LD</strong>, must also be set for the configuration process. These may either be set as environment variables or as command line options to <strong>configure</strong>. These constants are passed as compiler command line options when building MET to enable the compiler to find the requisite Python header files and libraries in the user’s local filesystem. Fortunately, Python provides a way to set these variables properly. This frees the user from the necessity of having any expert knowledge of the compiling and linking process. Along with the <strong>Python</strong> executable, there should be another executable called <strong>python-config</strong>, whose output can be used to set these environment variables as follows:</p>
 <ul class="simple">
 <li><p>On the command line, run “<strong>python-config –cflags</strong>”. Set the value of <strong>MET_PYTHON_CC</strong> to the output of that command.</p></li>
 <li><p>Again on the command line, run “<strong>python-config –ldflags</strong>”. Set the value of <strong>MET_PYTHON_LD</strong> to the output of that command.</p></li>
@@ -326,7 +326,7 @@ DEBUG 1: Creating postscript file: fcst.ps
 <p>The <strong>read_ascii_point.py</strong> sample script can be found in:</p>
 <ul class="simple">
 <li><p>MET installation directory in <strong>MET_BASE/python</strong>.</p></li>
-<li><p>MET GitHub repository (<a class="reference external" href="https://github.com/dtcenter/MET">https://github.com/dtcenter/MET</a>) in <strong>met/scripts/python</strong>.</p></li>
+<li><p><a class="reference external" href="https://github.com/dtcenter/MET">MET GitHub repository</a> in <strong>met/scripts/python</strong>.</p></li>
 </ul>
 </div>
 <div class="section" id="python-embedding-for-mpr-data">
@@ -335,7 +335,7 @@ DEBUG 1: Creating postscript file: fcst.ps
 <p>The <strong>read_ascii_mpr.py</strong> sample script can be found in:</p>
 <ul class="simple">
 <li><p>MET installation directory in <strong>MET_BASE/python</strong>.</p></li>
-<li><p>MET GitHub repository (<a class="reference external" href="https://github.com/dtcenter/MET">https://github.com/dtcenter/MET</a>) in <strong>met/scripts/python</strong>.</p></li>
+<li><p><a class="reference external" href="https://github.com/dtcenter/MET">MET GitHub repository</a> in <strong>met/scripts/python</strong>.</p></li>
 </ul>
 </div>
 </div>
@@ -387,7 +387,7 @@ DEBUG 1: Creating postscript file: fcst.ps
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'9.1',
+            VERSION:'develop',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

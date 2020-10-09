@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>16. MODE-Analysis Tool &mdash; MET 9.1 documentation</title>
+  <title>16. MODE-Analysis Tool &mdash; MET develop documentation</title>
   
 
   
@@ -39,7 +39,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="MET 9.1 documentation" href="../index.html"/>
+    <link rel="top" title="MET develop documentation" href="../index.html"/>
         <link rel="up" title="User’s Guide" href="index.html"/>
         <link rel="next" title="17. MODE Time Domain Tool" href="mode-td.html"/>
         <link rel="prev" title="15. MODE Tool" href="mode.html"/> 
@@ -75,7 +75,7 @@
             
               <div class="version">
                 
-                  9.1
+                  develop
                 
               </div>
             
@@ -219,7 +219,7 @@
 <span id="mode-analysis"></span><h1><span class="section-number">16. </span>MODE-Analysis Tool<a class="headerlink" href="#mode-analysis-tool" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="introduction">
 <h2><span class="section-number">16.1. </span>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p>Users may wish to summarize multiple ASCII files produced by MODE across many cases. The MODE output files contain many output columns making it very difficult to interpret the results by simply browsing the files. Furthermore, for particular applications some data fields in the MODE output files may not be of interest. The MODE-Analysis tool provide a simple way to compute basic summary statistics and filtering capabilities for these files. Users who are not proficient at writing scripts can use the tool directly, and even those using their own scripts can use this tool as a filter, to extract only the MODE output lines that are relevant for their application.</p>
+<p>Users may wish to summarize multiple ASCII files produced by MODE across many cases. The MODE output files contain many output columns making it very difficult to interpret the results by simply browsing the files. Furthermore, for particular applications some data fields in the MODE output files may not be of interest. The MODE-Analysis tool provides a simple way to compute basic summary statistics and filtering capabilities for these files. Users who are not proficient at writing scripts can use the tool directly, and even those using their own scripts can use this tool as a filter, to extract only the MODE output lines that are relevant for their application.</p>
 </div>
 <div class="section" id="scientific-and-statistical-aspects">
 <span id="mode-a-scientific-and-statistical"></span><h2><span class="section-number">16.2. </span>Scientific and statistical aspects<a class="headerlink" href="#scientific-and-statistical-aspects" title="Permalink to this headline">¶</a></h2>
@@ -250,7 +250,7 @@
 <h4><span class="section-number">16.3.1.1. </span>Required arguments for mode_analysis:<a class="headerlink" href="#required-arguments-for-mode-analysis" title="Permalink to this headline">¶</a></h4>
 <ol class="arabic simple">
 <li><p>The <strong>-lookin path</strong> specifies the name of a specific STAT file (any file ending in .stat) or the name of a directory where the Stat-Analysis tool will search for STAT files. This option may be used multiple times to specify multiple locations.</p></li>
-<li><p>The MODE-Analysis tool can perform two basic types of jobs -summary or -bycase. Exactly one of these job types must be specified.</p></li>
+<li><p>The MODE-Analysis tool can perform two basic types of jobs <strong>-summary</strong> or <strong>-bycase</strong>. Exactly one of these job types must be specified.</p></li>
 </ol>
 <p>Specifying <strong>-summary</strong> will produce summary statistics for the MODE output column specified. For this job type, a column name (or column number) must be specified using the <strong>-column</strong> option. Column names are not case sensitive. The column names are the same as described in <a class="reference internal" href="mode.html#mode-output"><span class="std std-numref">Section 15.3.3</span></a>. More information about this option is provided in subsequent sections.</p>
 <p>Specifying <strong>-bycase</strong> will produce a table of metrics for each case undergoing analysis. Any columns specified are ignored for this option.</p>
@@ -652,7 +652,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'9.1',
+            VERSION:'develop',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
