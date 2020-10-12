@@ -20,12 +20,12 @@ print(sys.path)
 project = 'MET'
 author = 'UCAR/NCAR, NOAA, and CSU/CIRA'
 author_list = 'Brown, B., Bullock, R., Fowler, T., Halley Gotway, J., Newman, K., Jensen, T.'
+verinfo = '9.1'
 version = '9.1'
 release = f'{version}'
 release_year = '2020'
 release_date = f'{release_year}0810'
 copyright = f'{release_year}, {author}'
-verinfo = '9.1'
 
 # -- General configuration ---------------------------------------------------
 
@@ -58,7 +58,6 @@ try:
 except ImportError:
     pass
                     
-
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
@@ -67,7 +66,7 @@ if 'sphinx_rtd_theme' in vars() and sphinx_rtd_theme.__version__ == '0.2.5b1.pos
     html_theme_options['versions'] = {'latest': '../latest', 'develop': '../develop'}
 
 html_css_files = ['theme_override.css']
-    
+
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
