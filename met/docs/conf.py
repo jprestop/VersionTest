@@ -50,8 +50,14 @@ suppress_warnings = ['ref.citation']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
-html_css_files = ['theme_override.css']
+#html_theme = 'sphinx_rtd_theme'
+try:
+    import sphinx_rtd_theme
+    html_theme = 'sphinx_rtd_theme'
+    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+except ImportError:
+    pass
+                    
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -60,6 +66,8 @@ html_theme_options = {'canonical_url': 'https://jprestop.github.io/VersionTest/l
 if 'sphinx_rtd_theme' in vars() and sphinx_rtd_theme.__version__ == '0.2.5b1.post1':
     html_theme_options['versions'] = {'latest': '../latest', 'develop': '../develop'}
 
+html_css_files = ['theme_override.css']
+    
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
